@@ -1,0 +1,20 @@
+.btn:focus {
+  background-color: white;
+}
+
+.modal {
+  -webkit-box-shadow: 0 0px;
+  box-shadow: 0 0px;
+  border: none;
+  background-color: transparent;
+}
+
+.modal-footer {
+  margin-top: 0px;
+}
+
+.modal-content {
+  border-radius: 6px 6px 0px 0px;
+  box-shadow: none;
+  border: none;
+}

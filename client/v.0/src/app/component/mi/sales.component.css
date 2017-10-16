@@ -1,0 +1,76 @@
+.selected_mi {
+  width: 60%;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.selected_mi .info {
+  font-weight: bold;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.enhaced_discount {
+  font-size: 1.2em;
+  color: #bf3330;
+  font-weight: bold;
+}
+
+.enhaced_price {
+  font-size: 1.2em;
+  color: #438bca;
+  font-weight: bold;
+}
+
+.sale-container {
+  width: 40%;
+  margin: 0 auto;
+  background-color: #EDF4FA;
+  border-radius: 20px;
+}
+
+.sale {
+  padding: 30px;
+}
+
+.coMeEs_dark_bold {
+  width: 60%;
+  margin: 0 auto;
+}
+
+.remove {
+  background-color: #125996;
+  color: white;
+  cursor: pointer;
+}
+
+.payment {
+  width: 40%;
+  margin: 25px auto;
+  border: 1px solid #125996;
+  text-align: center;
+  border-radius: 10px;
+  background-color: #EDF8FA;
+}
+
+.payment-info {
+  padding: 20px;
+}
+
+.amount {
+  width: 100px !important;
+}
+
+.sale-enhace {
+  font-size: 1.3em;
+  color: #125996;
+  font-weight: bold;;
+}
+
+.change{
+  color: blue;
+}

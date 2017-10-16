@@ -99,12 +99,16 @@ var i = {
   getCurrentPhysDiscount: (req, res) => {
     try {
       var id = req.params.id;
+      var by = req.query.by || "id";
 
-      PhysMi.queryPhysMI({
-          id: id
-        })
+      var query = {
+        id: id,
+        by: by
+      }
+
+      PhysMi.queryPhysMI(query)
         .then((physMis) => {
-          console.log(physMis);
+
           res.json({
             ok: 1,
             discount: 10
@@ -122,9 +126,10 @@ var i = {
         })
         .catch((err) => {
           winston.log('error', err);
-          res.status(500).json({
-            err: err.message
-          });
+          res.json({
+            ok: 0,
+            discount: 0
+          })
         })
 
     } catch (err) {

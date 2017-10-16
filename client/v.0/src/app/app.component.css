@@ -1,0 +1,22 @@
+.app-container {
+  margin: 0 auto;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.menu-container {
+  text-align: center;
+}
+
+.menu-item {
+  display: inline-block;
+  width: 200px;
+}
+
+.back-image {
+  position: absolute;
+  height: 80%;
+  left: 0;
+  top: 14%;
+  z-index: -1;
+}

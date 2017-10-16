@@ -154,6 +154,8 @@ var i = {
         discount: req.body.discount
       };
 
+
+
       if (TypesDiscount[mi.type_discount] == null)
         throw {
           message: "Not allowed form of discount"

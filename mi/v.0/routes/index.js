@@ -44,14 +44,14 @@ router.route('/phys_comissions')
   // physId,bottom,perc
   .put(PhysComissionController.putPhysComission);
 
-router.route('/phys_discount/:id')
+router.route('/phys_discounts/:id')
   .get(Discount.getCurrentPhysDiscount);
 
-router.route('/coupon')
+router.route('/coupons')
   // code, init_date, end_date, discount, description
   .put(Discount.putCoupon);
 
-router.route('/coupon/:code')
+router.route('/coupons/:code')
   .get(Discount.getCoupon)
 
 router.route('/pmis/:phys')

@@ -1,0 +1,32 @@
+.top-submenu {
+  background-color: #EDF4FA;
+  width: 80%;
+  margin: 0 auto;
+  margin-bottom: 15px;
+}
+
+.top-submenu .item {
+  display: inline-block;
+
+  font-weight: bold;
+  text-decoration: none;
+  min-width: 100px;
+  text-align: center;
+}
+
+.top-submenu .item * {
+  background-color: #125996;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+h4 {
+  font-size: 1.6em;
+  font-weight: bold;
+  color: #125996;
+}
+
+.title {
+  margin: 0 auto;
+  text-align: center;
+}
