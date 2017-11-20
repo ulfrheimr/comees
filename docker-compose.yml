@@ -1,0 +1,19 @@
+version:            '2'
+services:
+  cc:
+    container_name:
+      "cc"
+    build:
+      context:      ./cc
+    image:
+      "cc"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - cc_data
+    restart: unless-stopped
+  cc_data:
+    image:          mongo
+    ports:
+      - "27017:27017"
+    restart: unless-stopped

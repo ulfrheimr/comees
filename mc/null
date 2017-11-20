@@ -215,3 +215,16 @@
 2017-11-19T17:57:39.106-0600 I NETWORK  [thread1] connection accepted from 127.0.0.1:53122 #83 (6 connections now open)
 2017-11-19T17:57:39.107-0600 I NETWORK  [thread1] connection accepted from 127.0.0.1:53123 #84 (7 connections now open)
 2017-11-20T09:21:07.042-0600 I COMMAND  [PeriodicTaskRunner] task: UnusedLockCleaner took: 105ms
+2017-11-20T12:25:14.907-0600 I -        [conn82] end connection 127.0.0.1:53121 (7 connections now open)
+2017-11-20T12:25:14.907-0600 I -        [conn83] end connection 127.0.0.1:53122 (7 connections now open)
+2017-11-20T12:25:14.907-0600 I -        [conn84] end connection 127.0.0.1:53123 (7 connections now open)
+2017-11-20T12:25:21.898-0600 I -        [conn58] end connection 127.0.0.1:56609 (4 connections now open)
+2017-11-20T12:25:21.898-0600 I -        [conn59] end connection 127.0.0.1:56722 (4 connections now open)
+2017-11-20T12:25:24.424-0600 I -        [conn2] end connection 127.0.0.1:49725 (2 connections now open)
+2017-11-20T12:25:24.424-0600 I -        [conn3] end connection 127.0.0.1:49726 (2 connections now open)
+2017-11-20T12:35:08.420-0600 I NETWORK  [thread1] connection accepted from 127.0.0.1:52443 #85 (1 connection now open)
+2017-11-20T12:35:08.424-0600 I NETWORK  [conn85] received client metadata from 127.0.0.1:52443 conn85: { application: { name: "MongoDB Shell" }, driver: { name: "MongoDB Internal Client", version: "3.4.4" }, os: { type: "Darwin", name: "Mac OS X", architecture: "x86_64", version: "17.2.0" } }
+2017-11-20T12:35:24.362-0600 I -        [conn85] end connection 127.0.0.1:52443 (1 connection now open)
+2017-11-20T12:37:21.235-0600 I NETWORK  [thread1] connection accepted from 127.0.0.1:52521 #86 (1 connection now open)
+2017-11-20T12:37:21.236-0600 I NETWORK  [conn86] received client metadata from 127.0.0.1:52521 conn86: { application: { name: "MongoDB Shell" }, driver: { name: "MongoDB Internal Client", version: "3.4.4" }, os: { type: "Darwin", name: "Mac OS X", architecture: "x86_64", version: "17.2.0" } }
+2017-11-20T12:37:40.662-0600 I -        [conn86] end connection 127.0.0.1:52521 (1 connection now open)
