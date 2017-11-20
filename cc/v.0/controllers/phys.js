@@ -95,14 +95,25 @@ var p = {
     }
   },
   getPhyss: (req, res) => {
-    findPhys({})
-      .then((r) => res.json({
-        ok: 1,
-        data: r
-      }))
-      .catch((err) => {
-        throw err
+    try {
+      var findExternal = req.query.ext > 0 || false;
+
+      findPhys({
+          external: findExternal
+        })
+        .then((r) => res.json({
+          ok: 1,
+          data: r
+        }))
+        .catch((err) => {
+          throw err
+        });
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
       });
+    }
   },
 
   getPhys: (req, res) => {

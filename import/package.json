@@ -1,0 +1,17 @@
+{
+  "name": "import",
+  "version": "0.0.1",
+  "description": "Pass import",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ramón Rivera",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.5.0",
+    "autodetect-decoder-stream": "^1.0.0",
+    "iconv-lite": "^0.4.18",
+    "utf8": "^2.1.2"
+  }
+}

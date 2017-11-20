@@ -1,0 +1,194 @@
+<div class="top-container">
+  <div>
+    Impresión de comprobante
+  </div>
+
+  <div class="container">
+    <div *ngIf="sale" id="ticket">
+      <div class="ticket-container">
+        <div class="main-span-ticket">
+          <div class="logo-container">
+            <img class="logo" src="/assets/images/logo.png" />
+            <br />
+            <p class="enhaced-ticket bold" *ngIf="asset">
+              {{asset.name}}
+              <br /> <br />
+            </p>
+          </div>
+
+          <div class="top-container" *ngIf="asset">
+            {{asset.invoice.address}}<br /> CP: {{asset.invoice.cp}} RFC: {{asset.invoice.rfc}}
+            <br />
+          </div>
+          <hr />
+
+          <div class="right">
+            <span class="enhaced-ticket">{{sale.timestamp | date: 'dd/MM/yyyy hh:mm' }}</span>
+          </div>
+
+          <div>
+            <table class="client-opts">
+              <tr>
+                <td class="bold">
+                  Pago:
+                </td>
+                <td>
+                  {{sale.payment}}
+                </td>
+              </tr>
+              <tr>
+                <td class="bold">
+                  Cajero:
+                </td>
+                <td>
+                  {{getUsr()}}
+                </td>
+              </tr>
+            </table>
+          </div>
+          <br />
+          <hr />
+          <table class="sale">
+            <thead>
+              <td class="col1 bold">
+                Cant
+              </td>
+              <td class="col2 bold">
+                Estudio<br /> Médico
+              </td>
+              <td class="col3 bold">
+                Imp.Total
+              </td>
+            </thead>
+            <tbody>
+              <tr *ngFor="let m of sale.mcs">
+                <td class="qty-container">
+                  {{m.qty}}
+                </td>
+                <td class="mi-container">
+                  {{m.mc}}<br /> <br /> {{getPhys(m)}}
+                </td>
+                <td class="price-container">
+                  ${{m.sale_price}}
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+
+          <div class="totals right">
+            <div>
+              <hr />
+              <table>
+                <tr>
+                  <td>
+                    IVA:
+                  </td>
+                  <td>
+                    <span class="enhaced bold">$ {{getCat()}}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Subtotal:
+                  </td>
+                  <td>
+                    <span class="enhaced bold">$ {{getSubtotal()}}</span>
+                  </td>
+                </tr>
+              </table>
+              <hr />
+              <table>
+                <tr>
+                  <td>
+                    Total:
+                  </td>
+                  <td>
+                    <span class="enhaced bold">$ {{getTotal()}}</span>
+                  </td>
+                </tr>
+
+              </table>
+              <hr />
+              <div *ngIf="sale.isCard">
+                <table>
+                  <tr>
+                    <td>
+                      Su pago:
+                    </td>
+                    <td>
+                      $ {{paymentModel.payment}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Cambio:
+                    </td>
+                    <td>
+                      $ {{paymentModel.change}}
+                    </td>
+                  </tr>
+                </table>
+                <hr />
+              </div>
+              <hr />
+            </div>
+          </div>
+
+          <div class="text-total">
+            <table>
+              <tr>
+                <td>
+                  Son:
+                </td>
+                <td>
+                  {{getTotalAsText()}}
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <hr />
+          <div class="top-container" *ngIf="asset">
+            {{asset.local.address}}<br /> CP: {{asset.local.cp}}<br /> tels: {{asset.local.tel}}
+          </div>
+          <hr />
+
+          <div class="slogan enhaced-ticket">
+            "Queremos darte el servicio que mereces a un precio justo."
+          </div>
+          <br />
+          <div class="slogan enhaced-ticket">
+            Gracias por su compra
+          </div>
+          <div class="slogan enhaced-ticket">
+            Este no es un comprobante fiscal
+          </div>
+
+          <br /><br />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <button (click)="print()" mdl-button mdl-button-type="raised" mdl-colored="primary">Imprimir</button>
+  </div>
+  <br />
+  <br />
+</div>
+
+<!-- Dialog print confirm -->
+<mdl-dialog #printConfirm [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Confirmación de venta</h4>
+  <div class="mdl-dialog__content">
+    Si el ticket se imprimió correctamente oprima "CONTINUAR" para imprimir una segunda copia o, en su caso, "TERMINAR PROCESO". Si el ticket no se imprimió correctamente oprima "REINTENTAR".
+  </div>
+  <div class="mdl-dialog__actions">
+    <!-- <button *ngIf="noPrints == 1" mdl-button (click)="print()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Continuar</button> -->
+    <button mdl-button (click)="endProcess()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Terminar proceso</button>
+    <button mdl-button (click)="tryPrint()" mdl-ripple>Reintentar</button>
+  </div>
+</mdl-dialog>

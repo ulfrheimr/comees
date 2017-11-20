@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs';
+import { UsrService } from '../usr.service';
 
 import 'rxjs/add/operator/mergeMap';
 
@@ -33,7 +34,7 @@ export class SaleService {
 
   constructor(
     private http: Http,
-    // private usrService: UsrService
+    private usrService: UsrService
   ) {
 
   }
@@ -48,9 +49,7 @@ export class SaleService {
     headers.append('Content-Type', 'application/json');
 
     var data = {
-      usr:
-      // this.usrService.get().id
-      "CHOCOCO",
+      usr: this.usrService.get().usr,
       paymentType: this.paymentTypes[s.paymentType],
       paymentAccount: s.paymentAccount,
       auth: s.auth
@@ -81,8 +80,6 @@ export class SaleService {
             }
           });
 
-          console.log(mis)
-
           this.addMi(id, mis)
             .then(idSale => {
               console.log("END")
@@ -101,9 +98,6 @@ export class SaleService {
     headers.append('Content-Type', 'application/json');
 
     mi['id_sale'] = idSale;
-    console.log(mi)
-
-    console.log(mi)
 
     return this.http.post(this.uri, mi, { headers: headers })
       .toPromise()
@@ -122,8 +116,6 @@ export class SaleService {
       .then(r => {
         let sale: MiSale = r.json().data as MiSale;
 
-        console.log(sale);
-
         var result = {
           timestamp: sale.timestamp,
           payment: this.typeToPayment[sale.paymentType],
@@ -141,22 +133,21 @@ export class SaleService {
       })
       .catch(this.handleError);
   }
-  //
-  // getSales(init: string, end: string, usr: any): Promise<MiSale[]> {
-  //   console.log(usr == undefined)
-  //   let postUri: string;
-  //   return this.http.get(this.uri
-  //     + "?init=" + init
-  //     + "&end=" + end
-  //     + (usr ? "&usr=" + usr : ""))
-  //     .toPromise()
-  //     .then(r => {
-  //       let sales: MiSale[] = r.json().data as MiSale[];
-  //
-  //       return sales;
-  //     })
-  //     .catch(this.handleError);
-  // }
+
+  getSales(init: string, end: string, usr: any = ""): Promise<any[]> {
+    let postUri: string;
+    return this.http.get(this.uri
+      + "?init=" + init
+      + "&end=" + end
+      + (usr ? "&usr=" + usr : ""))
+      .toPromise()
+      .then((r) => {
+        let sales: MiSale[] = r.json().data as MiSale[];
+
+        return sales;
+      })
+      .catch(this.handleError);
+  }
 
 
 

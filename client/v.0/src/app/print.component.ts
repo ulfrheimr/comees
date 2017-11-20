@@ -1,20 +1,23 @@
 import { Component, OnInit, Input, EventEmitter, ViewChild } from '@angular/core';
+import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
+
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { MdlDialogComponent } from '@angular-mdl/core';
 
-import { PassMi } from './component/mi/pass-mi';
 import { Assets } from './assets';
-import { Mi } from './prots/mi/mi'
 
-// import { UsrService } from './services/usr.service';
+import { Mi } from './prots/mi/mi'
+import { PassPrint } from './component/pass-print';
+import { UsrService } from './services/usr.service';
 
 @Component({
   selector: 'print',
   templateUrl: './print.component.html',
   styleUrls: ['./print.component.css'],
   providers: [
-    Assets
+    Assets,
+    Location, { provide: LocationStrategy, useClass: PathLocationStrategy }
   ]
 })
 
@@ -22,16 +25,18 @@ export class PrintComponent implements OnInit {
   @ViewChild('printConfirm') private printConfirm: MdlDialogComponent;
   pageModel;
   timestamp;
+  typePrint: string;
   total1: number;
   poolToPrint: any[];
   noPrints: number = 0;
   asset;
 
   constructor(
-    private passMi: PassMi,
+    private passPrint: PassPrint,
     private router: Router,
     private assets: Assets,
-    // private usrService: UsrService
+    private usrService: UsrService,
+    private location: Location
   ) {
 
   }
@@ -49,40 +54,100 @@ export class PrintComponent implements OnInit {
       .catch((err) => this.handleError);
 
     this.getPrintingObject();
+    this.typePrint = this.passPrint._type;
+  }
+
+  goBack(): void {
+    this.printConfirm.close();
+    this.location.back();
   }
 
   private handleError(error: any): Promise<any> {
     return Promise.reject(error.message || error);
   }
 
-  getAsset(key): any {
-    // return this.config.get(key);
+  getUsr(): any {
+    return this.usrService.get()["name"];
   }
 
   getPrintingObject(): any[] {
-    console.log(PassMi)
-    if (this.passMi._type == "mi") {
-      this.getTemporalMis()
-        .then((mis) => {
-          this.poolToPrint = mis;
-          this.pageModel.ready = true;
-        })
-        .catch(this.handleError)
+    switch (this.passPrint._type) {
+      case ("mi"):
+        this.getTemporalMis()
+          .then((mis) => {
+            this.poolToPrint = mis;
+            this.pageModel.ready = true;
+          })
+          .catch(this.handleError)
+        break;
+      case ("mc"):
+        this.getTemporalMcs()
+          .then((mcs) => {
+            this.poolToPrint = mcs;
+            this.pageModel.ready = true;
+          })
+          .catch(this.handleError)
+        break;
+      case ("estimation"):
+        this.getTemporalEstimation()
+          .then((prods) => {
+            console.log(prods)
+            this.poolToPrint = prods;
+            this.pageModel.ready = true;
+          })
+          .catch(this.handleError)
+        break;
+      default:
+        return null;
     }
+  }
 
-    return null;
+  getTemporalEstimation(): Promise<any[]> {
+    return new Promise<any[]>((resolve, reject) => {
+      if (!this.passPrint.printObjects)
+        reject("No estimation found");
+
+      let res: any[] = this.passPrint.printObjects.map((x) => {
+        return {
+          "f1": x.qty,
+          "f2": x.product,
+          "f3": x.sale_price,
+          "f4": x.description.split("|"),
+          "f5": x.sale_price * x.qty
+        }
+      });
+      resolve(res);
+    });
+  }
+
+  getTemporalMcs(): Promise<any[]> {
+    return new Promise<any[]>((resolve, reject) => {
+      if (!this.passPrint.printObjects)
+        reject("No Mcs found");
+
+      let res: any[] = this.passPrint.printObjects.map((x) => {
+        return {
+          "f1": x.qty,
+          "f2": x.name,
+          "f3": x.sale_total,
+          "f5": x.sale_total
+        }
+      });
+      resolve(res);
+    });
   }
 
   getTemporalMis(): Promise<any[]> {
     return new Promise<any[]>((resolve, reject) => {
-      if (!this.passMi.mis)
+      if (!this.passPrint.printObjects)
         reject("No MIs found");
 
-      let res: any[] = this.passMi.mis.map((x) => {
+      let res: any[] = this.passPrint.printObjects.map((x) => {
         return {
           "f1": x.qty,
           "f2": x.name,
-          "f3": x.price_discount
+          "f3": x.price_discount / x.qty,
+          "f5": x.price_discount
         }
       });
       resolve(res);
@@ -90,19 +155,15 @@ export class PrintComponent implements OnInit {
   }
 
   getFields(): any {
-    return this.passMi.fields;
+    return this.passPrint.fields;
   }
 
-  getUsr(): any {
-    // return this.usrService.get()["name"];
-  }
-
-  endProcess(): void {
-    this.printConfirm.close();
-    var url = this.router.url.split('/');
-    let routeUrl: string = url.slice(1, url.length - 1).reduce((x, y) => x + "/" + y, "");
-    this.router.navigate(['.' + routeUrl + "/mi"])
-  }
+  // endProcess(): void {
+  //
+  //   var url = this.router.url.split('/');
+  //   let routeUrl: string = url.slice(1, url.length - 1).reduce((x, y) => x + "/" + y, "");
+  //   this.router.navigate(['.' + routeUrl + "/mi"])
+  // }
 
   getTotal1(): string {
     this.total1 = this.poolToPrint
@@ -114,11 +175,11 @@ export class PrintComponent implements OnInit {
   }
 
   getTotal2(): string {
-    return this.passMi.registerPayment.toFixed(2);
+    return this.passPrint.registerPayment.toFixed(2);
   }
 
   getTotal3(): string {
-    let res: number = this.total1 - this.passMi.registerPayment;
+    let res: number = this.total1 - this.passPrint.registerPayment;
     return res.toFixed(2);
   }
 
@@ -148,6 +209,10 @@ export class PrintComponent implements OnInit {
           font-family: 'Arial';
           text-transform: uppercase;
           font-size: 2.7mm;
+        }
+
+        .enhaced-ticket {
+          font-size: 3.3mm;
         }
 
         table {
@@ -228,6 +293,8 @@ export class PrintComponent implements OnInit {
           padding-top: 2mm;
           width: 80%;
           text-align: justify;
+          line-height: 1.2em;
+          font-weight: bold;
         }
 
         .totals>div {

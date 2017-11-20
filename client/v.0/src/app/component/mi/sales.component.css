@@ -4,20 +4,12 @@
   padding: 10px;
 }
 
-.selected_mi .info {
-  font-weight: bold;
-}
-
-.container {
-  width: 80%;
-  margin: 0 auto;
-  padding: 10px;
-}
-
-.enhaced_discount {
+.selected_mi>table {
   font-size: 1.2em;
-  color: #bf3330;
-  font-weight: bold;
+}
+
+.selected_mi table {
+  width: 100%;
 }
 
 .enhaced_price {
@@ -27,19 +19,15 @@
 }
 
 .sale-container {
-  width: 40%;
+  width: 90%;
   margin: 0 auto;
-  background-color: #EDF4FA;
   border-radius: 20px;
+  border: 1px solid #438bca;
+  margin: 20px auto;
 }
 
 .sale {
   padding: 30px;
-}
-
-.coMeEs_dark_bold {
-  width: 60%;
-  margin: 0 auto;
 }
 
 .remove {
@@ -48,7 +36,8 @@
   cursor: pointer;
 }
 
-.payment {
+
+/*.payment {
   width: 40%;
   margin: 25px auto;
   border: 1px solid #125996;
@@ -68,9 +57,9 @@
 .sale-enhace {
   font-size: 1.3em;
   color: #125996;
-  font-weight: bold;;
+  font-weight: bold;
 }
 
 .change{
   color: blue;
-}
+}*/

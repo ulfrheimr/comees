@@ -9,7 +9,8 @@ const salesManRoles = {
   },
   platform: {
     "mi": "Medical imaging",
-    "ph": "Pharmacy"
+    "ph": "Pharmacy",
+    "mc": "Medical consultance"
   }
 }
 
@@ -19,7 +20,6 @@ var createSalesMan = (s) => {
 
     salesMan.name = s.name;
     salesMan.phone = s.phone;
-    salesMan.mail = s.mail;
     salesMan.role = s.role;
 
     salesMan.save((err, r) => {
@@ -29,6 +29,36 @@ var createSalesMan = (s) => {
     });
   });
 }
+
+var findSalesMan = (query) => {
+  return new Promise((resolve, reject) => {
+    SalesMan.find(query)
+      .exec((err, sm) => {
+        if (err) reject(err);
+
+        resolve(sm);
+      });
+  });
+}
+
+var updateSalesMan = (s) => {
+  return new Promise((resolve, reject) => {
+    console.log(s);
+
+    SalesMan.findOneAndUpdate({
+      _id: s["_id"]
+    }, {
+      name: s.name,
+      phone: s.phone,
+      role: s.role
+    }, {
+      upsert: true
+    }, function(err, salesman) {
+      if (err) reject(err);
+      return resolve(salesman);
+    });
+  });
+};
 
 Promise.all([]).catch((error) => {
   winston.log('error', error);
@@ -41,13 +71,11 @@ var i = {
       var s = {
         name: req.body.name,
         phone: req.body.phone,
-        mail: req.body.mail,
         role: req.body.role
       };
 
       if (s.role == undefined)
         throw new Error("Role is needed");
-
 
       var r = JSON.parse(s.role);
 
@@ -75,6 +103,59 @@ var i = {
     }
 
 
+  },
+  getSalesMan: (req, res) => {
+    findSalesMan({})
+      .then((r) => {
+        res.json({
+          ok: 1,
+          data: r
+        });
+      })
+      .catch((err) => {
+        throw err;
+      })
+  },
+  modifySalesman: (req, res) => {
+    try {
+      var s = {
+        _id: req.params.id,
+        name: req.body.name,
+        phone: req.body.phone,
+        role: req.body.role
+      };
+
+      if (s.role == undefined)
+        throw new Error("Role is needed");
+
+      var r = JSON.parse(s.role);
+
+      Object.keys(r).map((x) => {
+        if (salesManRoles.platform[x] == undefined)
+          throw new Error("No platform allowed");
+        if (salesManRoles.level[r[x]] == undefined)
+          throw new Error("No level allowed");
+      })
+
+      updateSalesMan(s)
+        .then((r) => {
+          res.json({
+            ok: 1,
+            data: r
+          });
+        })
+        .catch((err) => {
+          throw err
+        });
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
+  },
+  querySalesMan: (query) => {
+    return findSalesMan(query);
   }
 }
 

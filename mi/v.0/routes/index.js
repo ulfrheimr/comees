@@ -30,6 +30,10 @@ router.route('/mis')
   .put(MIController.putMI)
   .get(MIController.getMIs);
 
+router.route('/mis/:mi')
+  // {sample, price, delivery_time, desc, name, catId}
+  .post(MIController.modifyMI)
+
 router.route('/sales')
   // usr, paymentType, paymentAccount, auth
   .put(SaleController.putSale)

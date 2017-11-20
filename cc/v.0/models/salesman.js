@@ -8,11 +8,6 @@ var SalesMan = mongoose.Schema({
   role: {
     type: Object
   },
-  mail: {
-    type: String,
-    unique: true,
-    sparse: true
-  },
   phone: {
     type: String,
   }

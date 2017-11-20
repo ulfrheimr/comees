@@ -1,0 +1,351 @@
+<div class="top-container">
+  <div *ngIf="!pageModel.toConfirm">
+    <!-- Sale info -->
+    <div *ngIf="products?.length >0 && !pageModel.toConfirm">
+      <div class="sale-container">
+        <div class="sale">
+          <div class="coMeEs_enhaced">
+            Venta actual
+          </div>
+          <div>
+            <table class="w100">
+              <thead>
+                <tr class="coMeEs_sentence">
+                  <td>
+                    Cantidad
+                  </td>
+                  <td>
+                    Tratamiento
+                  </td>
+                  <td>
+                    Médico
+                  </td>
+                  <td>
+                    Precio sugerido
+                  </td>
+                  <td>
+                    Precio
+                  </td>
+                  <td>
+                    Observaciones
+                  </td>
+                  <td>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of products">
+                  <td>
+                    <span class="info enhaced">{{p.qty}}</span>
+                  </td>
+                  <td>
+                    <span class="info">{{p.name}}</span>
+                  </td>
+                  <td>
+                    <span class="info">{{p.phys.name}} {{p.phys.first}}</span>
+                  </td>
+                  <td>
+                    <span class="info enhaced">{{p.suggested_price | number : '1.2-2'}}</span>
+                  </td>
+                  <td>
+                    $
+                    <mdl-textfield [(ngModel)]="p.sale_total" class="hint amount sale-enhace" pattern="[0-9.,]+" label="Importe" maxlength="5" floating-label></mdl-textfield>
+                  </td>
+                  <td>
+                    $
+                    <mdl-textfield [(ngModel)]="p.observations" class="hint amount sale-enhace" label="Observaciones" pattern="[a-zA-Z0-9,. ]+" floating-label></mdl-textfield>
+                  </td>
+                  <td>
+                    <i class="remove material-icons" (click)="removeMc(p.mc)">close</i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <br />
+          <div class="enhaced right">
+            Total: <span class="coMeEs_enhaced">$ {{getTotal() | number : '1.2-2'}}</span>
+          </div>
+          <div class="error-container right" *ngIf="!allowConfirmation()">
+            <div class="error">
+              {{pageModel.confirmationError}}
+            </div>
+          </div>
+          <br />
+          <div>
+            <button (click)="pageModel.toConfirm = true" *ngIf="!pageModel.partial " mdl-button mdl-button-type="raised" mdl-colored="primary" [disabled]="!allowConfirmation()" mdl-ripple>CONFIRMAR</button>
+            <button (click)="openEstimation()" mdl-button mdl-button-type="raised" mdl-colored="primary" [disabled]="!allowConfirmation()" mdl-ripple>PRESUPUESTO</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!pageModel.partial">
+      <!-- Search -->
+      <div class="search-container">
+        <div>
+          <mdl-textfield [(ngModel)]="pageModel.hint" class="hint" (keyup.enter)="findMcs()" label="Nombre del tratamiento" floating-label autofocus></mdl-textfield>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div class="grid-container">
+        <ag-grid-angular #agGrid style="width: 100%; height: 200px;" class="ag-fresh" [gridOptions]="gridOptions">
+        </ag-grid-angular>
+      </div>
+    </div>
+
+    <!-- Selected MC -->
+    <div *ngIf="selectedMc" class="container">
+      <div>
+        <div class="coMeEs_enhaced">
+          Estudio seleccionado
+        </div>
+        <div class="selected_mi">
+          <table>
+            <tr>
+              <td class="table_info">Tratamiento:</td>
+              <td class="table_desc">{{selectedMc.name}}</td>
+            </tr>
+            <tr>
+              <td class="table_info">Descripción:</td>
+              <td class="table_desc"> {{selectedMc.description}}</td>
+            </tr>
+            <tr>
+              <td class="table_info">Precio sugerido:</td>
+              <td class="table_desc">{{selectedMc.suggested_price}}</td>
+            </tr>
+            <tr>
+              <td class="table_info">Médico:</td>
+              <td>
+                <select [(ngModel)]="pageModel.selectedPhys" *ngIf="physs">
+                  <option *ngFor="let p of physs" [value]="p._id">{{p.name}} {{p.first}}</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <br />
+      <br />
+      <div class="right">
+        <button (click)="selectedMc = undefined" mdl-button mdl-button-type="raised" mdl-ripple>CANCELAR</button>
+        <button (click)="addToSale()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Agregar a venta</button>
+        <!-- <button (click)="partialPayment()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Agreagar pago parcial</button> -->
+      </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="pageModel.toConfirm">
+    <!-- Confirm sale -->
+    <div class="container" *ngIf="pageModel.toConfirm">
+      <div class="coMeEs_sentence">
+        Por favor confirme los productos. <br /> Si la venta es correcta seleccione el método de pago y oprima "CONFIRMAR",
+        <br /> si desea modificarla oprima "REGRESAR".
+      </div>
+      <table class="w100">
+        <thead>
+          <tr class="info enhaced">
+            <td>
+              Cantidad
+            </td>
+            <td>
+              Tratamiento
+            </td>
+            <td>
+              Médico
+            </td>
+            <td>
+              Observaciones
+            </td>
+            <td>
+              Importe total
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of products">
+            <td>
+              <span class="enhaced">{{p.qty}}</span>
+            </td>
+            <td>
+              <span>{{p.name}}</span>
+            </td>
+            <td>
+              <span>{{p.phys.name}} {{p.phys.first}}</span>
+            </td>
+            <td>
+              <span>{{p.observations}}</span>
+            </td>
+            <td>
+              <span class="enhaced">$ {{p.sale_total | number : '1.2-2'}}</span>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+
+      <div class="w100">
+        <div class="enhaced right">
+          Importe : <span class="coMeEs_enhaced">$ {{getTotal() | number : '1.2-2'}}</span>
+        </div>
+      </div>
+
+      <div class="w100">
+        <button (click)="paymentConfirmDialog.show()" *ngIf="!pageModel.partial" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>VENDER</button>
+        <button (click)="pageModel.toConfirm  = false" mdl-button mdl-button-type="raised" mdl-ripple>Cancelar</button>
+      </div>
+
+
+      <div>
+        <div *ngIf="pageModel.selectedClient">
+          <div class="coMeEs_enhaced">
+            Cliente seleccionado
+          </div>
+          <div class="selected_mi">
+            <table>
+              <tr>
+                <td class="enhaced">Nombre:</td>
+                <td class="info">{{pageModel.selectedClient.name}}</td>
+              </tr>
+              <tr>
+                <td class="enhaced">Teléfono:</td>
+                <td class="info">{{pageModel.selectedClient.phone}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <mdl-switch [(ngModel)]="pageModel.partial" mdl-ripple>Opciones a cuenta</mdl-switch>
+
+        <div *ngIf="pageModel.partial">
+          <client (onClientSelected)="onClientSelected($event)"></client>
+        </div>
+
+        <div class="w100">
+          <button (click)="partialPaymentDialog.show()" *ngIf="pageModel.selectedClient" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>PAGO A CUENTA</button>
+          <button (click)="pageModel.toConfirm  = false" mdl-button mdl-button-type="raised" mdl-ripple>Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog confirm sale -->
+<mdl-dialog #paymentConfirmDialog [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <sale-payment [amount]="getTotal()" (onPaymentConfirmed)="onPaymentConfirmed($event)" (onPaymentCancelled)="onPaymentCancelled()"></sale-payment>
+</mdl-dialog>
+
+<!-- Dialog estimation -->
+<mdl-dialog #estimationDialog [mdl-dialog-config]="{
+                styles:{'width': '70%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Presupuesto</h4>
+  <div class="mdl-dialog__content">
+    Se imprimirá el siguiente presupuesto
+
+    <table class="w100">
+      <thead>
+        <tr class="coMeEs_sentence">
+          <td>
+            Cantidad
+          </td>
+          <td>
+            Tratamiento
+          </td>
+          <td>
+            Médico
+          </td>
+          <td>
+            Observaciones
+          </td>
+          <td>
+            Importe total
+          </td>
+        </tr>
+      </thead>
+      <tbody *ngIf="pageModel.isEstimation">
+        <tr *ngFor="let p of products">
+          <td>
+            <span class="enhaced">{{p.qty}}</span>
+          </td>
+          <td>
+            <span>{{p.name}}</span>
+          </td>
+          <td>
+            <span>{{p.phys.name}} {{p.phys.first}}</span>
+          </td>
+          <td>
+            <span>{{p.observations}}</span>
+          </td>
+          <td>
+            <span class="enhaced">$ {{p.sale_total | number : '1.2-2'}}</span>
+          </td>
+      </tbody>
+
+    </table>
+
+    <div>
+      <p>
+        Total a pagar:
+      </p>
+      <p class="coMeEs_enhaced">$ {{getTotal() | number : '1.2-2'}}</p>
+    </div>
+
+  </div>
+  <div class="mdl-dialog__actions">
+    <button mdl-button (click)="estimation()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Imprimir</button>
+    <button mdl-button (click)="estimationDialog.close()" mdl-ripple>Cancelar</button>
+  </div>
+</mdl-dialog>
+
+<!-- Dialog partial payment -->
+<mdl-dialog #partialPaymentDialog [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Pago parcial</h4>
+  <div class="mdl-dialog__content">
+    <div class="enhaced">
+      Pago parcial solo disponible en efectivo
+    </div>
+    <br />
+
+    <div class="enhaced">
+      Total a pagar:
+      <br />
+      <br />
+      <div class="coMeEs_enhaced">$ {{getTotal() | number : '1.2-2'}}</div>
+    </div>
+    <div>
+      <div class="payment-info">
+        <div>
+          $
+          <mdl-textfield [(ngModel)]="pageModel.partialPayment" placeholder="Importe" pattern="[0-9.,]+"  maxlength="5" autofocus></mdl-textfield>
+        </div>
+
+        <div class="enhaced">
+          Restante:
+          <br />
+          <br />
+          <div class="coMeEs_enhaced">
+            $ {{remaining() | number : '1.2-2'}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="error-container right" *ngIf="!isPartialAllowed()">
+      <div class="error">
+        {{pageModel.partialPaymentError}}
+      </div>
+    </div>
+
+  </div>
+  <div class="mdl-dialog__actions">
+    <button mdl-button (click)="partialPayment()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="!isPartialAllowed()">Pagar</button>
+    <button mdl-button (click)="partialPaymentDialog.close()" mdl-ripple>Cancelar</button>
+  </div>
+</mdl-dialog>

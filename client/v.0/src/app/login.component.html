@@ -1,28 +1,19 @@
 <div class="login">
   <div class="login-info">
-    <input
+    <div>
+      <div>
+        <mdl-textfield [(ngModel)]="usr" label="Usuario" floating-label autofocus></mdl-textfield>
+        <mdl-textfield [(ngModel)]="pass" label="Password" type="password" floating-label autofocus></mdl-textfield>
+      </div>
 
-    class="hint" placeholder="Usuario" /> <br />
-    <input
+      <button (click)="login()" mdl-button mdl-button-type="raised" mdl-colored="primary">LOGIN</button>
+    </div>
+    <div class="error-container right">
+      <div *ngIf="error" class="error">
+        {{error}}
+      </div>
+    </div>
 
-     class="hint" placeholder="Password" type="password" />
-    <br /><br />
-    <button
-    (click)="login()"
-    class="waves-effect waves-light btn">INICIO</button>
-    <!-- <div *ngIf="error">
-      {{error}}
-    </div> -->
   </div>
 
-  <!-- <div id="modal1" class="modal bottom-sheet" materialize="modal" [materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions">
-    <div class="modal-content">
-      <h4>Modal Header</h4>
-      <p>A bunch of text</p>
-    </div>
-    <div class="modal-footer">
-      <a class="waves-effect waves-green btn-flat" (click)="closeModal()">Close</a>
-      <a class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
-    </div>
-  </div> -->
 </div>

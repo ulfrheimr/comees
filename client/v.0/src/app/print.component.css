@@ -4,12 +4,16 @@
 
 #ticket * {
   text-transform: uppercase;
-  font-size: 2mm;
+  font-size: 2.7mm;
 }
 
 table {
   position: relative;
   width: 100%;
+}
+
+.sale td {
+  border-bottom: 1px solid black;
 }
 
 td {
@@ -61,11 +65,11 @@ hr {
 }
 
 .enhaced-ticket {
-  font-size: 2.3mm;
+  font-size: 3.3mm;
 }
 
 .col1 .col3 {
-  width: 20%;
+  width: 20% !important;
 }
 
 .sale td {
@@ -83,6 +87,8 @@ hr {
   padding-top: 2mm;
   width: 80%;
   text-align: justify;
+  line-height: 1.2em;
+  font-weight: bold;
 }
 
 .totals>div {

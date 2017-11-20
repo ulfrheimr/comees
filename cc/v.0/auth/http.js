@@ -7,11 +7,12 @@ passport.use(new HttpStrategy({
   },
   (req, usr, pass, callback) => {
     req.body["usr"] = usr;
+
     Usr.verifyUsr(usr, pass)
       .then((u) => {
-        if (u) {
-          return callback(null, true);
-        } else
+        if (u)
+          return callback(null, u);
+        else
           return callback(null, false);
       })
       .catch((err) => {

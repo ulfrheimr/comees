@@ -1,0 +1,21 @@
+.selected_mi {
+  width: 60%;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.selected_mi table {
+  width: 100%;
+}
+
+.sale-container {
+  width: 90%;
+  margin: 0 auto;
+  border-radius: 20px;
+  border: 1px solid #438bca;
+  margin: 20px auto;
+}
+
+.sale {
+  padding: 30px;
+}

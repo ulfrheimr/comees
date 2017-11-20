@@ -15,6 +15,10 @@ var Usr = new Schema({
   linkedUsr: {
     type: mongoose.Schema.Types.ObjectId,
     required: true
+  },
+  active: {
+    type: Boolean,
+    required: true,
   }
 });
 

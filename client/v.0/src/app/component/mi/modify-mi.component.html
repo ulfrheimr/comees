@@ -1,0 +1,139 @@
+<div class="top-container">
+
+  <div class="search-container">
+    <div>
+      <table>
+        <tr>
+          <td>
+            <mdl-textfield [(ngModel)]="pageModel.hint" class="hint" (keyup.enter)="findMis()" label="Buscar por nombre de estudio" floating-label autofocus></mdl-textfield>
+          </td>
+          <td class="right">
+            <p>¿No encuentras el estudio? Crea uno nuevo</p>
+            <button (click)="newMI()" mdl-button mdl-button-type="raised" mdl-colored="primary">Nuevo estudio</button>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+  <br />
+  <div class="grid-container" *ngIf="!pageModel.addNewMi">
+    <ag-grid-angular #agGrid style="width: 100%; height: 200px;" class="ag-fresh" [gridOptions]="gridOptions">
+    </ag-grid-angular>
+
+    <div class="rigth">
+      <button (click)="export()" mdl-button mdl-button-type="raised" mdl-colored="primary">Exportar estudios</button>
+    </div>
+  </div>
+
+
+  <hr />
+
+  <div *ngIf="selectedMi" class="container">
+    <div class="coMeEs_enhaced">
+      Estudio seleccionado
+    </div>
+    <div class="selected_mi">
+      <table>
+        <tr>
+          <td class="info">Estudio:</td>
+          <td>
+            <mdl-textfield [(ngModel)]="selectedMi.name" label="Nombre" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td class="info">Descripción:</td>
+          <td>
+            <mdl-textfield [(ngModel)]="selectedMi.description" label="Descripción" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td class="info">Tiempo de entrega (DH):</td>
+          <td>
+            <mdl-textfield [(ngModel)]="selectedMi.delivery_time" label="Días Hábiles" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td class="info">Categoría:</td>
+          <td>
+            <select [(ngModel)]="selectedMi.category._id">
+              <option *ngFor="let c of cats" [value]="c._id">{{c.name}}</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="info">Tipo de muestra:</td>
+          <td>
+            <mdl-textfield [(ngModel)]="selectedMi.sample" label="Muestra" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td class="info">Precio: </td>
+          <td>
+            <mdl-textfield [(ngModel)]="selectedMi.price" label="Precio" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="right">
+      <button (click)="cancel()" mdl-button mdl-button-type="raised">Cancelar</button>
+
+      <button mdl-button *ngIf="pageModel.addNewMi" (click)="confirmDialog.show()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Agregar</button>
+      <button mdl-button *ngIf="!pageModel.addNewMi" (click)="confirmDialog.show()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Modificar</button>
+      <!-- <button (click)="confirmDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary">Añadir</button> -->
+    </div>
+  </div>
+
+  <div class="error-container right" *ngIf="selectedMi">
+    <div class="error">
+      {{hasErrors()}}
+    </div>
+  </div>
+
+</div>
+
+<!-- Dialog confirm -->
+<mdl-dialog #confirmDialog [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Confirmación de modificación</h4>
+  <div class="mdl-dialog__content">
+    <div>
+      Verifique que la información sea correcta
+    </div>
+    <div class="payment" *ngIf="selectedMi">
+      <table>
+        <tr>
+          <td class="info">Estudio:</td>
+          <td>{{selectedMi.name}}</td>
+        </tr>
+        <tr>
+          <td class="info">Descripción:</td>
+          <td>{{selectedMi.description}}</td>
+        </tr>
+        <tr>
+          <td class="info">Tiempo de entrega (DH):</td>
+          <td>{{selectedMi.delivery_time}}</td>
+        </tr>
+        <tr *ngIf="!pageModel.addNewMi">
+          <td class="info">Categoría:</td>
+          <td>{{selectedMi.category.name}}</td>
+        </tr>
+        <tr>
+          <td class="info">Tipo de muestra:</td>
+          <td>{{selectedMi.sample}}</td>
+        </tr>
+        <tr>
+          <td class="info">Precio: </td>
+          <td>{{selectedMi.price | number : '1.2-2'}}</td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+  <div class="mdl-dialog__actions">
+    <button mdl-button *ngIf="pageModel.addNewMi" (click)="addMi()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Agregar</button>
+    <button mdl-button *ngIf="!pageModel.addNewMi" (click)="modifyMI()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Modificar</button>
+    <button mdl-button (click)="confirmDialog.close()" mdl-ripple>Cancelar</button>
+  </div>
+</mdl-dialog>

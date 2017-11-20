@@ -1,7 +1,7 @@
 export class MiSale {
   _id?: string;
   timestamp?: Date = null;
-  usr: string;
+  usr?: string;
   paymentType: string;
   paymentAccount: string;
   auth: string;

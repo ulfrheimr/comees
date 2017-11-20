@@ -41,7 +41,7 @@
                   Cajero:
                 </td>
                 <td>
-                  <!-- {{getUsr()}} -->
+                  {{getUsr()}}
                 </td>
               </tr>
             </table>
@@ -66,10 +66,13 @@
                   {{m.f1}}
                 </td>
                 <td class="mi-container">
-                  {{m.f2}}<br /> <br /> {{m.f4}}
+                  {{m.f2}}<br /> <br />
+                  <div *ngFor="let d of m.f4">
+                    {{d}}
+                  </div>
                 </td>
                 <td class="price-container">
-                  {{m.f3}}<br /> <br /> {{m.f5}}
+                  $ {{m.f3}}<br /> <br /> $ {{m.f5}}
                 </td>
               </tr>
             </tbody>
@@ -88,7 +91,7 @@
                     <span class="enhaced bold">$ {{getTotal1()}}</span>
                   </td>
                 </tr>
-                <tr>
+                <tr *ngIf="typePrint != 'estimation'">
                   <td>
                     A CUENTA:
                   </td>
@@ -96,7 +99,7 @@
                     <span class="enhaced bold">$ {{getTotal2()}}</span>
                   </td>
                 </tr>
-                <tr>
+                <tr *ngIf="typePrint != 'estimation'">
                   <td>
                     RESTANTE:
                   </td>
@@ -120,6 +123,10 @@
           <br />
           <div class="slogan enhaced-ticket">
             Gracias por su compra
+          </div>
+
+          <div class="slogan enhaced-ticket">
+            ESTE TICKET NO ES UN COMPROBANTE FISCAL
           </div>
           <br /><br />
         </div>
@@ -145,7 +152,7 @@
   </div>
   <div class="mdl-dialog__actions">
     <button *ngIf="noPrints == 1" mdl-button (click)="print()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Continuar</button>
-    <button *ngIf="noPrints == 2" mdl-button (click)="endProcess()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Terminar proceso</button>
+    <button *ngIf="noPrints == 2" mdl-button (click)="goBack()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Terminar proceso</button>
     <button mdl-button (click)="tryPrint()" mdl-ripple>Reintentar</button>
   </div>
 </mdl-dialog>

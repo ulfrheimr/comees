@@ -1,4 +1,5 @@
 var Client = require('../models/client');
+var guid = require("guid");
 
 const winston = require('winston');
 var saveClient = (client) => {
@@ -43,12 +44,13 @@ var c = {
         name: req.body.name,
         rfc: req.body.rfc,
         phone: req.body.phone,
-        mail: req.body.mail,
+        mail: req.body.mail == "" ? guid.create() : req.body.mail,
         address: req.body.address
       };
 
       saveClient(p)
         .then((r) => {
+          console.log(r);
           res.json({
             ok: 1,
             data: r
@@ -67,9 +69,7 @@ var c = {
     try {
       var searchField = req.query.by;
       var id = req.params.id;
-      var query = {
-        _id: id
-      };
+      var query = {};
 
       if (searchField == "name" ||
         searchField == "mail" ||
@@ -97,6 +97,35 @@ var c = {
       });
     }
   },
+  getClients: (req, res) => {
+    try {
+      var seachField = req.query.by || "name";
+      var id = req.query.search;
+
+      var query = {
+        [seachField]: {
+          $regex: ".*" + id + ".*",
+          $options: 'i'
+        }
+      }
+
+      console.log(query);
+
+      findClient(query)
+        .then((r) => res.json({
+          ok: 1,
+          data: r
+        }))
+        .catch((err) => {
+          throw err;
+        });
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
+  }
   // queryClient: (id) => {
   //   var query = {
   //     _id: id

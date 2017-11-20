@@ -41,7 +41,7 @@
                   Cajero:
                 </td>
                 <td>
-                  <!-- {{getUsr()}} -->
+                  {{getUsr()}}
                 </td>
               </tr>
             </table>
@@ -66,10 +66,10 @@
                   {{m.qty}}
                 </td>
                 <td class="mi-container">
-                  {{m.mi}}<br /> <br /> ${{m.price - m.sale_price}}
+                  {{m.mi}}<br /> <br /> ${{((m.price * m.qty) - m.sale_price) | number:'1.2-2'}}
                 </td>
                 <td class="price-container">
-                  ${{m.sale_price/m.qty}}<br /> <br /> ${{m.sale_price}}
+                  ${{(m.price * m.qty)| number:'1.2-2'}}<br /> <br /> ${{(m.sale_price) | number:'1.2-2'}}
                 </td>
               </tr>
             </tbody>
@@ -85,7 +85,7 @@
                     IVA:
                   </td>
                   <td>
-                    <span class="enhaced bold">$ {{getCat()}}</span>
+                    <span class="enhaced bold">$ {{getCat() | number:'1.2-2'}}</span>
                   </td>
                 </tr>
                 <tr>
@@ -93,7 +93,7 @@
                     Subtotal:
                   </td>
                   <td>
-                    <span class="enhaced bold">$ {{getSubtotal()}}</span>
+                    <span class="enhaced bold">$ {{getSubtotal() | number:'1.2-2'}}</span>
                   </td>
                 </tr>
               </table>
@@ -104,7 +104,7 @@
                     Ahorro:
                   </td>
                   <td>
-                    <span class="enhaced bold">$ {{getSaving()}}</span>
+                    <span class="enhaced bold">$ {{getSaving() | number:'1.2-2'}}</span>
                   </td>
                 </tr>
                 <tr>
@@ -112,7 +112,7 @@
                     Total:
                   </td>
                   <td>
-                    <span class="enhaced bold">$ {{getTotalDisc()}}</span>
+                    <span class="enhaced bold">$ {{getTotalDisc() | number:'1.2-2'}}</span>
                   </td>
                 </tr>
 
@@ -133,7 +133,7 @@
                       Cambio:
                     </td>
                     <td>
-                      $ {{paymentModel.change}}
+                      $ {{paymentModel.change | number:'1.2-2'}}
                     </td>
                   </tr>
                 </table>
@@ -199,8 +199,7 @@
     Si el ticket se imprimió correctamente oprima "CONTINUAR" para imprimir una segunda copia o, en su caso, "TERMINAR PROCESO". Si el ticket no se imprimió correctamente oprima "REINTENTAR".
   </div>
   <div class="mdl-dialog__actions">
-    <button *ngIf="noPrints == 1" mdl-button (click)="print()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Continuar</button>
-    <button *ngIf="noPrints == 2" mdl-button (click)="endProcess()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Terminar proceso</button>
+    <button  mdl-button (click)="endProcess()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Terminar proceso</button>
     <button mdl-button (click)="tryPrint()" mdl-ripple>Reintentar</button>
   </div>
 </mdl-dialog>

@@ -5,42 +5,72 @@
     <div *ngIf="products?.length >0">
       <div class="sale-container">
         <div class="sale">
-          <div class="enhaced">
+          <div class="coMeEs_enhaced">
             Venta actual
           </div>
-          <div class="info">
-            <ul>
-              <li *ngFor="let p of products">
-                <table>
-                  <tr>
-                    <td>
-                      <span class="ex">{{p.qty}}</span>
-                    </td>
-                    <td>
-                      <span>{{p.name}}</span>
-                    </td>
-                    <td>
-                      <span class="ex">{{p.sale_price | number : '1.2-2'}}</span>
-                    </td>
-                    <td>
-                      <span class="ex">{{p.price_discount | number : '1.2-2' }}</span>
-                    </td>
-                    <td>
-                      <i class="remove material-icons" (click)="removeMi(p.mi)">close</i>
-                    </td>
-                  </tr>
-                </table>
-              </li>
-            </ul>
+          <div>
+            <table class="w100">
+              <thead>
+                <tr class="coMeEs_sentence">
+                  <td>
+                    Cantidad
+                  </td>
+                  <td>
+                    Estudio
+                  </td>
+                  <td>
+                    Precio de venta
+                  </td>
+                  <td>
+                    Precio con descuentos
+                  </td>
+                  <td>
+
+                  </td>
+                  <td>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of products">
+                  <td>
+                    <span class="ex">{{p.qty}}</span>
+                  </td>
+                  <td>
+                    <span>{{p.name}}</span>
+                  </td>
+                  <td>
+                    <span class="ex">{{p.sale_price | number : '1.2-2'}}</span>
+                  </td>
+                  <td>
+                    <span class="ex">{{p.price_discount | number : '1.2-2' }}</span>
+                  </td>
+                  <td>
+                    <i class="remove material-icons" (click)="removeMi(p.mi)">close</i>
+                  </td>
+                </tr>
+              </tbody>
+
+            </table>
 
           </div>
           <br />
-          <div class="total right">
-            Total: <span>$ {{saleTotal | number : '1.2-2'}}</span>
+          <div class="enhaced right">
+            Total: <span class="coMeEs_enhaced">$ {{saleTotal | number : '1.2-2'}}</span>
           </div>
           <br />
-          <button (click)="confirmSale()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>VENDER</button>
-          <button (click)="partialPaymentDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>PAGO PARCIAL</button>
+          <div>
+            <button (click)="confirmSale()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>VENDER</button>
+            <button (click)="estimationDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>PRESUPUESTO</button>
+            <button (click)="partialPaymentDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="!isPartialPaymentAllowed()">PAGO PARCIAL</button>
+          </div>
+          <div class="error-container right" *ngIf="!isPartialPaymentAllowed()">
+            <div class="error">
+              No está permitido el PAGO PARCIAL en precios con descuento.
+              <br /> Quite los productos con descuento para permitir esta opción.
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -49,7 +79,7 @@
     <!-- Search -->
     <div class="search-container">
       <div>
-        <mdl-textfield [(ngModel)]="pageModel.hint" class="hint" (keyup.enter)="findMis()" placeholder="Estudio" label="Buscar por nombre de estudio" floating-label autofocus></mdl-textfield>
+        <mdl-textfield [(ngModel)]="pageModel.hint" class="hint" (keyup.enter)="findMis()" label="Nombre de estudio" floating-label autofocus></mdl-textfield>
       </div>
     </div>
 
@@ -62,30 +92,30 @@
 
   <!-- Selected Mi -->
   <div *ngIf="selectedMi" class="container">
-    <div class="coMeEs_sentence">
+    <div class="coMeEs_enhaced">
       Estudio seleccionado
     </div>
     <div class="selected_mi">
       <table>
         <tr>
-          <td class="info">Estudio:</td>
-          <td>{{selectedMi.name}}</td>
+          <td class="table_info">Estudio:</td>
+          <td class="table_desc">{{selectedMi.name}}</td>
         </tr>
         <tr>
-          <td class="info">Descripción:</td>
-          <td> {{selectedMi.description}}</td>
+          <td class="table_info">Descripción:</td>
+          <td class="table_desc"> {{selectedMi.description}}</td>
         </tr>
         <tr>
-          <td class="info">Tiempo de entrega:</td>
-          <td> {{selectedMi.delivery_time}}</td>
+          <td class="table_info">Tiempo de entrega:</td>
+          <td class="table_desc"> {{selectedMi.delivery_time}}</td>
         </tr>
         <tr>
-          <td class="info">Tipo de muestra: </td>
-          <td>{{selectedMi.sample}}</td>
+          <td class="table_info">Tipo de muestra: </td>
+          <td class="table_desc">{{selectedMi.sample}}</td>
         </tr>
         <tr>
-          <td class="info">Precio: </td>
-          <td><span class="coMeEs_dark_bold">$ {{selectedMi.price | number : '1.2-2'}}</span></td>
+          <td class="table_info">Precio: </td>
+          <td class="table_desc"><span class="coMeEs_dark_bold">$ {{selectedMi.price | number : '1.2-2'}}</span></td>
         </tr>
       </table>
     </div>
@@ -93,7 +123,7 @@
     <!-- Discount -->
     <div>
       <div>
-        <p class="coMeEs_sentence_small"> Si el cliente cuenta con código de descuento. Ingrésalo </p>
+        <p class="coMeEs_sentence"> Si el cliente cuenta con código de descuento. Ingrésalo </p>
       </div>
 
       <mdl-switch [(ngModel)]="pageModel.toggleDiscount" (ngModelChange)="toggleDiscount($event)" mdl-ripple>Mostrar opciones de descuento</mdl-switch>
@@ -110,7 +140,7 @@
               </td>
               <td>
                 <p>
-                  <mdl-radio name="discountType" value="ref_mi" [(ngModel)]="pageModel.discountType" mdl-ripple>Estudio referenciado</mdl-radio>
+                  <mdl-radio name="discountType" value="refmi" [(ngModel)]="pageModel.discountType" mdl-ripple>Estudio referenciado</mdl-radio>
                 </p>
               </td>
             </tr>
@@ -128,24 +158,22 @@
 
         <div *ngIf="pageModel.discountFound">
           <div class="discount-info">
-            <span class="coMeEs_dark_bold">Descuento:</span>
+            <span class="coMeEs_enhaced">Descuento:</span>
             <span class="enhaced_discount">{{pageModel.discount | number : '1.2-2'}} %</span>
           </div>
           <button (click)="applyDiscount()" mdl-button mdl-button-type="raised" mdl-colored="primary">Aplicar descuento</button>
         </div>
 
         <div class="discount-info" class="right" *ngIf="priceDiscount">
-          <span class="coMeEs_dark_bold">Precio con descuento:</span>
-          <span class="enhaced_price"> $ {{priceDiscount | number : '1.2-2'}}</span>
+          <span class="sale-enhace">Precio con descuento:</span>
+          <span class="coMeEs_enhaced"> $ {{priceDiscount | number : '1.2-2'}}</span>
         </div>
       </div>
-
-      <br />
-      <br />
-
     </div>
+    <br />
+    <br />
     <div class="right">
-      <button *ngIf="pageModel.toggleDiscount" (click)="toggleDiscount(false)" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>CANCELAR</button>
+      <button (click)="pageModel.toConfirm = false" mdl-button mdl-button-type="raised" mdl-ripple>CANCELAR</button>
       <button (click)="addToSale()" [disabled]="!pageModel.allowAdd" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Agregar a venta</button>
     </div>
   </div>
@@ -153,12 +181,100 @@
   <!-- Confirm sale -->
   <div class="confirm-container" *ngIf="pageModel.toConfirm">
     <div>
-      Por favor confirme los productos. <br /> Si la venta es correcta seleccione el método de pago y oprima "CONFIRMAR",
-      <br /> si desea modificarla oprima "REGRESAR".
+      <div class="coMeEs_sentence">
+        Por favor confirme los productos. <br /> Si la venta es correcta seleccione el método de pago y oprima "CONFIRMAR",
+        <br /> si desea modificarla oprima "REGRESAR".
+      </div>
+      <div class="selected_mi">
+        <table>
+          <thead>
+            <tr class="info enhaced">
+              <td>
+                Cantidad
+              </td>
+              <td>
+                Estudio
+              </td>
+              <td>
+                Precio de venta
+              </td>
+              <td>
+                Importe unitario
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of products">
+              <td>
+                <span class="enhaced">{{p.qty}}</span>
+              </td>
+              <td>
+                <span>{{p.name}}</span>
+              </td>
+              <td>
+                <span class="enhaced">$ {{p.sale_price | number : '1.2-2'}}</span>
+              </td>
+              <td>
+                <span class="enhaced">$ {{p.price_discount | number : '1.2-2'}}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="w100">
+          <div class="enhaced right">
+            <table>
+              <tr>
+                <td>
+                  Importe :
+                </td>
+                <td>
+                  <span class="coMeEs_enhaced">$ {{getTotal() | number : '1.2-2'}}</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Total a pagar con descuento:
+                </td>
+                <td>
+                  <span class="coMeEs_enhaced">$ {{getTotalDiscount() | number : '1.2-2'}}</span>
+                </td>
+              </tr>
+            </table>
+            <br />
+          </div>
+        </div>
+      </div>
     </div>
-    <table>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <div class="right">
+      <button mdl-button (click)="initializePageModel()" mdl-ripple>Cancelar</button>
+      <button (click)="paymentConfirmDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary">CONFIRMAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog confirm sale -->
+<mdl-dialog #paymentConfirmDialog [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <sale-payment [amount]="getTotalDiscount()" (onPaymentConfirmed)="onPaymentConfirmed($event)" (onPaymentCancelled)="onPaymentCancelled()"></sale-payment>
+</mdl-dialog>
+
+<!-- Dialog estimation -->
+<mdl-dialog #estimationDialog [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Presupuesto</h4>
+  <div class="mdl-dialog__content">
+    Se imprimirá el siguiente presupuesto
+
+    <table class="w100">
       <thead>
-        <tr>
+        <tr class="coMeEs_sentence">
           <td>
             Cantidad
           </td>
@@ -169,7 +285,10 @@
             Precio de venta
           </td>
           <td>
-            Importe unitario
+            Precio con descuentos
+          </td>
+          <td>
+
           </td>
         </tr>
       </thead>
@@ -180,126 +299,30 @@
           </td>
           <td>
             <span>{{p.name}}</span>
+            <span>{{p.description}}</span>
           </td>
           <td>
-            <span class="ex">$ {{p.sale_price | number : '1.2-2'}}</span>
+            <span class="ex">{{p.sale_price | number : '1.2-2'}}</span>
           </td>
           <td>
-            <span class="ex">$ {{p.price_discount | number : '1.2-2'}}</span>
+            <span class="ex">{{p.price_discount | number : '1.2-2' }}</span>
           </td>
         </tr>
       </tbody>
 
     </table>
-    <br />
-    <div class="total sale-enhace">
-      Importe : <span>$ {{getTotal() | number : '1.2-2'}}</span>
-    </div>
-    <div class="total sale-enhace">
-      Total a pagar con descuento: <span>$ {{getTotalDiscount() | number : '1.2-2'}}</span>
-    </div>
-    <br />
-    <br />
 
-    <div class="right">
-      <button (click)="paymentConfirmDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary">CONFIRMAR</button>
-    </div>
-  </div>
-</div>
-
-<!-- Dialog confirm sale -->
-<mdl-dialog #paymentConfirmDialog [mdl-dialog-config]="{
-                styles:{'width': '50%'},
-                isModal:true}">
-  <h4 class="mdl-dialog__title">Confirmación de venta</h4>
-  <div class="mdl-dialog__content">
-    Por favor confirme el método de pago para la venta.
-    <div class="total sale-enhace">
-      Total a pagar: <span>$ {{getTotalDiscount() | number : '1.2-2'}}</span>
-    </div>
-    <br />
     <div>
-      <div>
-        Seleccione el tipo de pago de la venta
-      </div>
-
-      <div class="payment-info">
-        <!-- Sale type -->
-        <div>
-          <p>
-            <input name="paymentType" type="radio" [(ngModel)]="pageModel.paymentType" value="cash" id="m-payment-cash" />
-            <label for="m-payment-cash">Efectivo</label>
-          </p>
-          <p>
-            <input name="paymentType" type="radio" [(ngModel)]="pageModel.paymentType" value="debit" id="m-payment-debit" />
-            <label for="m-payment-debit">Tarjeta de débito</label>
-          </p>
-          <p>
-            <input name="paymentType" type="radio" [(ngModel)]="pageModel.paymentType" value="credit" id="m-payment-credit" />
-            <label for="m-payment-credit">Tarjeta de crédito</label>
-          </p>
-        </div>
-
-        <!-- Cash type -->
-        <div *ngIf="pageModel.paymentType == 'cash'">
-          <table>
-            <tr>
-              <td>
-                Importe recibido:
-              </td>
-              <td>
-                Cambio:
-              </td>
-            </tr>
-            <tr>
-              <td>
-                $
-                <mdl-textfield [(ngModel)]="pageModel.amount" placeholder="Importe" maxlength="5" autofocus></mdl-textfield>
-              </td>
-              <td>
-                $ {{change() | number : '1.2-2'}}
-              </td>
-            </tr>
-
-          </table>
-          <div>
-
-          </div>
-
-        </div>
-        <div *ngIf="pageModel.paymentType != 'cash'">
-          <div>
-            Capture la siguiente información de venta
-          </div>
-          <table>
-            <tr>
-              <td>
-                Ultimos 4 dígitos
-              </td>
-              <td>
-                <mdl-textfield [(ngModel)]="pageModel.cardDigits" maxlength="4" autofocus></mdl-textfield>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Autorización
-              </td>
-              <td>
-                <mdl-textfield [(ngModel)]="pageModel.cardAuth"></mdl-textfield>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="pageModel.amountError">
-      {{pageModel.amountError}}
+      <p>
+        Total a pagar:
+      </p>
+      <p class="coMeEs_enhaced">$ {{getTotalDiscount() | number : '1.2-2'}}</p>
     </div>
 
   </div>
   <div class="mdl-dialog__actions">
-    <button mdl-button (click)="makeSale()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="!pageModel.allowSale">Vender</button>
-    <button mdl-button (click)="paymentConfirmDialog.close()" mdl-ripple>Cancelar</button>
+    <button mdl-button (click)="estimation()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Imprimir</button>
+    <button mdl-button (click)="estimationDialog.close()" mdl-ripple>Cancelar</button>
   </div>
 </mdl-dialog>
 
@@ -318,7 +341,7 @@
       <div class="payment-info">
         <div>
           $
-          <mdl-textfield [(ngModel)]="pageModel.partialPayment" class="hint amount sale-enhace" label="Importe parcial" maxlength="5" floating-label></mdl-textfield>
+          <mdl-textfield [(ngModel)]="pageModel.partialPayment" class="hint amount sale-enhace" pattern="[0-9.,]+" label="Importe parcial" maxlength="5" floating-label></mdl-textfield>
         </div>
         <div>
           Restante:
@@ -328,13 +351,17 @@
         </div>
       </div>
     </div>
-    <div *ngIf="pageModel.amountError">
-      {{pageModel.amountError}}
+
+    <div *ngIf="allowPartialPayment()" class="error-container right">
+      <div class="error">
+        {{allowPartialPayment()}}
+      </div>
     </div>
+
 
   </div>
   <div class="mdl-dialog__actions">
-    <button mdl-button (click)="partialPayment()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="!pageModel.allowPartialPayment">Pagar</button>
+    <button mdl-button (click)="partialPayment()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="allowPartialPayment() || !remaining()">Pagar</button>
     <button mdl-button (click)="partialPaymentDialog.close()" mdl-ripple>Cancelar</button>
   </div>
 </mdl-dialog>

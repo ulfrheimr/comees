@@ -1,0 +1,125 @@
+<div class="top-container">
+  <div *ngIf="!pageModel.addNewClient">
+    <div class="search-container">
+      <div>
+        <table>
+          <tr>
+            <td>
+              <mdl-textfield [(ngModel)]="pageModel.hint" (keyup.enter)="findClients()" label="Buscar cliente por nombre" floating-label autofocus></mdl-textfield>
+            </td>
+            <td class="right">
+              <p>¿No encuentras al cliente? Dalo de alta</p>
+              <button (click)="pageModel.addNewClient = true" mdl-button mdl-button-type="raised" mdl-colored="primary">Nuevo cliente</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <br />
+    <div class="grid-container">
+      <ag-grid-angular #agGrid style="width: 100%; height: 200px;" class="ag-fresh" [gridOptions]="gridOptions">
+      </ag-grid-angular>
+    </div>
+  </div>
+
+  <div *ngIf="pageModel.addNewClient">
+    <div>
+      Agrega la información del cliente
+      <table>
+        <tr>
+          <td>
+            <mdl-textfield [(ngModel)]="client.name" label="Nombre" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mdl-textfield [(ngModel)]="client.phone" label="Teléfono" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mdl-textfield [(ngModel)]="client.rfc" label="RFC" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mdl-textfield [(ngModel)]="client.mail" label="Correo electrónico" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mdl-textfield [(ngModel)]="client.address" label="Dirección" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="error-container right">
+      <div class="error" *ngFor="let err of isClientCorrect()">
+        <span>{{err}}</span><br />
+      </div>
+    </div>
+    <div class="rigth">
+      <button (click)="pageModel.addNewClient = false" mdl-button mdl-button-type="raised" mdl-ripple>Cancelar</button>
+      <button (click)="confirmDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary" [disabled]="!pageModel.isClientCorrect" mdl-ripple>Dar de alta</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- Dialog confirm client -->
+<mdl-dialog #confirmDialog [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Confirmar cliente</h4>
+  <div class="mdl-dialog__content">
+    Verifique los datos del cliente
+    <table>
+      <tr>
+        <td>
+          Nombre
+        </td>
+        <td>
+          <label>{{client.name}}</label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Teléfono
+        </td>
+        <td>
+          <label>{{client.phone}}</label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          RFC
+        </td>
+        <td>
+          <label>{{client.rfc}}</label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Correo electrónico
+        </td>
+        <td>
+          <label>{{client.mail}}</label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Dirección
+        </td>
+        <td>
+          <label>{{client.address}}</label>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+  <div class="mdl-dialog__actions">
+    <button mdl-button (click)="newClient()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Dar de alta</button>
+    <button mdl-button (click)="confirmDialog.close()" mdl-ripple>Cancelar</button>
+  </div>
+</mdl-dialog>

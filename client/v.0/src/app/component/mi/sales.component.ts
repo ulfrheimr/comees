@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, EventEmitter, Inject, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, Inject, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { GridOptions } from "ag-grid";
@@ -6,12 +6,13 @@ import { CellButton } from '../../cell.button.component';
 
 import { Mi } from '../../prots/mi/mi';
 import { MiSale } from '../../prots/mi/sale';
+import { Estimation } from '../../prots/estimation';
 
 import { MiService } from '../../services/mi/mi.service';
 import { MiDiscountService } from '../../services/mi/discount.service';
 import { SaleService } from '../../services/mi/sale.service';
 
-import { PassMi } from './pass-mi';
+import { PassPrint } from '../pass-print';
 
 import { MdlDialogComponent } from '@angular-mdl/core';
 
@@ -22,16 +23,16 @@ import { MdlDialogComponent } from '@angular-mdl/core';
   providers: [
     MiService,
     MiDiscountService,
-    SaleService,
-    // UsrService
+    SaleService
   ]
 })
 
 export class MiSales implements OnInit {
   @ViewChild('paymentConfirmDialog') private paymentConfirmDialog: MdlDialogComponent;
   @ViewChild('partialPaymentDialog') private partialPaymentDialog: MdlDialogComponent;
+  @ViewChild('estimationDialog') private estimationDialog: MdlDialogComponent;
 
-
+  usr: string;
   mis: Mi[];
   miHash: any = {};
   pageModel;
@@ -46,7 +47,7 @@ export class MiSales implements OnInit {
     private miDiscountService: MiDiscountService,
     private saleService: SaleService,
     private router: Router,
-    private passMi: PassMi
+    private passPrint: PassPrint
   ) {
     this.initializePageModel();
     this.findMis();
@@ -88,7 +89,26 @@ export class MiSales implements OnInit {
     return Promise.reject(error.message || error);
   }
 
-  private initializePageModel(): void {
+  findMis(): void {
+    if (this.pageModel.hint != "")
+      this.miService.getMis(this.pageModel.hint)
+        .then((x) => {
+          this.mis = x;
+
+          this.gridOptions.api.setRowData(this.mis);
+        });
+  }
+
+  onSelected(mi: Mi): void {
+    this.selectedMi = mi;
+    this.pageModel.discountCode = null;
+    this.pageModel.allowAdd = true;
+    this.pageModel.toggleDiscount = false;
+  }
+
+  initializePageModel(): void {
+    this.selectedMi = undefined;
+    this.priceDiscount = null;
     this.pageModel = {
       hint: "",
       toggleDiscount: false,
@@ -99,33 +119,22 @@ export class MiSales implements OnInit {
       discount: 0.0,
       allowAdd: true,
       toConfirm: false,
-      paymentType: "cash",
+      // paymentType: "cash",
       allowSale: false,
-      cardDigits: "",
-      cardAuth: "",
-      allowPartialPayment: false,
-      amountError: ""
+      // cardDigits: "",
+      // cardAuth: "",
+      // amountError: ""
       // toPayment: false,
       // amount: undefined,
 
       //
-      // isPartialPayment: false,
+
       // partialPayment: undefined
     }
   }
 
-  findMis(): void {
-    if (this.pageModel.hint != "")
-      this.miService.getMis(this.pageModel.hint)
-        .then((x) => {
-          this.mis = x;
-          console.log(x)
-          this.gridOptions.api.setRowData(this.mis);
-        });
-  }
-
-  onSelected(mi: Mi): void {
-    this.selectedMi = mi;
+  cancelSale(): void {
+    this.selectedMi = undefined;
   }
 
   getDiscount(): void {
@@ -158,18 +167,22 @@ export class MiSales implements OnInit {
   applyDiscount(): void {
     this.pageModel.allowAdd = true;
     this.priceDiscount = this.selectedMi.price * (1 - (this.pageModel.discount * 0.01));
-    console.log(this.priceDiscount)
   }
 
   toggleDiscount(e): void {
     this.pageModel.allowAdd = !e;
+
+    if (!e) {
+      this.pageModel.discountType = "";
+      this.pageModel.discountCode = null;
+      this.pageModel.discount = 0.0;
+      this.priceDiscount = null;
+    }
   }
 
   addToSale(): void {
     let priceDiscount: number = this.priceDiscount == undefined ? this.selectedMi.price : this.priceDiscount
     priceDiscount = parseFloat(priceDiscount.toFixed(2))
-
-    console.log(this.pageModel)
 
     if (this.miHash[this.selectedMi._id]) {
       this.miHash[this.selectedMi._id]["qty"] += 1;
@@ -183,7 +196,8 @@ export class MiSales implements OnInit {
         sale_price: this.selectedMi.price,
         price_discount: priceDiscount,
         type_discount: this.pageModel.discountType,
-        discount: this.pageModel.discountCode
+        discount: this.pageModel.discountCode,
+        mi_description: this.selectedMi.description
       }
     }
 
@@ -219,6 +233,10 @@ export class MiSales implements OnInit {
     this.pageModel.toConfirm = true;
   }
 
+  isPartialPaymentAllowed(): Boolean {
+    return this.getTotal() == this.getTotalDiscount()
+  }
+
   getTotal(): number {
     return Object.keys(this.miHash)
       .map((key, index) => this.miHash[key].sale_price)
@@ -230,42 +248,24 @@ export class MiSales implements OnInit {
       .map((key, index) => this.miHash[key].price_discount)
       .reduce((x, y) => x + y, 0);
   }
-
-  change(): string {
-    if (parseFloat(this.pageModel.amount)) {
-      var total = this.getTotalDiscount()
-
-      if (parseFloat(this.pageModel.amount) >= total) {
-        this.pageModel.allowSale = true;
-        return (this.pageModel.amount - total).toFixed(2);
-      } else
-        this.pageModel.allowSale = false;
-
-    } else
-      this.pageModel.allowSale = false;
-
-  }
-
-  makeSale(): void {
+  makeSale(paymentInfo): void {
     // Validación de
-    console.log(this.pageModel)
-
     var url = this.router.url.split('/');
     let routeUrl: string = "/mi";
     let total: number = this.pageModel.amount - this.getTotalDiscount();
 
     let s: MiSale = {
-      usr: "CHOCOCO",
-      paymentType: this.pageModel.paymentType,
-      paymentAccount: this.pageModel.cardDigits,
-      auth: this.pageModel.cardAuth,
+      //TODO: HERE
+      paymentType: paymentInfo.paymentType,
+      paymentAccount: paymentInfo.paymentType != "cash" ? paymentInfo.cardDigits : "",
+      auth: paymentInfo.paymentType != "cash" ? paymentInfo.cardAuth : "",
       mis: this.products
     }
 
     this.saleService.makeSale(s)
       .then((id) => {
-        localStorage.setItem('payment', parseFloat(this.pageModel.amount).toFixed(2));
-        localStorage.setItem('change', total.toFixed(2));
+        localStorage.setItem('payment', paymentInfo.amount);
+        localStorage.setItem('change', paymentInfo.change);
 
         this.paymentConfirmDialog.close();
         this.router.navigate(['.' + routeUrl + '/print-ticket', id])
@@ -273,35 +273,71 @@ export class MiSales implements OnInit {
       .catch(this.handleError)
   }
 
+  // Estimation
+  estimation(): void {
+    this.estimationDialog.close();
+
+    let est: Estimation[] = Object.keys(this.miHash).map((x) => {
+      return {
+        qty: this.miHash[x]["qty"],
+        product: this.miHash[x]["name"],
+        description: this.miHash[x]["mi_description"],
+        sale_price: this.miHash[x]["sale_price"]
+      }
+    });
+
+    let estPayment: number = est.map((x) => {
+      return x.sale_price;
+    }).reduce((x, y) => x + y, 0);
+
+    let routeUrl: string = "/mi";
+    this.passPrint._type = "estimation";
+    this.passPrint.printObjects = est;
+    this.passPrint.registerPayment = parseFloat(estPayment.toString());
+
+    this.router.navigate(['.' + routeUrl, "print"])
+
+  }
+
   // Partial Payment
   remaining(): number {
     this.pageModel.amountError = "";
 
-    if (!parseFloat(this.pageModel.partialPayment)) {
-      // this.pageModel.amountError = "Importe no válido";
-      this.pageModel.allowPartialPayment = false;
+    if (!this.pageModel.partialPayment)
       return;
-    }
 
-    if (parseFloat(this.pageModel.partialPayment) > this.getTotalDiscount()) {
-      this.pageModel.amountError = "El importe es mayor para solo hacer pago parcial, realice la venta";
-      this.pageModel.allowPartialPayment = false;
+    if (isNaN(this.pageModel.partialPayment))
       return;
-    }
 
-    this.pageModel.allowPartialPayment = true;
     return this.getTotalDiscount() - parseFloat(this.pageModel.partialPayment);
+  }
+
+  allowPartialPayment(): string {
+    var r = this.remaining();
+
+    if (r < 0)
+      return "El importe debe ser mayor al pago parcial";
+
+    return null;
   }
 
   partialPayment(): void {
     this.partialPaymentDialog.close();
 
     let routeUrl: string = "/mi";
-    this.passMi._type = "mi";
-    this.passMi.mis = this.products;
-    this.passMi.registerPayment = parseFloat(this.pageModel.partialPayment);
+    this.passPrint._type = "mi";
+    this.passPrint.printObjects = this.products;
+    this.passPrint.registerPayment = parseFloat(this.pageModel.partialPayment);
 
     this.router.navigate(['.' + routeUrl, "print"])
+  }
 
+  //SALE WINDOW
+  onPaymentConfirmed(e): void {
+    this.makeSale(e);
+  }
+
+  onPaymentCancelled(e): void {
+    this.paymentConfirmDialog.close()
   }
 }

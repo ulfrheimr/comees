@@ -198,6 +198,13 @@ export class Assets {
     return this.asText("" + roundNum) + " pesos " + cents;
   }
 
+  formatDate(d: string): string {
 
+    let date_: string = d.split("T")[0]
+    let time_: string = d.split("T")[1].split(".")[0].split(":").slice(0, 2).join(":")
+
+    return date_ + " " + time_;
+
+  }
 
 }

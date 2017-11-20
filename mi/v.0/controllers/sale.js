@@ -71,9 +71,11 @@ var addMi = (product, id) => {
         qty: product.qty,
         mi: product.mi,
         sale_price: product.price,
-        type_discount: product.typetype_discount,
+        type_discount: product.type_discount,
         discount: product.discount
       }
+
+      console.log(m);
 
       Sale.update({
           _id: id
@@ -153,6 +155,8 @@ var i = {
         type_discount: req.body.type_discount,
         discount: req.body.discount
       };
+
+      console.log(mi);
 
 
 

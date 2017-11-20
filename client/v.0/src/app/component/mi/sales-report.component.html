@@ -1,0 +1,55 @@
+<div class="top-container">
+  <div class="search-container">
+    <div>
+      <table class="w100">
+        <tr>
+          <td class="row33" *ngIf="role == 'adm'">
+            <span class="enhaced">Usuario</span>
+          </td>
+          <td class="row33">
+            Periodo de tiempo
+            <br />
+            <mdl-radio name="paymentType" value="day" [(ngModel)]="pageModel.typeSearch" mdl-ripple>Del día</mdl-radio>
+            <mdl-radio name="paymentType" value="period" [(ngModel)]="pageModel.typeSearch" mdl-ripple>Por periodo</mdl-radio>
+          </td>
+          <td>
+
+          </td>
+        </tr>
+        <tr>
+          <td *ngIf="role == 'adm'">
+            <select *ngIf="usrs">
+              <option *ngFor="let u of usrs" [value]="u.id_">{{u.name}}</option>
+            </select>
+          </td>
+          <td *ngIf="pageModel.typeSearch=='period'">
+            <input type="date" [(ngModel)]="pageModel.init" />
+          </td>
+          <td *ngIf="pageModel.typeSearch=='period'">
+            <input type="date" [(ngModel)]="pageModel.end" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+          </td>
+          <td>
+          </td>
+          <td>
+            <button (click)="search()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Buscar</button>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+  <br />
+
+  <div class="grid-container">
+    <ag-grid-angular #agGrid style="width: 100%; height: 200px;" class="ag-fresh" [gridOptions]="gridOptions">
+    </ag-grid-angular>
+  </div>
+
+  <div class="right" *ngIf="role == 'adm'">
+    <button (click)="report()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Reportar</button>
+  </div>
+</div>

@@ -20,16 +20,22 @@ router.route('/login')
   .post(Auth.isAuthenticated, Usr.spread, Usr.login)
 
 router.route('/usr')
-  // usrname, usr, pass
+  // usrname, usr, pass, type (1:salesman)
   .put(Usr.linkUsr)
 
 router.route('/salesman')
+  .get(SalesMan.getSalesMan)
   // name, phone, mail, {"mi": "admin", "ph":"sales"}
-  .put(SalesMan.putSalesman);
+  .put(SalesMan.putSalesman)
+
+router.route('/salesman/:id')
+  // name, phone, mail, {"mi": "admin", "ph":"sales"}
+  .post(SalesMan.modifySalesman)
 
 router.route('/client')
   // name, rfc, phone, mail, address
-  .put(ClientController.putClient);
+  .put(ClientController.putClient)
+  .get(ClientController.getClients);
 
 router.route('/client/:id')
   .get(ClientController.getClient)
@@ -37,6 +43,7 @@ router.route('/client/:id')
 router.route('/physs')
   // {mail, code, phone, address, external, name, first, last, rfc, account}
   .put(PhysController.putPhys)
+  // external
   .get(PhysController.getPhyss);
 
 router.route('/physs/:id')

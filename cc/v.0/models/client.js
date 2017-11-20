@@ -7,7 +7,7 @@ var ClientSchema = mongoose.Schema({
   },
   rfc: {
     type: String,
-    required: true
+    required: false
   },
   mail: {
     type: String,
@@ -19,7 +19,7 @@ var ClientSchema = mongoose.Schema({
   },
   address: {
     type: String,
-    required: true
+    required: false
   }
 });
 

@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { UsrActivate } from './guard/usr-activate';
+
 import { Login } from './login.component';
 
 // import { Ph } from './ph/ph.component';
@@ -9,12 +11,21 @@ import { Login } from './login.component';
 // import { SearchDrugComponent } from './ph/search-drug.component';
 // import { ImportPurchase } from './ph/import-purchase.component';
 //
+
+import { MainMenuComponent } from './component/main-menu.component'
+
 import { Mi } from './component/mi/mi';
 import { MiSales } from './component/mi/sales.component';
 import { PrintMiTicketComponent } from './component/mi/print-ticket.component';
-// import { MiSalesReportComponent } from './mi/sales-report.component';
+import { MiSalesReportComponent } from './component/mi/sales-report.component';
+import { ModifyMIComponent } from './component/mi/modify-mi.component';
 
-//
+import { McSales } from './component/mc/sales.component';
+import { PrintMcTicketComponent } from './component/mc/print-ticket.component';
+import { PartialFollowingComponent } from './component/mc/partial-following.component';
+
+import { ClientComponent } from './component/admin/client.component';
+
 // import { InvoiceComponent } from './admin/invoices.component';
 //
 // import { ClientComponent } from './cc/client.component';
@@ -33,6 +44,28 @@ import { PrintComponent } from './print.component';
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: Login },
+  {
+    path: 'mi', component: MainMenuComponent, canActivate: [UsrActivate],
+    children: [
+      { path: '', redirectTo: 'sales', pathMatch: 'full' },
+      { path: 'sales', component: MiSales },
+      { path: 'print-ticket/:id', component: PrintMiTicketComponent },
+      { path: 'sales-report', component: MiSalesReportComponent },
+      { path: 'print', component: PrintComponent },
+      { path: 'modify-mi', component: ModifyMIComponent, canActivate: [UsrActivate] },
+    ]
+  },
+  {
+    path: 'mc', component: MainMenuComponent, canActivate: [UsrActivate],
+    children: [
+      { path: '', redirectTo: 'sales', pathMatch: 'full' },
+      { path: 'sales', component: McSales },
+      { path: 'print-ticket/:id', component: PrintMcTicketComponent },
+      // { path: 'sales-report', component: MiSalesReportComponent },
+      { path: 'print', component: PrintComponent },
+      { path: 'partial-following', component: PartialFollowingComponent },
+    ]
+  },
   // {
   //   path: 'ph', component: Ph, canActivate: [UsrActivate],
   //   children: [
@@ -45,17 +78,30 @@ const routes: Routes = [
   //     { path: 'import', component: ImportPurchase }
   //   ]
   // },
-  {
-    path: 'mi', component: Mi,
-    // canActivate: [UsrActivate],
-    children: [
-      { path: '', redirectTo: 'sales', pathMatch: 'full' },
-      { path: 'mi', redirectTo: 'sales', pathMatch: 'full' },
-      { path: 'sales', component: MiSales },
-      { path: 'print-ticket/:id', component: PrintMiTicketComponent },
-      { path: 'print', component: PrintComponent }
-    ]
-  },
+  // {
+  //   path: 'mi', component: Mi, canActivate: [UsrActivate],
+  //   children: [
+  //     { path: '', redirectTo: 'sales', pathMatch: 'full' },
+  //     { path: 'mi', redirectTo: 'sales', pathMatch: 'full' },
+  //     { path: 'sales', component: MiSales },
+  //     { path: 'print-ticket/:id', component: PrintMiTicketComponent },
+  //     { path: 'sales-report', component: MiSalesReportComponent },
+  //     { path: 'print', component: PrintComponent },
+  //     { path: 'modify-mi', component: ModifyMIComponent, canActivate: [UsrActivate] },
+  //   ]
+  // },
+  // {
+  //   path: 'mc', component: Mi, canActivate: [UsrActivate],
+  //   children: [
+  //     // { path: '', redirectTo: 'sales', pathMatch: 'full' },
+  //     // { path: 'mi', redirectTo: 'sales', pathMatch: 'full' },
+  //     { path: 'sales', component: ClientComponent },
+  //     // { path: 'print-ticket/:id', component: PrintMiTicketComponent },
+  //     // { path: 'sales-report', component: MiSalesReportComponent },
+  //     // { path: 'print', component: PrintComponent },
+  //     // { path: 'modify-mi', component: ModifyMIComponent, canActivate: [UsrActivate] },
+  //   ]
+  // },
   // {
   //   path: 'sales', component: Sales, canActivate: [UsrActivate],
   //   children: [

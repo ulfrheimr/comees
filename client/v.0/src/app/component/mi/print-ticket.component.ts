@@ -1,15 +1,15 @@
 import { Component, OnInit, Input, EventEmitter, ViewChild } from '@angular/core';
+import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
+
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 
 import { SaleService } from '../../services/mi/sale.service';
 import { Assets } from '../../assets';
 import { MdlDialogComponent } from '@angular-mdl/core';
-//
-// import { UsrService } from '../services/usr.service';
+import { UsrService } from '../../services/usr.service';
 
 @Component({
   selector: 'print-mi-ticket',
@@ -17,7 +17,8 @@ import { MdlDialogComponent } from '@angular-mdl/core';
   styleUrls: ['./print-ticket.component.css'],
   providers: [
     SaleService,
-    Assets
+    Assets,
+    Location, { provide: LocationStrategy, useClass: PathLocationStrategy }
   ]
 })
 
@@ -32,12 +33,12 @@ export class PrintMiTicketComponent implements OnInit {
   constructor(
     private saleService: SaleService,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
     private assets: Assets,
     private router: Router,
-    // private usrService: UsrService
+    private usrService: UsrService,
+    private location: Location
   ) { }
-  //
+
   ngOnInit(): void {
     this.assets.getAssets()
       .then((a) => {
@@ -59,11 +60,11 @@ export class PrintMiTicketComponent implements OnInit {
     console.log(error);
     return Promise.reject(error.message || error);
   }
-  //
-  // getUsr(): any {
-  //   return this.usrService.get()["name"];
-  // }
-  //
+
+  getUsr(): any {
+    return this.usrService.get()["name"];
+  }
+
   private getSale(): void {
     this.activatedRoute.params
       .switchMap((params: Params) => {
@@ -81,52 +82,50 @@ export class PrintMiTicketComponent implements OnInit {
     console.log(sale)
     return sale.mis.map((x) => {
       var cat = 0.16;
-      var subtotal = x.price * (1 - cat)
+      var subtotal = x.sale_price * (1 - cat)
 
-      return {
+
+      var a = {
         cat: x.sale_price - subtotal,
         subtotal: subtotal,
-        saving: (x.sale_price - x.price),
-        total: x.price,
+        saving: (x.qty * x.price) - x.sale_price,
+        total: x.qty * x.price,
         total_disc: x.sale_price,
         qty: x.qty
       };
+
+      return a;
     });
   }
 
   getSubtotal(): number {
     return this.saleTotals
       .map(x => x.subtotal)
-      .reduce((x, y) => x + y, 0)
-      .toFixed(2);
+      .reduce((x, y) => x + y, 0.0)
   }
 
   getSaving(): number {
     return this.saleTotals
       .map(x => x.saving)
-      .reduce((x, y) => x + y, 0)
-      .toFixed(2);
+      .reduce((x, y) => x + y, 0.0)
   }
 
   getCat(): number {
     return this.saleTotals
       .map(x => x.cat)
-      .reduce((x, y) => x + y, 0)
-      .toFixed(2);
+      .reduce((x, y) => x + y, 0.0)
   }
 
   getTotal(): number {
     return this.saleTotals
       .map(x => x.total)
-      .reduce((x, y) => x + y, 0)
-      .toFixed(2);
+      .reduce((x, y) => x + y, 0.0)
   }
 
   getTotalDisc(): number {
     return this.saleTotals
       .map(x => x.total_disc)
-      .reduce((x, y) => x + y, 0)
-      .toFixed(2);
+      .reduce((x, y) => x + y, 0.0)
   }
 
   getTotalAsText(): string {
@@ -142,19 +141,15 @@ export class PrintMiTicketComponent implements OnInit {
   endProcess(): void {
     this.printConfirm.close();
 
-    // var url = this.router.url.split('/');
-    // let routeUrl: string = url.slice(1, url.length - 2).reduce((x, y) => x + "/" + y, "");
-    this.router.navigate(['./mi/sales']);
+    this.location.back();
   }
 
   tryPrint(): void {
-    this.noPrints -= 1;
+    this.printConfirm.close();
     this.print();
   }
 
   print(): void {
-    this.printConfirm.close();
-    this.noPrints += 1;
     this.printConfirm.show();
 
     let printContents, popupWin;
@@ -172,6 +167,10 @@ export class PrintMiTicketComponent implements OnInit {
           font-family: 'Arial';
           text-transform: uppercase;
           font-size: 2.7mm;
+        }
+
+        .enhaced-ticket {
+          font-size: 3.3mm;
         }
 
         table {
@@ -252,6 +251,8 @@ export class PrintMiTicketComponent implements OnInit {
           padding-top: 2mm;
           width: 80%;
           text-align: justify;
+          line-height: 1.2em;
+          font-weight: bold;
         }
 
         .totals>div {

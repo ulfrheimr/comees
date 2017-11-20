@@ -1,0 +1,32 @@
+<mdl-layout mdl-layout-fixed-header mdl-layout-header-seamed>
+  <mdl-layout-header>
+    <mdl-layout-header-row>
+      <div class="logo_container">
+        <img src="./assets/images/logo.png" />
+      </div>
+
+      <mdl-layout-spacer></mdl-layout-spacer>
+      <div class="nav_container">
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link name">Hola <span>{{getName()}}</span></a>
+          <!-- <a href="">
+            <mdl-icon>settings</mdl-icon>
+          </a> -->
+          <a href="" routerLink="/">
+            <mdl-icon>exit_to_app</mdl-icon>
+          </a>
+        </nav>
+      </div>
+
+    </mdl-layout-header-row>
+  </mdl-layout-header>
+  <mdl-layout-drawer>
+    <global-menu></global-menu>
+  </mdl-layout-drawer>
+  <mdl-layout-content>
+    <div class="app-container">
+      <router-outlet></router-outlet>
+    </div>
+  </mdl-layout-content>
+</mdl-layout>
+<dialog-outlet></dialog-outlet>

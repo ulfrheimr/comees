@@ -1,7 +1,7 @@
 const config = {
   id_log: "cc",
   data: "localhost",
-  db_name: "v0/cc",
+  db_name: "cc",
   s: ".Kirkimax."
 }
 

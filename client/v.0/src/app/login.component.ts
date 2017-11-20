@@ -1,17 +1,25 @@
 import { OnInit, Component, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { UsrService } from './services/usr.service';
+
 @Component({
   selector: 'login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   providers: [
+    UsrService
   ]
 })
 
 export class Login implements OnInit {
+  usr: string;
+  pass: string;
+  error: string;
+
   constructor(
-    private router: Router
+    private router: Router,
+    private usrService: UsrService,
   ) {
 
   }
@@ -20,26 +28,23 @@ export class Login implements OnInit {
   }
 
   login(): void {
-    this.router.navigate(['./mi/'])
+    this.error = null;
+    this.usrService.init(this.usr, this.pass)
+      .then((role) => {
+        if (!role) {
+          this.error = "Por favor revise sus credenciales y vuelva a intentar"
+          return;
+        }
 
-    // this.usrService.init(this.pageModel.usr, this.pageModel.pass)
-    //   .then(u => {
-    //     var r = JSON.parse(u.role);
-    //     console.log(r)
-    //
-    //     if (r["ph"] == "adm" && r["mi"] == "adm") {
-    //       this.router.navigate(['./admin/'])
-    //     } else if (r["ph"] == "sales" && r["mi"] == "sales")
-    //       this.router.navigate(['./sales/'])
-    //     else if (r["ph"] == "adm") {
-    //
-    //     } else if (r["mi"] == "adm") {
-    //
-    //     } else if (r["ph"] == "sales")
-    //       this.router.navigate(['./ph/'])
-    //     else if (r["mi"] == "sales")
-    //       this.router.navigate(['./mi/'])
-    //     else this.error = "Por favor revise sus credenciales y vuelva a intentar"
-    //   })
+        if (role["mi"])
+          this.router.navigate(['./mi/'])
+        else if (role["mc"])
+          this.router.navigate(['./mc/'])
+
+      }).catch((err) => {
+        this.error = "Por favor revise sus credenciales y vuelva a intentar"
+        console.log(err);
+      })
+
   }
 }

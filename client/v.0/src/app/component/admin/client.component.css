@@ -1,0 +1,27 @@
+.selected_mi {
+  width: 60%;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.info {
+  font-weight: bold;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.coMeEs_dark_bold {
+  width: 60%;
+  margin: 0 auto;
+}
+
+.payment {
+  width: 80%;
+  margin: 25px auto;
+  text-align: center;
+  font-weight: bold;
+}

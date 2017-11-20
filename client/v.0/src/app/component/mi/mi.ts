@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { UsrService } from '../../services/usr.service';
+
 @Component({
   selector: 'mi',
   templateUrl: './mi.html',
@@ -9,13 +11,13 @@ import { Router } from '@angular/router';
 })
 
 export class Mi {
-  constructor(
-    private router: Router
-  ) {
+  role: string;
 
+  constructor(
+
+  ) {
+    
   }
 
-  // goTo(path: string): void {
-  //   this.router.navigate([path])
-  // }
+
 }
