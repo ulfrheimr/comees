@@ -1,6 +1,6 @@
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
-var bCrypt = require('bCrypt');
+const bCrypt = require('bcrypt-nodejs');
 
 var Usr = new Schema({
   usr: {
@@ -25,10 +25,11 @@ var Usr = new Schema({
 Usr.pre('save', function(next) {
   var usr = this;
 
-  bCrypt.genSalt((err, salt) => {
-    if (err) return next(err);
+  console.log("SAVE");
 
-    bCrypt.hash(usr.pass, salt, (err, encrypted) => {
+  bCrypt.genSalt(10, (err, salt) => {
+    if (err) return next(err);
+    bCrypt.hash(usr.pass, salt, null, (err, encrypted) => {
       if (err) return next(err);
 
       usr.pass = encrypted;

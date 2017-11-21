@@ -303,18 +303,22 @@ function getCats(cats) {
 
 function readMis(path) {
   var fileContents = fs.readFileSync(path);
-  var lines = fileContents.toString().split('\r\n');
-
+  var lines = fileContents.toString().split('\n');
 
   var items = lines
     .filter(x => {
-      var value = x.split(",");
+      var value = x.split(";");
+
+
+      if (value.length < 6)
+        return false;
+
       if (x == "")
         return false;
 
-      if (!parseFloat(value[5])) {
+      if (isNaN(value[5])) {
         console.log(x);
-        console.log("Couldn't be handled");
+        console.log("Price value incorrect");
         console.log("Valor " + value[5] + "\n");
 
         return false;
@@ -323,7 +327,7 @@ function readMis(path) {
       return true;
     })
     .map((item) => {
-      var i = item.split(",");
+      var i = item.split(";");
 
       return {
         name: i[0].toLowerCase(),
@@ -334,7 +338,6 @@ function readMis(path) {
         price: i[5]
       };
     })
-
 
   return items;
 }
@@ -364,8 +367,6 @@ function importMis(path) {
 
       async.map(items,
         (item, callback) => {
-          console.log(ix + " sent");
-
           setTimeout(function() {
             ix += 1
 
@@ -381,9 +382,14 @@ function importMis(path) {
         },
         (err, result) => {
           if (err) console.log(err)
-          console.log(result);
+          // console.log(result);
 
-          var oks = result.map(x => x.ok)
+          var oks = result.map(x => {
+            if (!x.ok)
+              console.log(x);
+
+            return x.ok
+          })
           var res = oks.reduce((x, y) => x && y, true);
           console.log("Received " + oks.length + " correct Mis");
 
@@ -398,13 +404,13 @@ function importMis(path) {
     .catch((err) => console.log(err));
 }
 
-importMis('/Users/rrivera/Desktop/mis.csv')
+importMis('/Users/rrivera/Desktop/1.csv')
 
 module.exports.init = function() {
   // console.log("Could");
   // importMis('./svc.csv')
   // importDrugs('/Users/rrivera/Desktop/lst.csv', "amsa");
 
-  importMis('/Users/ulfrheimr/Desktop/svc.csv')
+  importMis('/Users/ulfrheimr/Desktop/1.csv')
   // importDrugs('/Users/ulfrheimr/Desktop/lst.csv', "amsa");
 }

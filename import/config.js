@@ -9,7 +9,7 @@ var config = {
       'port': 3001
     }
   },
-  span_for_poor_servers: 20
+  span_for_poor_servers: 1
 }
 
 module.exports = config;

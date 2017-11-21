@@ -8,6 +8,9 @@ passport.use(new HttpStrategy({
   (req, usr, pass, callback) => {
     req.body["usr"] = usr;
 
+    console.log("USR");
+    console.log(usr);
+
     Usr.verifyUsr(usr, pass)
       .then((u) => {
         if (u)

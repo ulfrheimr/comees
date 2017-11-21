@@ -7,13 +7,12 @@ var config = require('./config');
 var app = express();
 var port = process.env.PORT || 3000;
 
-mongoose.connect('mongodb://' + config.data + ':27017/' + config.db_name);
+mongoose.connect('mongodb://' + config.data + ':'+config.data_port+'/' + config.db_name);
 
 var allowCrossDomain = function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
-
 
   next();
 }

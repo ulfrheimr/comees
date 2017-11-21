@@ -1,6 +1,6 @@
 const Usr = require('../models/usr');
 const UsrMap = require('../models/usrmap');
-const bCrypt = require('bCrypt');
+const bCrypt = require('bcrypt-nodejs');
 const Token = require('../auth/sign');
 const logging = require("../../utils")
 const winston = require('winston');
