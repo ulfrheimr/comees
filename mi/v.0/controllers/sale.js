@@ -1,6 +1,8 @@
 var Sale = require('../models/sale');
+var Partial = require('../models/partial');
 var Phys = require('../models/phys');
 var PhysMi = require('./phys-mi');
+const moment = require("moment");
 const winston = require('winston');
 
 var PaymentTypes = {
@@ -75,8 +77,6 @@ var addMi = (product, id) => {
         discount: product.discount
       }
 
-      console.log(m);
-
       Sale.update({
           _id: id
         }, {
@@ -91,6 +91,166 @@ var addMi = (product, id) => {
 
           if (res.ok != 1) {
             message: "Product " + m.mi + " can't be added"
+          };
+
+          resolve(res.ok);
+        });
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+// Partial Stuff
+
+var getPartialsCut = (init_date, end_date, usr) => {
+  return new Promise((resolve, reject) => {
+    var query = {
+      open: true,
+      $and: [{
+          "payments.timestamp": {
+            // min sec millis
+            $gte: moment(init_date)
+          }
+        },
+        {
+          "payments.timestamp": {
+            $lte: moment(end_date)
+          }
+        }
+      ]
+    }
+
+    if (usr || usr != "")
+      query["payments.usr"] = usr
+
+    Partial.find(query)
+      .exec((err, partials) => {
+        if (err) reject(err);
+
+        partials = partials
+          .map((p) => p.payments)
+          .reduce((x, y) => x.concat(y), [])
+          .filter((p) => moment(p.timestamp).isBetween(init_date, end_date))
+
+
+        resolve(partials);
+      });
+  });
+}
+
+var createPartial = (partial) => {
+  return new Promise((resolve, reject) => {
+    var p = new Partial();
+
+    p.client = partial.client;
+    p.client_name = partial.client_name;
+    p.mis = [];
+    p.payments = [];
+    p.open = true;
+
+    p.save((err, res) => {
+      if (err) reject(err)
+
+      resolve(res);
+    });
+  });
+}
+
+var addPartialMi = (mi, id) => {
+  return new Promise((resolve, reject) => {
+    try {
+      var m = {
+        qty: mi.qty,
+        mi: mi.mi
+      }
+
+      Partial.update({
+          _id: id
+        }, {
+          $push: {
+            mis: m
+          }
+        }, {
+          upsert: true
+        },
+        (err, res) => {
+          console.log(err);
+          if (err) reject(err);
+
+          if (res.ok != 1) {
+            message: "Product " + m.mi + " can't be added"
+          };
+
+          resolve(res.ok);
+        });
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+var findPartials = (query) => {
+  return new Promise((resolve, reject) => {
+    Partial.find(query)
+      .populate('mis.mi')
+      .exec((err, partials) => {
+        if (err) reject(err);
+
+        resolve(partials);
+      });
+  });
+}
+
+var addPayment = (id, payment, usr) => {
+  return new Promise((resolve, reject) => {
+    try {
+      var p = {
+        payment: payment,
+        usr: usr,
+        timestamp: new Date()
+      }
+
+      Partial.update({
+          _id: id
+        }, {
+          $push: {
+            payments: p
+          }
+        }, {
+          upsert: true
+        },
+        (err, res) => {
+          if (err) reject(err);
+
+          if (res.ok != 1) {
+            message: "Payment can't be registered"
+          };
+
+          resolve(res.ok);
+        });
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+var closePartial = (partial_id, sale_id) => {
+  return new Promise((resolve, reject) => {
+    try {
+      Partial.update({
+          _id: partial_id
+        }, {
+          open: false,
+          sale_id: sale_id,
+          from_partial: true
+        },
+        (err, res) => {
+          console.log(res);
+          if (err) reject(err);
+
+          if (res.ok != 1) {
+            message: "Payment can't be registered"
           };
 
           resolve(res.ok);
@@ -145,6 +305,94 @@ var i = {
       });
     }
   },
+  addPartialMi: (req, res) => {
+    try {
+      var mi = {
+        qty: req.body.qty,
+        mi: req.body.mi
+      };
+
+      addPartialMi(mi, req.body.id_sale)
+        .then((addedMi) => {
+          res.json({
+            ok: 1,
+            data: addedMi
+          })
+        })
+        .catch((err) => {
+          throw err;
+        });
+
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
+  },
+  getPartial: (req, res) => {
+    try {
+      var client = req.query.client || "";
+      var open = req.query.open || true;
+
+      var init = req.query.init;
+
+      var query = {
+        'client_name': {
+          $regex: ".*" + client + ".*",
+          $options: 'i'
+        },
+        'open': open
+      }
+
+      console.log(query);
+      if (init) {
+
+      }
+      console.log(query);
+
+      findPartials(query)
+        .then((r) => {
+          res.json({
+            ok: 1,
+            data: r
+          })
+        })
+        .catch((err) => {
+          throw err;
+        })
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
+  },
+  addPayment: (req, res) => {
+    try {
+      var usr = req.body.usr
+      if (!usr || usr == "")
+        throw {
+          message: "Usr must be specified"
+        };
+
+      addPayment(req.body.id_sale, req.body.payment, usr)
+        .then((r) => {
+          res.json({
+            ok: 1,
+            data: r
+          })
+        })
+        .catch((err) => {
+          throw err;
+        })
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
+  },
   addMis: (req, res) => {
     try {
       var mi = {
@@ -155,10 +403,6 @@ var i = {
         type_discount: req.body.type_discount,
         discount: req.body.discount
       };
-
-      console.log(mi);
-
-
 
       if (TypesDiscount[mi.type_discount] == null)
         throw {
@@ -215,9 +459,9 @@ var i = {
   },
   getSales: (req, res) => {
     try {
-      var init = req.query.init;
-      var end = req.query.end;
-      var usrId = req.query.usr;
+      var init = moment(req.query.init)
+      var end = req.query.end || moment()
+      var usrId = req.query.usr
 
       var query = {
         $and: [{
@@ -236,6 +480,9 @@ var i = {
 
       if (usrId)
         query["usr"] = usrId;
+
+
+      console.log(query);
 
 
       findSales(query)
@@ -303,6 +550,93 @@ var i = {
       }
     })
 
+  },
+  putPartial: (req, res) => {
+    try {
+      var data = {
+        client: req.body.client,
+        client_name: req.body.client_name
+      }
+
+      createPartial(data)
+        .then((r) => {
+          res.json({
+            ok: 1,
+            data: r
+          })
+        })
+        .catch((err) => {
+          throw err;
+        })
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
+  },
+  closePartial: (req, res) => {
+    try {
+      var sale_id = req.params.saleId;
+      var partial_id = req.params.partialId;
+
+      closePartial(partial_id, sale_id)
+        .then((r) => {
+          console.log(r);
+          res.json({
+            ok: 1
+          })
+        })
+        .catch((err) => {
+          throw err;
+        })
+
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
+  },
+  partialsCut: (req, res) => {
+    try {
+
+      var init_date = req.query.init_date;
+      var end_date = req.query.end_date || moment();
+      var usr = req.query.usr;
+
+      if (!init_date || !moment(init_date).isValid()) {
+        throw {
+          message: "Init date must be specified"
+        };
+      }
+
+      init_date = moment(init_date)
+
+      if (!moment(end_date).isValid()) {
+        throw {
+          message: "End date must be specified"
+        };
+      }
+
+      getPartialsCut(init_date, end_date, usr)
+        .then((r) => {
+
+          res.json({
+            ok: 1,
+            data: r
+          })
+        })
+        .catch((err) => {
+          throw err;
+        })
+
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
   }
 }
 module.exports = i;

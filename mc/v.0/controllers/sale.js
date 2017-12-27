@@ -1,6 +1,7 @@
 var Partial = require('../models/partial');
-var Sale = require('../models/sale');
-var winston = require('winston');
+var Sale = require('../models/sale')
+var winston = require('winston')
+var moment = require('moment')
 
 var PaymentTypes = {
   "01": "Efectivo",
@@ -57,11 +58,12 @@ var createPartial = (partial) => {
   });
 }
 
-var addPayment = (id, payment) => {
+var addPayment = (id, payment, usr) => {
   return new Promise((resolve, reject) => {
     try {
       var p = {
         payment: payment,
+        usr: usr,
         timestamp: new Date()
       }
 
@@ -126,6 +128,7 @@ var createSale = (usr) => {
     s.paymentType = usr.paymentType;
     s.paymentAccount = usr.paymentAccount;
     s.auth = usr.auth;
+    s.from_partial = usr.from_partial
 
     s.save((err, sale) => {
       if (err) reject(err)
@@ -222,6 +225,54 @@ var addPartialMc = (mc, id) => {
   });
 }
 
+var getPartialsCut = (init_date, end_date, usr) => {
+  return new Promise((resolve, reject) => {
+    var query = {
+      open: true,
+      $and: [{
+          "payments.timestamp": {
+            // min sec millis
+            $gte: moment(init_date)
+          }
+        },
+        {
+          "payments.timestamp": {
+            $lte: moment(end_date)
+          }
+        }
+      ]
+    }
+
+    if (usr || usr != "")
+      query["payments.usr"] = usr
+
+    Partial.find(query)
+      .exec((err, partials) => {
+        if (err) reject(err);
+
+        partials = partials
+          .map((p) => {
+            var phys = p.mcs[0].phys
+            var payment_phys = p.payments.map((x) => {
+              return {
+                payment: x["payment"],
+                timestamp: x["timestamp"],
+                _id: x["_id"],
+                phys: phys
+              }
+            })
+
+            return payment_phys
+          })
+          .reduce((x, y) => x.concat(y), [])
+          .filter((p) => moment(p.timestamp).isBetween(init_date, end_date))
+
+
+        resolve(partials);
+      });
+  });
+}
+
 var i = {
   closePartial: (req, res) => {
     try {
@@ -254,7 +305,6 @@ var i = {
         client: req.body.client,
         client_name: req.body.client_name
       }
-
 
       createPartial(data)
         .then((r) => {
@@ -303,7 +353,13 @@ var i = {
   },
   addPayment: (req, res) => {
     try {
-      addPayment(req.body.id_sale, req.body.payment)
+      var usr = req.body.usr
+      if (!usr || usr == "")
+        throw {
+          message: "Usr must be specified"
+        };
+
+      addPayment(req.body.id_sale, req.body.payment, usr)
         .then((r) => {
           res.json({
             ok: 1,
@@ -322,7 +378,7 @@ var i = {
   },
   getPartial: (req, res) => {
     try {
-      var client = req.query.client;
+      var client = req.query.client || "";
       var open = req.query.open || true;
 
       var query = {
@@ -428,11 +484,13 @@ var i = {
   },
   getSales: (req, res) => {
     try {
-      var init = req.query.init;
-      var end = req.query.end;
+      var init = moment(req.query.init)
+      var end = req.query.end || moment()
       var usrId = req.query.usr;
+      var from_partial = req.query.from_partial || false;
 
       var query = {
+        from_partial: from_partial,
         $and: [{
             timestamp: {
               // min sec millis
@@ -447,11 +505,13 @@ var i = {
         ]
       }
 
+
       if (usrId)
         query["usr"] = usrId;
 
 
-      findSales({})
+
+      findSales(query)
         .then((sales) => {
           res.json({
             ok: 1,
@@ -476,6 +536,7 @@ var i = {
       var paymentType = req.body.paymentType;
       var paymentAccount = req.body.paymentAccount;
       var auth = req.body.auth;
+      var from_partial = req.body.from_partial || false
 
       if (PaymentTypes[paymentType] == null)
         throw {
@@ -487,7 +548,8 @@ var i = {
           paymentMethod: paymentMethod,
           paymentType: paymentType,
           paymentAccount: paymentAccount,
-          auth: auth
+          auth: auth,
+          from_partial: from_partial
         })
         .then((sale) => {
           console.log(sale);
@@ -499,6 +561,46 @@ var i = {
         .catch((err) => {
           throw err
         });
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
+  },
+  partialsCut: (req, res) => {
+    try {
+
+      var init_date = req.query.init_date;
+      var end_date = req.query.end_date || moment();
+      var usr = req.query.usr;
+
+      if (!init_date || !moment(init_date).isValid()) {
+        throw {
+          message: "Init date must be specified"
+        };
+      }
+
+      init_date = moment(init_date)
+
+      if (!moment(end_date).isValid()) {
+        throw {
+          message: "End date must be specified"
+        };
+      }
+
+      getPartialsCut(init_date, end_date, usr)
+        .then((r) => {
+
+          res.json({
+            ok: 1,
+            data: r
+          })
+        })
+        .catch((err) => {
+          throw err;
+        })
+
     } catch (err) {
       winston.log('error', err);
       res.status(500).json({

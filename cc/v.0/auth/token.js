@@ -6,9 +6,8 @@ const Token = require('../auth/sign')
 passport.use(new TokenStrategy(
   function(username, token, callback) {
     var token = token;
-    console.log(username);
-    console.log(token);
-    console.log("username");
+
+    console.log("HERE");
 
     Usr.findOne({
       usr: username
@@ -21,8 +20,10 @@ passport.use(new TokenStrategy(
 
       Token.verifyToken(token)
         .then((decoded) => {
+          if (!decoded)
+            return callback(null, false);
 
-          if (username == decoded.f)
+          if (username != decoded.f)
             return callback(null, false);
 
           return callback(null, true);

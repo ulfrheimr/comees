@@ -5,6 +5,7 @@ import { config } from '../config'
 import 'rxjs/add/operator/toPromise';
 
 import { Usr } from '../prots/usr'
+import * as moment from 'moment/moment';;
 
 
 @Injectable()
@@ -28,14 +29,10 @@ export class UsrService {
     sessionStorage.setItem("name", usr.name)
     sessionStorage.setItem("id", usr.id)
     sessionStorage.setItem("role", JSON.stringify(usr.role))
+    sessionStorage.setItem("token", usr.token)
+
   }
-  //
-  // dropInfo(): any {
-  //   sessionStorage.setItem("usr", null)
-  //   sessionStorage.setItem("role", null)
-  //   sessionStorage.setItem("id", null)
-  // }
-  //
+
   init(usr: string, pass: string): any {
     var headers = new Headers();
     headers.append("Authorization", "Basic " + btoa(usr + ":" + pass));
@@ -51,6 +48,8 @@ export class UsrService {
         .toPromise()
         .then(r => {
           r = r.json();
+
+
           if (r) {
             this.setUsr(r["usr"]);
             resolve(r["usr"].role);
@@ -66,6 +65,33 @@ export class UsrService {
     });
   }
 
+  close(): Promise<void> {
+    var headers = new Headers();
+
+    headers.append("x-username", this.get()["usr"]);
+    headers.append("x-token", this.get()["token"]);
+    headers.append("Content-Type", "application/x-www-form-urlencoded");
+
+    return this.http.delete(this.usrUri, { headers: headers })
+      .toPromise()
+      .then(r => {
+        r = r.json();
+
+        console.log(r)
+
+
+        // if (r) {
+        //   this.setUsr(r["usr"]);
+        //   resolve(r["usr"].role);
+        // }
+        // else
+        //   resolve(null);
+
+      })
+      .catch(this.handleError);
+
+  }
+
   getUsrs(): Promise<Usr[]> {
     return this.http.get(this.uri)
       .toPromise()
@@ -73,12 +99,38 @@ export class UsrService {
       .catch(this.handleError);
   }
 
+  getFirstLoginTime(is_closed: boolean = undefined): any {
+    var headers = new Headers();
+
+    headers.append("x-username", this.get()["usr"]);
+    headers.append("x-token", this.get()["token"]);
+    headers.append("Content-Type", "application/x-www-form-urlencoded");
+
+    return this.http.get(this.usrUri +
+      (is_closed != undefined ? "?is_closed=" + is_closed : "")
+      , { headers: headers })
+      .toPromise()
+      .then(r => {
+        r = r.json().data;
+
+        return {
+          init_login: r["init_login"],
+          is_closed: r["is_closed"],
+          end_login: !r["is_closed"] ? undefined : r["end_login"]
+        }
+
+      })
+      .catch(this.handleError);
+
+  }
+
   get(): any {
     return {
       usr: sessionStorage.getItem("usr"),
       role: JSON.parse(sessionStorage.getItem("role")),
       id: sessionStorage.getItem("id"),
-      name: sessionStorage.getItem("name")
+      name: sessionStorage.getItem("name"),
+      token: sessionStorage.getItem("token")
     }
   }
 }

@@ -18,7 +18,7 @@ var i = {
     var token = jwt.sign({
       f: field
     }, config.s, {
-      expiresIn: '12h'
+      expiresIn: config.token_expiration
     });
 
     return token;
@@ -26,9 +26,9 @@ var i = {
   verifyToken: (token) => {
     return new Promise((resolve, reject) => {
       jwt.verify(token, config.s, function(err, decoded) {
-        if (err) {
+        if (err)
           console.log("ERR");
-        }
+
         resolve(decoded);
       });
     });

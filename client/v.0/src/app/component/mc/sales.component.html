@@ -137,8 +137,8 @@
     </div>
   </div>
 
+  <!-- Confirm sale -->
   <div *ngIf="pageModel.toConfirm">
-    <!-- Confirm sale -->
     <div class="container" *ngIf="pageModel.toConfirm">
       <div class="coMeEs_sentence">
         Por favor confirme los productos. <br /> Si la venta es correcta seleccione el método de pago y oprima "CONFIRMAR",
@@ -323,7 +323,7 @@
       <div class="payment-info">
         <div>
           $
-          <mdl-textfield [(ngModel)]="pageModel.partialPayment" placeholder="Importe" pattern="[0-9.,]+"  maxlength="5" autofocus></mdl-textfield>
+          <mdl-textfield [(ngModel)]="pageModel.partialPayment" placeholder="Importe" pattern="[0-9.,]+" maxlength="5" autofocus></mdl-textfield>
         </div>
 
         <div class="enhaced">

@@ -5,7 +5,8 @@ const Token = require('../auth/sign');
 const logging = require("../../utils")
 const winston = require('winston');
 const SalesMan = require('./salesman');
-
+const Login = require('../models/login')
+const moment = require('moment');
 var typesUsr = {
   1: "salesman"
 }
@@ -144,6 +145,144 @@ var linkUsr = (usr) => {
   });
 }
 
+// LOGIN MANAGEMENT
+var loglogin = (idUsr) => {
+  return new Promise((resolve, reject) => {
+    try {
+      Login.findOne({
+          usr: idUsr,
+          is_closed: false
+        })
+        .sort({
+          init_login: 1
+        })
+        .exec((err, p) => {
+          if (err) reject(err);
+          var l = new Login({
+            usr: idUsr,
+            init_login: new Date(),
+            is_closed: false
+          });
+
+          if (!p) {
+            l.save(function(err, usr) {
+              if (err) reject(err);
+
+              resolve(true);
+            });
+          } else {
+            var yesterday = moment().subtract(1, 'd');
+            var last_login = moment(p["init_login"]);
+
+            if (last_login.isBefore(yesterday, 'd')) {
+              l.save(function(err, usr) {
+                if (err) reject(err);
+                resolve(true);
+              });
+            } else {
+              resolve(true);
+            }
+
+          }
+        });
+    } catch (err) {
+      reject(err);
+    }
+  })
+}
+
+var getLogin = (usr, is_closed = undefined) => {
+  return new Promise((resolve, reject) => {
+    try {
+      find(usr)
+        .then((u) => {
+          var query = {
+            usr: u.id,
+          }
+
+          if (is_closed != undefined) {
+            query["is_closed"] = is_closed
+          }
+
+          Login.findOne(query)
+            .sort({
+              init_login: -1
+            })
+            .exec((err, p) => {
+              if (err) reject(err);
+
+              resolve(p);
+            });
+        })
+        .catch((err) => {
+          winston.log('error', err);
+        });
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+var delLogin = (usr) => {
+  return new Promise((resolve, reject) => {
+    try {
+      find(usr)
+        .then((u) => {
+          Login.findOne({
+              usr: u.id,
+              is_closed: false
+            })
+            .sort({
+              init_login: -1
+            })
+            .exec((err, p) => {
+
+
+              if (err) reject(err);
+
+              if (!p) {
+                reject({
+                  msg: "Login not found",
+                  err: 1
+                });
+              } else {
+                var last_login = moment(p["init_login"]);
+
+                // Check if login to close is from today
+                if (last_login.isSame(moment(), 'd')) {
+                  Login.findOneAndUpdate({
+                    _id: p._id
+                  }, {
+                    $set: {
+                      is_closed: true,
+                      end_login: new Date()
+                    }
+                  }, {
+                    new: true
+                  }, function(err, doc) {
+                    if (err) {
+                      reject(err)
+                    }
+                    resolve(true)
+                  });
+                } else {
+                  reject({
+                    msg: "Session too old to logout",
+                    err: 2
+                  });
+                }
+              }
+            });
+        })
+        .catch((err) => {
+          winston.log('error', err);
+        });
+    } catch (err) {
+      reject(err);
+    }
+  })
+}
+
 Promise.all([verify, find, register, linkUsr]).catch((error) => {
   winston.log('error', error);
   return Promise.reject(error.message || error);
@@ -170,50 +309,50 @@ var u = {
   login: (req, res) => {
     find(req.body.usr)
       .then((u) => {
+        console.log("USER FOUND");
+        loglogin(u.id)
+          .then((is_logged) => {
+            console.log("LOGIN LOGGED");
+            findRole(req.body.usr)
+              .then((usrrole) => {
+                console.log("ROLE GOT");
+                switch (parseInt(usrrole.type)) {
+                  case 1:
+                    SalesMan.querySalesMan({
+                        _id: u.id
+                      })
+                      .then((r) => {
+                        r = r[0];
+                        var send_usr = {
+                          name: r.name,
+                          id: r["_id"],
+                          role: JSON.parse(r.role),
+                          usr: req.body.usr,
+                          token: req.body.token
+                        }
 
-        findRole(req.body.usr)
-          .then((usrrole) => {
-
-            switch (parseInt(usrrole.type)) {
-              case 1:
-                SalesMan.querySalesMan({
-                    _id: u.id
-                  })
-                  .then((r) => {
-                    r = r[0];
-
-                    var send_usr = {
-                      name: r.name,
-                      id: r["_id"],
-                      role: JSON.parse(r.role),
-                      usr: req.body.usr
-                    }
-
-                    res.json({
-                      ok: 1,
-                      usr: send_usr
-                    })
-
-                  })
-                  .catch((err) => {
-                    winston.log('error', err);
-                    res.status(500).send(err)
-                  })
-                break;
-              default:
-
-            }
+                        res.json({
+                          ok: 1,
+                          usr: send_usr
+                        })
+                      })
+                      .catch((err) => {
+                        winston.log('error', err);
+                        res.status(500).send(err)
+                      })
+                    break;
+                  default:
+                }
+              })
+              .catch((err) => {
+                winston.log('error', err);
+                res.status(500).send(err)
+              })
           })
           .catch((err) => {
             winston.log('error', err);
             res.status(500).send(err)
           })
-
-        // res.json({
-        //   ok: 1,
-        //   usr: u,
-        //   token: req.body.token
-        // })
       })
       .catch((err) => {
         winston.log('error', err);
@@ -271,8 +410,39 @@ var u = {
   },
   verifyUsr: (usr, pass) => {
     return verify(usr, pass);
-  }
+  },
+  getLogin: (req, res) => {
+    var usr = req.headers["x-username"];
+    var is_closed = req.query.is_closed
 
+    console.log(is_closed);
+
+    getLogin(usr, is_closed)
+      .then((r) => {
+        res.json({
+          ok: 1,
+          data: r
+        });
+      })
+      .catch((err) => {
+        winston.log('error', err);
+        res.status(500).send(err);
+      })
+  },
+  deleteLogin: (req, res) => {
+    var usr = req.headers["x-username"];
+
+    delLogin(usr)
+      .then((r) => {
+        res.json({
+          ok: 1
+        });
+      })
+      .catch((err) => {
+        winston.log('error', err);
+        res.status(500).send(err);
+      })
+  }
 }
 
 module.exports = u;

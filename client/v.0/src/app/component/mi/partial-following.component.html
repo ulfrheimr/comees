@@ -1,0 +1,163 @@
+<div class="top-container">
+  <div>
+    <div class="search-container">
+      <div>
+        <mdl-textfield [(ngModel)]="pageModel.hint" class="hint" (keyup.enter)="findPartials()" label="Nombre del cliente" floating-label autofocus></mdl-textfield>
+      </div>
+    </div>
+
+    <div class="grid-container">
+      <ag-grid-angular #agGrid style="width: 100%; height: 200px;" class="ag-fresh" [gridOptions]="gridOptions">
+      </ag-grid-angular>
+    </div>
+  </div>
+
+  <div *ngIf="selectedPartial">
+    <div class="container">
+      <div class=" coMeEs_sentence total-payments">
+        Cliente seleccionado
+      </div>
+      <br />
+      <br />
+      <div class="coMeEs_sentence">
+        Tratamientos
+      </div>
+      <div class="w100">
+        <table class="client_info">
+          <tr>
+            <td class="table_info">Cliente:</td>
+            <td class="enhaced_price">{{selectedPartial.client_name}}</td>
+          </tr>
+          <tr>
+            <td class="table_info">Fecha:</td>
+            <td class="enhaced_price"> {{selectedPartial.date}}</td>
+          </tr>
+          <tr>
+            <td>
+
+            </td>
+          </tr>
+          <tr>
+            <td class="table_info">Tratamiento</td>
+            <td class="table_info">Costo</td>
+          </tr>
+          <tr *ngFor="let smc of selectedPartial.mcs">
+            <td class="table_desc"> {{smc.mi.name}}</td>
+            <td class="table_desc"> {{smc.mi.price}}</td>
+          </tr>
+          <tr>
+            <td>
+
+            </td>
+            <td>
+              Total:
+              <span class="coMeEs_enhaced">
+                  {{selectedPartial.total}}
+                </span>
+            </td>
+          </tr>
+        </table>
+        <br />
+        <br />
+        <div class="coMeEs_sentence">
+          Pagos
+        </div>
+        <div class="w100">
+          <table class="client_info">
+            <thead>
+              <tr>
+                <td class="table_info">Fecha</td>
+                <td class="table_info">Pago</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let payment of selectedPartial.payments">
+                <td class="table_desc">{{payment.timestamp}}</td>
+                <td class="coMeEs_enhaced">$ {{payment.payment}}</td>
+              </tr>
+              <tr>
+                <td>
+
+                </td>
+                <td>
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="right">
+          <table>
+            <tr>
+              <td>
+                <span class="enhaced">Total pagado:</span>
+              </td>
+              <td>
+                <span class="total-payments">$ {{selectedPartial.payed}}</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="enhaced">Restante:</span>
+              </td>
+              <td>
+                <span class="total-payments"> ${{remaining()}}</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <div class="w100">
+      <div class="right">
+        <button (click)="selectedParXtial = undefined" mdl-button mdl-button-type="raised" mdl-ripple>CANCELAR</button>
+        <button (click)="partialPaymentDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Registar pago</button>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Dialog partial payment -->
+  <mdl-dialog #partialPaymentDialog [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+    <h4 class="mdl-dialog__title">Pago parcial</h4>
+    <div class="mdl-dialog__content">
+      <div *ngIf="selectedPartial">
+        Pago parcial solo disponible en efectivo
+        <div class="total sale-enhace">
+          Restante a : <span>$ {{remaining() | number : '1.2-2'}}</span>
+        </div>
+        <br />
+        <div>
+          <div class="payment-info">
+            <div>
+              $
+              <mdl-textfield [(ngModel)]="pageModel.partialPayment" placeholder="Importe" maxlength="5" pattern="[0-9.,]{1,}" autofocus></mdl-textfield>
+            </div>
+            <div>
+              Restante:
+            </div>
+            <div class="sale-enhace change" *ngIf="pageModel.partialPayment">
+              $ {{remainOfRemaining() | number : '1.2-2'}}
+            </div>
+          </div>
+        </div>
+
+        <div class="error-container right" *ngIf="!isPartialAllowed()">
+          <div class="error">
+            {{pageModel.amountError}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button mdl-button (click)="addPayment()" mdl-button-type="raised" mdl-colored="primary" [disabled]="!isPartialAllowed()" mdl-ripple>Agregar pago</button>
+      <button mdl-button (click)="partialPaymentDialog.close()" mdl-ripple>Cancelar</button>
+    </div>
+  </mdl-dialog>

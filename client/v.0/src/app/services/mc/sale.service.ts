@@ -7,15 +7,17 @@ import 'rxjs/add/operator/mergeMap';
 import { UsrService } from '../usr.service';
 
 import { McSale } from '../../prots/mc/sale';
-import { PartialMc } from '../../prots/mc/partial';
+import { Partial } from '../../prots/partial';
 
 import { config } from '../../config';
 
 @Injectable()
 export class SaleService {
-  private uri = config.mc + '/sales';
-  private uriPartial = config.mc + '/partials';
-  private uriPartialPayments = config.mc + '/partial_payments';
+  private uri = config.mc + '/sales'
+  private uriPartial = config.mc + '/partials'
+  private uriPartialPayments = config.mc + '/partial_payments'
+  private uriPartialsCut = config.mc + '/partials_cut'
+
   private paymentTypes = {
     "cash": "01",
     "debit": "28",
@@ -81,12 +83,8 @@ export class SaleService {
             return q;
           });
 
-          console.log(res)
-
           this.addMc(id, res)
             .then(idSale => {
-              console.log("END")
-              console.log(id)
               resolve(id)
             })
             .catch(this.handleError)
@@ -132,8 +130,6 @@ export class SaleService {
 
           this.addPartialMc(id, res, partial.payments)
             .then(idSale => {
-              console.log("END")
-              console.log(id)
               resolve(id)
             })
             .catch(this.handleError)
@@ -189,7 +185,6 @@ export class SaleService {
             .then(idSale => idSale)
             .catch(this.handleError);
         else {
-          console.log("SENDING PAYMENT")
           return this.addPartialPayment(idSale, payment)
             .then(idSale => idSale)
             .catch(this.handleError);
@@ -204,14 +199,13 @@ export class SaleService {
 
     var data = {
       id_sale: idSale,
-      payment: payment
+      payment: payment,
+      usr: this.usrService.get().usr
     }
 
     return this.http.put(this.uriPartialPayments, data, { headers: headers })
       .toPromise()
       .then(r => {
-        console.log("PÂYMEN")
-        console.log(r)
 
         return r;
       })
@@ -252,9 +246,36 @@ export class SaleService {
     )
       .toPromise()
       .then((r) => {
-        return r.json().data as PartialMc[];
+        console.log(r.json().data)
+        return r.json().data as Partial[];
       })
       .catch(this.handleError);
   }
 
+  getSales(init: string, end: string = null, usr: any = null): Promise<any[]> {
+    return this.http.get(this.uri
+      + "?init=" + init
+      + (end ? "&end=" + end : "")
+      + (usr ? "&usr=" + usr : ""))
+      .toPromise()
+      .then((r) => {
+        let sales: McSale[] = r.json().data as McSale[];
+
+        return sales;
+      })
+      .catch(this.handleError);
+  }
+
+  getPartialCut(init_date: any, end_date: any = null): Promise<any[]> {
+    return this.http.get(this.uriPartialsCut
+      + "?init_date=" + init_date
+      + "&usr=" + this.usrService.get().usr
+      + (end_date ? "&end_date=" + end_date : "")
+    )
+      .toPromise()
+      .then((r) => {
+        return r.json().data as Partial[];
+      })
+      .catch(this.handleError);
+  }
 }

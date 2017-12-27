@@ -1,0 +1,139 @@
+/* SCREEN */
+
+.name {
+  font-size: 1.3em;
+  font-weight: normal;
+}
+
+mdl-layout-header {
+  border-bottom: 2px solid #3F51B5 !important
+}
+
+.logo_container {
+  height: inherit;
+  background-color: white;
+  width: 110%;
+}
+
+.nav_container {
+  position: absolute;
+  color: blue;
+  right: 20px;
+}
+
+.nav_container>nav>a {
+  color: #3F51B5;
+  font-weight: bold;
+}
+
+.nav_container .material-icons {
+  color: #3F51B5;
+  font-weight: bold;
+}
+
+.logo_container>img {
+  max-width: 100%;
+  max-height: 100%;
+  padding-left: 10px;
+}
+
+.material-icons {
+  font-size: 2em;
+  color: white;
+  padding: 10px;
+}
+
+
+/* CONTAINER */
+
+p {
+  margin-bottom: 5px;
+}
+
+.warning {
+  font-size: 1.2em;
+  color: #F27981;
+}
+
+.main-container {
+  margin: 0 auto;
+  width: 70%;
+}
+
+.totals {
+  margin: 0 auto;
+  margin-top: 20px;
+  width: 70%;
+  text-align: justify;
+}
+
+.sp {
+  padding-left: 2em;
+}
+
+.container {
+  width: 100%;
+  text-align: center;
+  display: inline-block;
+}
+
+.enhaced {
+  font-size: 1.5em;
+  color: #438bca;
+  font-weight: bold;
+}
+
+.just-bold {
+  font-weight: bold;
+  color: black;
+}
+
+.block {
+  display: inline-block;
+  width: 100%;
+  margin: 10px;
+}
+
+.big {
+  font-size: 1.3em;
+  color: #3F51B5;
+}
+
+.rigth {
+  float: right;
+  width: 50%;
+}
+
+.total-box {
+  text-align: center;
+  margin: 0 auto;
+  width: 80%;
+}
+
+.total-box tbody {
+  font-size: 1.2em;
+  color: black;
+}
+
+.total-box thead {
+  font-size: 1.3em;
+  color: #438bca;
+}
+
+.inc_total {
+  font-size: 2em;
+}
+
+.inc {
+  font-size: 1.3em;
+}
+
+.doc_container {
+  width: 60%;
+  float: right;
+  ;
+}
+
+.right {
+  float: right;
+}

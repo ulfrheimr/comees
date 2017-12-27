@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { GridOptions } from "ag-grid";
 import { CellButton } from '../../cell.button.component';
 
+import { Client } from '../../prots/admin/client';
+
 import { Mi } from '../../prots/mi/mi';
 import { MiSale } from '../../prots/mi/sale';
 import { Estimation } from '../../prots/estimation';
@@ -119,17 +121,8 @@ export class MiSales implements OnInit {
       discount: 0.0,
       allowAdd: true,
       toConfirm: false,
-      // paymentType: "cash",
-      allowSale: false,
-      // cardDigits: "",
-      // cardAuth: "",
-      // amountError: ""
-      // toPayment: false,
-      // amount: undefined,
-
-      //
-
-      // partialPayment: undefined
+      selectedClient: undefined,
+      allowSale: false
     }
   }
 
@@ -322,14 +315,25 @@ export class MiSales implements OnInit {
   }
 
   partialPayment(): void {
+    let routeUrl: string = "/mi";
     this.partialPaymentDialog.close();
 
-    let routeUrl: string = "/mi";
-    this.passPrint._type = "mi";
-    this.passPrint.printObjects = this.products;
-    this.passPrint.registerPayment = parseFloat(this.pageModel.partialPayment);
+    var s = {
+      client: this.pageModel.selectedClient,
+      mis: this.products,
+      payments: this.pageModel.partialPayment
+    }
 
-    this.router.navigate(['.' + routeUrl, "print"])
+    this.saleService.makePartial(s)
+      .then((id) => {
+        this.passPrint._type = "mi";
+        this.passPrint.printObjects = this.products;
+        this.passPrint.registerPayment = parseFloat(this.pageModel.partialPayment);
+
+        this.partialPaymentDialog.close();
+        this.router.navigate(['.' + routeUrl + '/print'])
+      })
+      .catch(this.handleError)
   }
 
   //SALE WINDOW
@@ -339,5 +343,30 @@ export class MiSales implements OnInit {
 
   onPaymentCancelled(e): void {
     this.paymentConfirmDialog.close()
+  }
+
+  //CONFIRMATION
+  allowConfirmation(): Boolean {
+    var confirmation = true;
+
+    // this.products.forEach((p) => {
+    //   if (parseFloat(p.sale_total) == 0 || p.sale_total == "") {
+    //     confirmation = false;
+    //     this.pageModel.confirmationError = "La confirmación de importe no puede estar en ceros";
+    //   }
+    //
+    //   if (!p.observations || p.observations == "") {
+    //     confirmation = false;
+    //     this.pageModel.confirmationError = "Se deben agregar observaciones a la venta";
+    //   }
+    // })
+
+    return confirmation;
+  }
+
+  //CLIENT WINDOW
+  onClientSelected(client: Client): void {
+    this.pageModel.selectedClient = client;
+    this.pageModel.partial = false;
   }
 }

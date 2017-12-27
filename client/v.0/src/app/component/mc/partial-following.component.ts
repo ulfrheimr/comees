@@ -94,39 +94,39 @@ export class PartialFollowingComponent implements OnInit {
 
   findPartials(): void {
     var client = this.pageModel.hint;
-    if (client.length > 3)
-      this.saleService.getPartials(client)
-        .then((partials) => {
-          var res = partials.map((x) => {
-            var total = x.mcs.map((c) => c.sale_price)
-              .reduce((x, y) => x + y, 0);
 
-            var paymentsTotal = x.payments.map((c) => c.payment)
-              .reduce((x, y) => x + y, 0);
+    this.saleService.getPartials(client)
+      .then((partials) => {
+        var res = partials.map((x) => {
+          var total = x.mcs.map((c) => c.sale_price)
+            .reduce((x, y) => x + y, 0);
 
-            var payments = x.payments.map((x) => {
-              return {
-                _id: x._id,
-                timestamp: this.assets.formatDate(x.timestamp),
-                payment: x.payment
-              }
-            })
+          var paymentsTotal = x.payments.map((c) => c.payment)
+            .reduce((x, y) => x + y, 0);
 
+          var payments = x.payments.map((x) => {
             return {
-              id: x._id,
-              client: x.client,
-              client_name: x.client_name,
-              payments: payments,
-              mcs: x.mcs,
-              total: total,
-              payed: paymentsTotal,
-              date: this.assets.formatDate(x.payments[0].timestamp)
+              _id: x._id,
+              timestamp: this.assets.formatDate(x.timestamp),
+              payment: x.payment
             }
           })
 
-          this.partials = res;
-          this.gridOptions.api.setRowData(this.partials);
-        });
+          return {
+            id: x._id,
+            client: x.client,
+            client_name: x.client_name,
+            payments: payments,
+            mcs: x.mcs,
+            total: total,
+            payed: paymentsTotal,
+            date: this.assets.formatDate(x.payments[0].timestamp)
+          }
+        })
+
+        this.partials = res;
+        this.gridOptions.api.setRowData(this.partials);
+      });
   }
 
   onSelected(partial: PartialMc): void {

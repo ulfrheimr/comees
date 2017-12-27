@@ -60,9 +60,10 @@
           </div>
           <br />
           <div>
-            <button (click)="confirmSale()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>VENDER</button>
+            <button (click)="pageModel.toConfirm = true" mdl-button mdl-button-type="raised" mdl-colored="primary" [disabled]="!allowConfirmation()" mdl-ripple>CONFIRMAR</button>
+            <!-- <button (click)="confirmSale()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>VENDER</button> -->
             <button (click)="estimationDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>PRESUPUESTO</button>
-            <button (click)="partialPaymentDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="!isPartialPaymentAllowed()">PAGO PARCIAL</button>
+            <!-- <button (click)="partialPaymentDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="!isPartialPaymentAllowed()">PAGO PARCIAL</button> -->
           </div>
           <div class="error-container right" *ngIf="!isPartialPaymentAllowed()">
             <div class="error">
@@ -179,80 +180,101 @@
   </div>
 
   <!-- Confirm sale -->
-  <div class="confirm-container" *ngIf="pageModel.toConfirm">
+  <div *ngIf="pageModel.toConfirm">
+    <div class="coMeEs_sentence">
+      Por favor confirme los productos. <br /> Si la venta es correcta seleccione el método de pago y oprima "CONFIRMAR",
+      <br /> si desea modificarla oprima "REGRESAR".
+    </div>
+
+    <div class="enhaced right">
+      <table>
+        <tr>
+          <td>
+            Importe :
+          </td>
+          <td>
+            <span class="coMeEs_enhaced">$ {{getTotal() | number : '1.2-2'}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Total a pagar con descuento:
+          </td>
+          <td>
+            <span class="coMeEs_enhaced">$ {{getTotalDiscount() | number : '1.2-2'}}</span>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+    <table class="w100">
+      <thead>
+        <tr class="info enhaced">
+          <td>
+            Cantidad
+          </td>
+          <td>
+            Estudio
+          </td>
+          <td>
+            Precio de venta
+          </td>
+          <td>
+            Importe unitario
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products">
+          <td>
+            <span class="enhaced">{{p.qty}}</span>
+          </td>
+          <td>
+            <span>{{p.name}}</span>
+          </td>
+          <td>
+            <span class="enhaced">$ {{p.sale_price | number : '1.2-2'}}</span>
+          </td>
+          <td>
+            <span class="enhaced">$ {{p.price_discount | number : '1.2-2'}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="w100">
+      <button (click)="paymentConfirmDialog.show()" *ngIf="!pageModel.partial" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>VENDER</button>
+      <button (click)="initializePageModel()" mdl-button mdl-button-type="raised" mdl-ripple>Cancelar</button>
+    </div>
+
     <div>
-      <div class="coMeEs_sentence">
-        Por favor confirme los productos. <br /> Si la venta es correcta seleccione el método de pago y oprima "CONFIRMAR",
-        <br /> si desea modificarla oprima "REGRESAR".
-      </div>
-      <div class="selected_mi">
-        <table>
-          <thead>
-            <tr class="info enhaced">
-              <td>
-                Cantidad
-              </td>
-              <td>
-                Estudio
-              </td>
-              <td>
-                Precio de venta
-              </td>
-              <td>
-                Importe unitario
-              </td>
+      <div *ngIf="pageModel.selectedClient">
+        <div class="coMeEs_enhaced">
+          Cliente seleccionado
+        </div>
+        <div class="selected_mi">
+          <table>
+            <tr>
+              <td class="enhaced">Nombre:</td>
+              <td class="info">{{pageModel.selectedClient.name}}</td>
             </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let p of products">
-              <td>
-                <span class="enhaced">{{p.qty}}</span>
-              </td>
-              <td>
-                <span>{{p.name}}</span>
-              </td>
-              <td>
-                <span class="enhaced">$ {{p.sale_price | number : '1.2-2'}}</span>
-              </td>
-              <td>
-                <span class="enhaced">$ {{p.price_discount | number : '1.2-2'}}</span>
-              </td>
+            <tr>
+              <td class="enhaced">Teléfono:</td>
+              <td class="info">{{pageModel.selectedClient.phone}}</td>
             </tr>
-          </tbody>
-        </table>
-        <div class="w100">
-          <div class="enhaced right">
-            <table>
-              <tr>
-                <td>
-                  Importe :
-                </td>
-                <td>
-                  <span class="coMeEs_enhaced">$ {{getTotal() | number : '1.2-2'}}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Total a pagar con descuento:
-                </td>
-                <td>
-                  <span class="coMeEs_enhaced">$ {{getTotalDiscount() | number : '1.2-2'}}</span>
-                </td>
-              </tr>
-            </table>
-            <br />
-          </div>
+          </table>
         </div>
       </div>
-    </div>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <div class="right">
-      <button mdl-button (click)="initializePageModel()" mdl-ripple>Cancelar</button>
-      <button (click)="paymentConfirmDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary">CONFIRMAR</button>
+
+      <mdl-switch [(ngModel)]="pageModel.partial" mdl-ripple>Opciones a cuenta</mdl-switch>
+
+      <div *ngIf="pageModel.partial">
+        <client (onClientSelected)="onClientSelected($event)"></client>
+      </div>
+
+      <div class="w100">
+        <button (click)="partialPaymentDialog.show()" *ngIf="pageModel.selectedClient" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>PAGO A CUENTA</button>
+        <button (click)="pageModel.toConfirm  = false" mdl-button mdl-button-type="raised" mdl-ripple>Cancelar</button>
+      </div>
     </div>
   </div>
 </div>

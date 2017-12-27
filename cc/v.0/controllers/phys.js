@@ -1,4 +1,5 @@
 var Phys = require('../models/phys');
+var PaymentSchema = require('../models/schemas').PaymentSchema
 const winston = require('winston');
 
 var savePhys = (phys) => {
@@ -49,7 +50,8 @@ var updatePhys = (phys) => {
       first: phys.first,
       last: phys.last,
       rfc: phys.rfc,
-      bank_account: phys.account
+      bank_account: phys.account,
+      payment_schema: phys.payment_schema
     }, {
       upsert: true
     }, function(err, phys) {
@@ -115,7 +117,6 @@ var p = {
       });
     }
   },
-
   getPhys: (req, res) => {
     try {
       var seachField = req.query.by || "id";
@@ -152,10 +153,39 @@ var p = {
       });
     }
   },
-  postPhys: (req, res) => {
+  modifyPhys: (req, res) => {
     try {
+      var id = req.params.id;
+      var payment = req.body.payment_schema;
+      var commission = req.body.commission;
+
+      if (!PaymentSchema[payment]) {
+        throw {
+          message: "Not valid payment schema"
+        }
+      }
+
+      if (payment == 1) {
+        if (isNaN(commission)) {
+          throw {
+            message: "In this payment method, commission is obligatory"
+          }
+        }
+      }
+
+      var schema = {
+        schema: 2
+      }
+
+      if (parseInt(payment) == 1) {
+        schema = {
+          schema: payment,
+          commission: commission
+        }
+      }
+
       var p = {
-        id: req.body.id,
+        id: id,
         mail: req.body.mail,
         code: req.body.code,
         phone: req.body.phone,
@@ -165,7 +195,8 @@ var p = {
         first: req.body.first,
         last: req.body.last,
         rfc: req.body.rfc,
-        account: req.body.account
+        account: req.body.account,
+        payment_schema: schema
       };
 
       updatePhys(p)
@@ -185,7 +216,6 @@ var p = {
     }
   },
   queryPhys: (query) => {
-
     return findPhys(query);
   }
 };

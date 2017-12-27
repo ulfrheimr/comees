@@ -7,7 +7,7 @@
           <td>
             <mdl-textfield [(ngModel)]="pageModel.hint" class="hint" (keyup.enter)="findMis()" label="Buscar por nombre de estudio" floating-label autofocus></mdl-textfield>
           </td>
-          <td class="right">
+          <td class="right" *ngIf="false">
             <p>¿No encuentras el estudio? Crea uno nuevo</p>
             <button (click)="newMI()" mdl-button mdl-button-type="raised" mdl-colored="primary">Nuevo estudio</button>
           </td>
@@ -70,7 +70,7 @@
         <tr>
           <td class="info">Precio: </td>
           <td>
-            <mdl-textfield [(ngModel)]="selectedMi.price" label="Precio" floating-label autofocus></mdl-textfield>
+            <mdl-textfield [(ngModel)]="selectedMi.price" label="Precio" [disabled]="true" floating-label autofocus></mdl-textfield>
           </td>
         </tr>
       </table>

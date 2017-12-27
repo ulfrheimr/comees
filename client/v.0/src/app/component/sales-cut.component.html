@@ -1,0 +1,301 @@
+<mdl-layout mdl-layout-fixed-header mdl-layout-header-seamed>
+  <mdl-layout-header>
+    <mdl-layout-header-row>
+      <div class="logo_container">
+        <img src="./assets/images/logo.png" />
+      </div>
+
+
+      <div class="nav_container">
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link name">Hola <span> {{getName()}} </span></a>
+          <!-- <a href="">
+            <mdl-icon>settings</mdl-icon>
+          </a> -->
+          <a (click)="salesCutDialog.show()">
+            <mdl-icon>exit_to_app</mdl-icon>
+          </a>
+        </nav>
+      </div>
+
+    </mdl-layout-header-row>
+  </mdl-layout-header>
+
+  <mdl-layout-content>
+    <div class="app-container">
+      <div class="container" *ngIf="!pageModel.toCalculate">
+        <div class="warning">
+          Una vez calculada la venta usted <b> no podrá iniciar sesión nuevamente</b>.
+        </div>
+        <br />
+        <button mdl-button mdl-button-type="raised" mdl-colored="primary" (click)="getTotals(true)" mdl-ripple>CALCULAR VENTA</button>
+        <button mdl-button mdl-button-type="raised" (click)="returnToApp()" mdl-ripple>REGRESAR</button>
+      </div>
+
+      <div class="totals" *ngIf="pageModel.toCalculate">
+
+        <table>
+          <tr>
+            <td class="enhaced">
+              Inicio de sesión
+            </td>
+            <td class="just-bold">
+              {{pageModel.firstLogin}}
+            </td>
+          </tr>
+          <tr>
+            <td class="enhaced">
+              Hasta
+            </td>
+            <td class="just-bold">
+              {{pageModel.endLogin}}
+            </td>
+          </tr>
+        </table>
+
+        <div class="enhaced inc_total right">
+          TOTAL: <span class="just-bold">{{total | number:'1.2-2'}}</span>
+        </div>
+        <br />
+        <br />
+
+        <div class="totals">
+          <div>
+            <p class="enhaced">
+              ESTUDIOS DE GABINETE
+            </p>
+            <div>
+              <div>
+                <p class="enhaced sp">
+                  VENTAS
+                </p>
+                <div *ngIf="mi.sales.length >0">
+                  <table class="total-box">
+                    <thead>
+                      <td>
+                        Cantidad
+                      </td>
+                      <td>
+                        Estudio
+                      </td>
+                      <td>
+                        Total
+                      </td>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let mi of mi.sales">
+                        <td>
+                          {{mi.qty}}
+                        </td>
+                        <td>
+                          {{mi.mi.name}}
+                        </td>
+                        <td>
+                          {{mi.sale_price| number:'1.2-2'}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div *ngIf="mi.sales.length == 0">
+                  NO HAY VENTAS QUE REPORTAR
+                </div>
+              </div>
+              <br />
+              <div>
+                <p class="enhaced sp">
+                  PAGOS PARCIALES
+                </p>
+                <div *ngIf="mi.sales.length >0">
+                  <table class="total-box">
+                    <thead>
+                      <tr>
+                        <td>
+                          PAGO
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let mi of mi.partials">
+                        <td>
+                          {{mi.payment| number:'1.2-2'}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div *ngIf="mi.partials.length == 0">
+                  NO HAY PAGOS PARCIALES QUE REPORTAR
+                </div>
+              </div>
+              <div class="block">
+                <div>
+                  <div class="rigth">
+                    <table class="inc">
+                      <thead>
+                        <tr>
+                          <td class="just-bold big">
+                            TOTAL
+                          </td>
+
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="big">
+                            $ {{(mi.sales_total + mi.partial_total) | number:'1.2-2'}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br /><br />
+          <div>
+            <p class="enhaced">
+              CONSULTAS MEDICAS
+            </p>
+            <div class="sp" *ngFor="let sale of mc">
+              <div class="big">
+                <span class="just-bold">MÉDICO: </span>
+                <span>{{sale.name}} {{sale.first}}</span>
+              </div>
+              <div>
+                <p class="enhaced sp">
+                  VENTAS
+                </p>
+                <div *ngIf="sale.sales.length >0">
+                  <table class="total-box">
+                    <thead>
+                      <td>
+                        Cantidad
+                      </td>
+                      <td>
+                        Servicio
+                      </td>
+                      <td>
+                        Total
+                      </td>
+                      <td>
+                        Caja
+                      </td>
+                      <td>
+                        Pago
+                      </td>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let s of sale.sales">
+                        <td>
+                          {{s.qty}}
+                        </td>
+                        <td>
+                          {{s.mc.name}}
+                        </td>
+                        <td>
+                          {{s.price| number:'1.2-2'}}
+                        </td>
+                        <td>
+                          {{s.box| number:'1.2-2'}}
+                        </td>
+                        <td>
+                          {{s.payment| number:'1.2-2'}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div *ngIf="sale.sales.length == 0">
+                  NO HAY VENTAS QUE REPORTAR
+                </div>
+              </div>
+              <br />
+              <div>
+                <p class="enhaced sp">
+                  PAGOS PARCIALES
+                </p>
+                <div *ngIf="sale.partials.length >0">
+                  <table class="total-box">
+                    <thead>
+                      <td>
+                        Pago
+                      </td>
+                      <td>
+                        Caja
+                      </td>
+                      <td>
+                        Pago
+                      </td>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let s of sale.partials">
+                        <td>
+                          {{s.price| number:'1.2-2'}}
+                        </td>
+                        <td>
+                          {{s.box| number:'1.2-2'}}
+                        </td>
+                        <td>
+                          {{s.payment| number:'1.2-2'}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div *ngIf="sale.partials.length == 0">
+                  NO HAY PAGOS PARCIALES QUE REPORTAR
+                </div>
+              </div>
+
+              <div class="block">
+                <div>
+                  <br />
+                  <table class="doc_container inc">
+                    <thead>
+                      <tr>
+                        <td class="just-bold big">
+                          TOTAL
+                        </td>
+                        <td class="just-bold big">
+                          CAJA
+                        </td>
+                        <td class="just-bold big">
+                          MÉDICO
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="big">
+                          $ {{(sale.sales_total.total + sale.partial_total.total)| number:'1.2-2'}}
+                        </td>
+                        <td class="big">
+                          $ {{(sale.sales_total.box + sale.partial_total.box) | number:'1.2-2'}}
+                        </td>
+                        <td class="big">
+                          $ {{(sale.sales_total.phys + sale.partial_total.phys) | number:'1.2-2'}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <br />
+              <br />
+            </div>
+          </div>
+
+          <div>
+            <div class="right">
+              <button mdl-button mdl-button-type="raised" mdl-colored="primary" (click)="makeSalesCut()" mdl-ripple>CERRAR SESIÓN</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mdl-layout-content>
+</mdl-layout>
+<dialog-outlet></dialog-outlet>

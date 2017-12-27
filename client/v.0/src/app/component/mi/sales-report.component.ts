@@ -34,7 +34,6 @@ export class MiSalesReportComponent implements OnInit {
   private gridOptions: GridOptions;
   constructor(
     private saleService: SaleService,
-    // private usrInfoService: UsrInfoService,
     private usrService: UsrService
   ) {
     this.role = this.getRole();

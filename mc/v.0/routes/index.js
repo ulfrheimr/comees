@@ -35,7 +35,7 @@ router.route('/partials/:saleId/:partialId')
   .delete(SaleController.closePartial)
 
 router.route('/partial_payments')
-  // id_sale, payment
+  // id_sale, payment, usr
   .put(SaleController.addPayment)
 
 router.route('/sales')
@@ -47,5 +47,8 @@ router.route('/sales')
 
 router.route('/sales/:id')
   .get(SaleController.getSale);
+
+router.route('/partials_cut')
+  .get(SaleController.partialsCut)
 
 module.exports = router;

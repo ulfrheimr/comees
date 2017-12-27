@@ -1,6 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit, Inject, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { UsrService } from '../services/usr.service';
+
+import { MdlDialogComponent } from '@angular-mdl/core';
+import { MdlSnackbarService } from '@angular-mdl/core';;
 
 @Component({
   selector: 'main-menu',
@@ -8,13 +12,28 @@ import { UsrService } from '../services/usr.service';
   styleUrls: ['./main-menu.component.css']
 })
 export class MainMenuComponent {
+  @ViewChild('salesCutDialog') private salesCutDialog: MdlDialogComponent;
 
   role: string;
 
   constructor(
-    private usrService: UsrService
+    private usrService: UsrService,
+    private router: Router,
+    private mdlSnackbarService: MdlSnackbarService
   ) {
     this.role = this.getRole();
+    this.usrService.getFirstLoginTime()
+      .then((l) => {
+        if (l.is_closed) {
+          this.router.navigate(['./sales-cut'])
+        }
+      })
+      .catch(this.handleError);
+  }
+
+  private handleError(error: any): Promise<any> {
+    console.log(error);
+    return Promise.reject(error.message || error);
   }
 
   getRole(): string {
@@ -30,4 +49,11 @@ export class MainMenuComponent {
     let name: string = this.usrService.get()["name"];
     return name.split(" ")[0];
   }
+
+  //SALES CUT WINDOW
+
+  closeSession(): void {
+    this.router.navigate(['./sales-cut'])
+  }
+
 }

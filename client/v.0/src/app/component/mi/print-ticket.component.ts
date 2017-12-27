@@ -43,7 +43,6 @@ export class PrintMiTicketComponent implements OnInit {
     this.assets.getAssets()
       .then((a) => {
         this.asset = a["config"];
-        console.log(this.asset)
       })
       .catch((err) => this.handleError);
 

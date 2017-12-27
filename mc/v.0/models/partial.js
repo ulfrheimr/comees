@@ -39,6 +39,10 @@ var PartialSchema = mongoose.Schema({
       type: Number,
       required: true
     },
+    usr: {
+      type: String,
+      required: true
+    },
     timestamp: {
       type: Date,
       required: true

@@ -23,6 +23,9 @@ var SaleSchema = mongoose.Schema({
   auth: {
     type: String
   },
+  from_partial:{
+    type: Boolean
+  },
   mcs: [{
     qty: {
       type: Number

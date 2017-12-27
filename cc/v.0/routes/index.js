@@ -18,6 +18,15 @@ router.route('/signup')
 
 router.route('/login')
   .post(Auth.isAuthenticated, Usr.spread, Usr.login)
+  // x-token, x-username
+  // in header field
+  .get(Token.authToken, Usr.getLogin)
+  .delete(Token.authToken, Usr.deleteLogin);
+
+router.route('/verify')
+  .post((req, res) => {
+    console.log(req);
+  })
 
 router.route('/usr')
   // usrname, usr, pass, type (1:salesman)
@@ -48,7 +57,8 @@ router.route('/physs')
 
 router.route('/physs/:id')
   // by=code|mail|id=default
-  .get(PhysController.getPhys);
+  .get(PhysController.getPhys)
+  .post(PhysController.modifyPhys)
 
 
 

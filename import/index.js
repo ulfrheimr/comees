@@ -370,6 +370,8 @@ function importMis(path) {
           setTimeout(function() {
             ix += 1
 
+            console.log(ix);
+
             mi.putMi(item)
               .then((res) => {
                 callback(null, res);

@@ -37,6 +37,9 @@ var PhysSchema = mongoose.Schema({
   },
   bank_account: {
     type: String
+  },
+  payment_schema: {
+    type: Object
   }
 });
 

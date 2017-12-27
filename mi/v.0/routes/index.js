@@ -66,6 +66,22 @@ router.route('/invoices')
   .post(Invoices.setAsInvoiced)
   .get(Invoices.getInvoices)
 
+router.route('/partials')
+  // client
+  .put(SaleController.putPartial)
+  // id_sale, qty, mc, phys, sale_price, observations
+  .post(SaleController.addPartialMi)
+  .get(SaleController.getPartial);
+
+router.route('/partial_payments')
+  // id_sale, payment, usr
+  .put(SaleController.addPayment)
+
+router.route('/partials/:saleId/:partialId')
+  .delete(SaleController.closePartial)
+
+router.route('/partials_cut')
+  .get(SaleController.partialsCut)
 
 
 module.exports = router;

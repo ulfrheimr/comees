@@ -25,10 +25,14 @@ import { MiSales } from './component/mi/sales.component';
 import { PrintMiTicketComponent } from './component/mi/print-ticket.component';
 import { MiSalesReportComponent } from './component/mi/sales-report.component';
 import { ModifyMIComponent } from './component/mi/modify-mi.component';
+import { MiPartialFollowingComponent } from './component/mi/partial-following.component';
 
 import { McSales } from './component/mc/sales.component';
 import { PrintMcTicketComponent } from './component/mc/print-ticket.component';
 import { PartialFollowingComponent } from './component/mc/partial-following.component';
+
+import { SalesReport } from './component/cc/sales-report.component';
+import { SalesCut } from './component/sales-cut.component';
 
 import { ClientComponent } from './component/admin/client.component';
 import { SalePaymentComponent } from './component/sale-payment.component';
@@ -50,10 +54,14 @@ import { PassPrint } from './component/pass-print';
     MiSales,
     PrintMiTicketComponent,
     MiSalesReportComponent,
+    MiPartialFollowingComponent,
 
     McSales,
     PrintMcTicketComponent,
     PartialFollowingComponent,
+
+    SalesCut,
+    SalesReport,
 
     ClientComponent,
     SalePaymentComponent,

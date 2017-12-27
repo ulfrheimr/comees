@@ -222,6 +222,7 @@ export class McSales implements OnInit {
     this.pageModel.isEstimation = true;
     this.estimationDialog.show();
   }
+
   estimation(): void {
     this.estimationDialog.close();
 
