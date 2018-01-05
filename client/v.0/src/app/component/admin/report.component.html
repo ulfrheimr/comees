@@ -1,0 +1,58 @@
+<div class="top-container">
+  <div>
+    <table>
+      <tr>
+        <!-- <td>
+          <mdl-radio name="day" [(ngModel)]="pageModel.span" value="day" mdl-ripple>Día</mdl-radio>
+          <mdl-radio name="week" [(ngModel)]="pageModel.span" value="week" mdl-ripple>Semana</mdl-radio>
+          <mdl-radio name="month" [(ngModel)]="pageModel.span" value="month" mdl-ripple>Mes</mdl-radio>
+        </td> -->
+        <td>
+          <div *ngIf="pageModel.init">
+            <ng-datepicker [(ngModel)]="pageModel.init" [options]="options"></ng-datepicker>
+          </div>
+          <div *ngIf="pageModel.end">
+            <ng-datepicker [(ngModel)]="pageModel.end" [options]="options"></ng-datepicker>
+          </div>
+        </td>
+        <td>
+          <button (click)="getData()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>OBTENER DATOS</button>
+        </td>
+      </tr>
+    </table>
+    <div>
+
+    </div>
+    <div>
+    </div>
+
+    <div *ngIf="lineChartData.length != 0">
+      <div >
+      <canvas baseChart height="100px"
+                  [datasets]="lineChartData"
+                  [labels]="lineChartLabels"
+                  [options]="lineChartOptions"
+                  [legend]="lineChartLegend"
+                  [chartType]="lineChartType"
+                  (chartHover)="chartHovered($event)"
+                  (chartClick)="chartClicked($event)"
+                  ></canvas>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="row">
+  <div class="col-md-6">
+
+  </div>
+  <div class="col-md-6" style="margin-bottom: 10px">
+    <table class="table table-responsive table-condensed">
+      <tr>
+        <th *ngFor="let label of lineChartLabels">{{label}}</th>
+      </tr>
+      <tr *ngFor="let d of lineChartData">
+        <td *ngFor="let label of lineChartLabels; let j=index">{{d && d.data[j]}}</td>
+      </tr>
+    </table>
+    <button (click)="randomize()">CLICK</button>
+  </div>
+</div> -->

@@ -37,6 +37,8 @@ export class SalesCut implements OnInit {
   physs: any[]
   pageModel: any
   total: number = 0
+  quantToReport = 0
+  asset;
 
   constructor(
     private usrService: UsrService,
@@ -63,6 +65,12 @@ export class SalesCut implements OnInit {
   }
 
   ngOnInit(): void {
+    this.assets.getAssets()
+      .then((a) => {
+        this.asset = a["config"];
+      })
+      .catch((err) => this.handleError);
+
     this.usrService.getFirstLoginTime()
       .then((r) => {
         let is_closed = r.is_closed
@@ -76,7 +84,6 @@ export class SalesCut implements OnInit {
   }
 
 
-
   getTotals(close_session = false, end = undefined): void {
 
     this.usrService.getFirstLoginTime(false)
@@ -85,6 +92,7 @@ export class SalesCut implements OnInit {
 
         let end_time = moment(end)
 
+        // THIS STUFF IS TO CLOSE SESSION
         if (close_session)
           this.usrService.close()
             .then((session) => {
@@ -145,6 +153,8 @@ export class SalesCut implements OnInit {
                     phys_hash[s.phys].sales_total["phys"] += res["payment"]
                     phys_hash[s.phys].sales_total["box"] += res["box"]
 
+                    this.quantToReport += res["box"]
+
                     this.total += parseFloat(res["price"])
                   })
 
@@ -172,6 +182,8 @@ export class SalesCut implements OnInit {
                       phys_hash[x.phys].partial_total["phys"] += res["payment"]
                       phys_hash[x.phys].partial_total["box"] += res["box"]
 
+                      this.quantToReport += res["box"]
+
                       this.total += parseFloat(res["price"])
                     })
 
@@ -193,17 +205,19 @@ export class SalesCut implements OnInit {
             this.mi.sales_total = s.map((x) => x.sale_price).reduce((x, y) => x + y, 0)
 
             this.total += this.mi.sales_total
+
+            this.quantToReport += this.mi.sales_total
           })
           .catch(this.handleError)
 
         this.miSaleService.getPartialCut(init_time.format(), end_time.format())
           .then((partials) => {
-            console.log(partials)
             this.mi.partials = partials
             this.mi.partial_total = partials.map(x => x.payment)
               .reduce((x, y) => x + y, 0)
 
             this.total += this.mi.partial_total
+            this.quantToReport += this.mi.partial_total
           })
           .catch(this.handleError)
 
@@ -222,9 +236,116 @@ export class SalesCut implements OnInit {
     this.router.navigate(['./mi'])
   }
 
+  logout(): void {
+    this.router.navigate(['./'])
+  }
+
   // Usr control
   getName(): string {
     let name: string = this.usrService.get()["name"];
     return name.split(" ")[0];
   }
+
+  // Ticket
+  print(): void {
+    let printContents, popupWin;
+    printContents = document.getElementById('ticket').innerHTML;
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+
+    popupWin.document.write(`
+      <html>
+        <head>
+        <style>
+        body{
+          margin: 0;
+        }
+        * {
+          font-family: 'Arial';
+          text-transform: uppercase;
+          font-size: 2.7mm;
+        }
+
+        .enhaced-ticket {
+          font-size: 3.3mm;
+        }
+
+        table {
+          position: relative;
+          width: 100%;
+        }
+
+        td {
+          padding: 1px;
+        }
+
+        hr {
+          margin: 2mm 0mm 2mm 0mm;
+          height: 1px;
+          border: none;
+          background-color: black;
+        }
+
+        .top-container {
+          display: inline-block;
+          text-align: center;
+        }
+
+        .right{
+          text-align: right;
+        }
+
+        .ticket-container {
+          width: 54mm;
+        }
+
+        .main-span-ticket {
+          padding-right: 4mm;
+          margin: 0 auto;
+        }
+
+        .logo-container {
+          text-align: center;
+          width: 100%;
+          margin: 100%;
+          margin: 0 auto;
+        }
+
+        .logo-container p {
+          padding-top: 1mm;
+          margin: 0 auto;
+        }
+
+        .logo {
+          padding: 1mm;
+          width: 100%;
+          margin: 0 auto;
+        }
+
+        .bold {
+          font-weight: bold;
+        }
+
+        .to-report{
+          text-align: center;
+          font-size: 4mm;
+          margin:0 auto;
+          width: 60%;
+        }
+
+        .quant-report{
+          font-size: 6mm;
+          margin:0 auto;
+          width: 50%;
+          text-align: center;
+        }
+          </style>
+        </head>
+    <body onload="window.print();close();">${printContents}</body>
+      </html>`
+    );
+    popupWin.document.close();
+
+  }
+
 }

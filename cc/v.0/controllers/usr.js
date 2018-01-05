@@ -151,10 +151,9 @@ var loglogin = (idUsr) => {
     try {
       Login.findOne({
           usr: idUsr,
-          is_closed: false
         })
         .sort({
-          init_login: 1
+          init_login: -1
         })
         .exec((err, p) => {
           if (err) reject(err);
@@ -171,6 +170,8 @@ var loglogin = (idUsr) => {
               resolve(true);
             });
           } else {
+
+
             var yesterday = moment().subtract(1, 'd');
             var last_login = moment(p["init_login"]);
 
@@ -414,8 +415,6 @@ var u = {
   getLogin: (req, res) => {
     var usr = req.headers["x-username"];
     var is_closed = req.query.is_closed
-
-    console.log(is_closed);
 
     getLogin(usr, is_closed)
       .then((r) => {

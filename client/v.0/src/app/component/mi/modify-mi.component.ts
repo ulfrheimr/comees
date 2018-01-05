@@ -94,7 +94,7 @@ export class ModifyMIComponent implements OnInit {
     if (this.pageModel.hint != "")
       this.miService.getMis(this.pageModel.hint)
         .then((x) => {
-          console.log(x)
+
           this.mis = x;
           this.gridOptions.api.setRowData(this.mis);
         });
@@ -103,7 +103,6 @@ export class ModifyMIComponent implements OnInit {
   getCats(): void {
     this.catService.getCats()
       .then((x) => {
-        console.log(x)
         this.cats = x;
       });
   }

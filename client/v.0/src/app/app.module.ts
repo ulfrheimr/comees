@@ -11,6 +11,9 @@ import { MdlSelectModule } from '@angular-mdl/select';
 
 import { HttpModule } from '@angular/http';
 import { AgGridModule } from "ag-grid-angular/main";
+import { NgDatepickerModule } from 'ng2-datepicker';
+
+import { ChartsModule } from 'ng2-charts';
 
 import { UsrActivate } from './guard/usr-activate';
 import { UsrService } from './services/usr.service'
@@ -31,7 +34,7 @@ import { McSales } from './component/mc/sales.component';
 import { PrintMcTicketComponent } from './component/mc/print-ticket.component';
 import { PartialFollowingComponent } from './component/mc/partial-following.component';
 
-import { SalesReport } from './component/cc/sales-report.component';
+import { SalesReport } from './component/admin/report.component';
 import { SalesCut } from './component/sales-cut.component';
 
 import { ClientComponent } from './component/admin/client.component';
@@ -77,6 +80,9 @@ import { PassPrint } from './component/pass-print';
     ReactiveFormsModule,
     MdlModule,
     MdlSelectModule,
+    NgDatepickerModule,
+
+    ChartsModule,
 
     AgGridModule.withComponents([
       CellButton

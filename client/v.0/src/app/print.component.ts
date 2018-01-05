@@ -158,13 +158,6 @@ export class PrintComponent implements OnInit {
     return this.passPrint.fields;
   }
 
-  // endProcess(): void {
-  //
-  //   var url = this.router.url.split('/');
-  //   let routeUrl: string = url.slice(1, url.length - 1).reduce((x, y) => x + "/" + y, "");
-  //   this.router.navigate(['.' + routeUrl + "/mi"])
-  // }
-
   getTotal1(): string {
     this.total1 = this.poolToPrint
       .map((x) => parseFloat(x.f3))

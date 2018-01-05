@@ -1,4 +1,5 @@
 var MI = require('../models/mi');
+var LogChange = require('./log-change');
 const winston = require('winston');
 
 var saveMI = (mi) => {
@@ -22,7 +23,7 @@ var saveMI = (mi) => {
 
 var modifyMI = (mi) => {
   return new Promise((resolve, reject) => {
-    console.log(mi);
+
     MI.findOneAndUpdate({
       _id: mi._id
     }, {
@@ -79,6 +80,13 @@ var s = {
   },
   modifyMI: (req, res) => {
     try {
+      var usr = req.body.usr
+
+      if (!usr)
+        throw {
+          message: "Usr must be specified"
+        };
+
       var mi = {
         _id: req.params.mi,
         name: req.body.name,
@@ -88,8 +96,10 @@ var s = {
         delivery_time: req.body.delivery,
         sample: req.body.sample
       }
-      modifyMI(mi)
+      modifyMI(mi, usr)
         .then((r) => {
+          LogChange.log(1, usr, mi._id)
+
           res.json({
             ok: 1,
             data: r

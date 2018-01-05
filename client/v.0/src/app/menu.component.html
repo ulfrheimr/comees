@@ -14,3 +14,9 @@
     <a class="mdl-navigation__link" routerLink="/mc/partial-following">Seguimiento parciales</a>
   </nav>
 </div>
+<div *ngIf="roles.mi == 'adm' && roles.mc == 'adm'">
+  <mdl-layout-title class="title">Administración</mdl-layout-title>
+  <nav class="mdl-navigation">
+    <a class="mdl-navigation__link" routerLink="/adm/report">Reportes de ventas</a>
+  </nav>
+</div>

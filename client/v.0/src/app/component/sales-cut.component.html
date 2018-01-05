@@ -8,13 +8,7 @@
 
       <div class="nav_container">
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link name">Hola <span> {{getName()}} </span></a>
-          <!-- <a href="">
-            <mdl-icon>settings</mdl-icon>
-          </a> -->
-          <a (click)="salesCutDialog.show()">
-            <mdl-icon>exit_to_app</mdl-icon>
-          </a>
+          <a class="mdl-navigation__link name">Bye <span> {{getName()}} </span></a>
         </nav>
       </div>
 
@@ -28,7 +22,7 @@
           Una vez calculada la venta usted <b> no podrá iniciar sesión nuevamente</b>.
         </div>
         <br />
-        <button mdl-button mdl-button-type="raised" mdl-colored="primary" (click)="getTotals(true)" mdl-ripple>CALCULAR VENTA</button>
+        <button mdl-button mdl-button-type="raised" mdl-colored="primary" (click)="getTotals(false)" mdl-ripple>CALCULAR VENTA</button>
         <button mdl-button mdl-button-type="raised" (click)="returnToApp()" mdl-ripple>REGRESAR</button>
       </div>
 
@@ -287,15 +281,69 @@
               <br />
             </div>
           </div>
+          <br /><br />
+          <hr />
+          <div id="ticket">
+            <div class="ticket-container">
+              <div class="main-span-ticket">
+                <div class="logo-container">
+                  <img class="logo" src="/assets/images/logo.png" />
+                  <br />
+                  <p class="enhaced-ticket bold" *ngIf="asset">
+                    {{asset.name}}
+                    <br /> <br />
+                  </p>
+                </div>
 
+                <div class="top-container" *ngIf="asset">
+                  {{asset.invoice.address}}<br /> CP: {{asset.invoice.cp}} RFC: {{asset.invoice.rfc}}
+                  <br />
+                </div>
+                <hr />
+
+                <div class="right">
+                  <span class="enhaced-ticket">{{timestamp | date: 'dd/MM/yyyy hh:mm' }}</span>
+                </div>
+
+                <div>
+                  <table class="client-opts">
+                    <tr>
+                      <td class="bold">
+                        Cajero:
+                      </td>
+                      <td>
+                        {{getName()}}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <br />
+                <hr />
+                <br />
+                <div>
+                  <p class="to-report">
+                    TOTAL A REPORTAR
+                  </p>
+                  <br />
+                  <p class="quant-report">
+                    ${{quantToReport}}
+                  </p>
+                  <hr />
+                </div>
+              </div>
+            </div>
+          </div>
           <div>
             <div class="right">
-              <button mdl-button mdl-button-type="raised" mdl-colored="primary" (click)="makeSalesCut()" mdl-ripple>CERRAR SESIÓN</button>
+              <button mdl-button (click)="print()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Imprimir</button>
+              <button mdl-button mdl-button-type="raised" mdl-colored="primary" (click)="logout()" mdl-ripple>CERRAR SESIÓN</button>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+
   </mdl-layout-content>
 </mdl-layout>
 <dialog-outlet></dialog-outlet>

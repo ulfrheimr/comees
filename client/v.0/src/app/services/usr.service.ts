@@ -49,7 +49,6 @@ export class UsrService {
         .then(r => {
           r = r.json();
 
-
           if (r) {
             this.setUsr(r["usr"]);
             resolve(r["usr"].role);
@@ -76,16 +75,6 @@ export class UsrService {
       .toPromise()
       .then(r => {
         r = r.json();
-
-        console.log(r)
-
-
-        // if (r) {
-        //   this.setUsr(r["usr"]);
-        //   resolve(r["usr"].role);
-        // }
-        // else
-        //   resolve(null);
 
       })
       .catch(this.handleError);
@@ -120,7 +109,10 @@ export class UsrService {
         }
 
       })
-      .catch(this.handleError);
+      .catch((err) => {
+        this.handleError(err)
+        throw err
+      });
 
   }
 

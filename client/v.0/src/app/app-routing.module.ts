@@ -25,7 +25,7 @@ import { McSales } from './component/mc/sales.component';
 import { PrintMcTicketComponent } from './component/mc/print-ticket.component';
 import { PartialFollowingComponent } from './component/mc/partial-following.component';
 
-import { SalesReport } from './component/cc/sales-report.component';
+import { SalesReport } from './component/admin/report.component';
 import { SalesCut } from './component/sales-cut.component';
 
 import { ClientComponent } from './component/admin/client.component';
@@ -67,6 +67,17 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'sales-cut', pathMatch: 'full' },
       // { path: 'sales-cut', component: SalesCut },
+      // { path: 'print-ticket/:id', component: PrintMcTicketComponent },
+      // { path: 'sales-report', component: MiSalesReportComponent },
+      // { path: 'print', component: PrintComponent },
+      // { path: 'partial-following', component: PartialFollowingComponent },
+    ]
+  },
+  {
+    path: 'adm', component: MainMenuComponent, canActivate: [UsrActivate],
+    children: [
+      { path: '', redirectTo: 'report', pathMatch: 'full' },
+      { path: 'report', component: SalesReport },
       // { path: 'print-ticket/:id', component: PrintMcTicketComponent },
       // { path: 'sales-report', component: MiSalesReportComponent },
       // { path: 'print', component: PrintComponent },
