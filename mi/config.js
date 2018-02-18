@@ -3,9 +3,7 @@ const config = {
   // data: "localhost",
   data: "data",
   data_port: 27017,
-  db_name: "mi",
-  s: ".Kirkimax.",
-  cc: "localhost"
+  db_name: "comees",
 }
 
 module.exports = config;

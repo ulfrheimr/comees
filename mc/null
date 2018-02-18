@@ -779,3 +779,7 @@
 2018-01-05T00:32:40.595-0600 I -        [conn171] end connection 127.0.0.1:62618 (6 connections now open)
 2018-01-05T00:34:03.985-0600 I -        [conn299] end connection 127.0.0.1:56974 (3 connections now open)
 2018-01-05T00:34:03.985-0600 I -        [conn300] end connection 127.0.0.1:56975 (3 connections now open)
+2018-01-08T10:55:22.463-0600 I COMMAND  [ftdc] serverStatus was very slow: { after basic: 0, after asserts: 0, after backgroundFlushing: 0, after connections: 0, after dur: 0, after extra_info: 0, after globalLock: 122704095, after locks: 122704148, after network: 122704159, after opLatencies: 122704170, after opcounters: 122704170, after opcountersRepl: 122704170, after repl: 122704180, after security: 122704190, after storageEngine: 122704202, after wiredTiger: 122704286, at end: 122704333 }
+2018-01-08T15:57:35.629-0600 I -        [conn46] end connection 127.0.0.1:65375 (1 connection now open)
+2018-01-09T08:00:26.684-0600 I COMMAND  [PeriodicTaskRunner] task: UnusedLockCleaner took: 820ms
+2018-01-14T16:47:05.374-0600 I COMMAND  [PeriodicTaskRunner] task: UnusedLockCleaner took: 191ms

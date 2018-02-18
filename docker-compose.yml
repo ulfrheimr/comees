@@ -1,5 +1,7 @@
 version:            '2'
 services:
+  data:
+    
   cc:
     container_name:
       "cc"
@@ -10,32 +12,32 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - cc_data
+      - data
     restart:        unless-stopped
   mi:
     container_name:
       "mi"
     build:
-      context:    ./mi
+      context:      ./mi
     image:
       "mi"
     ports:
       - "3001:3001"
     depends_on:
       - data
-    restart:      unless-stopped
+    restart:        unless-stopped
   mc:
     container_name:
       "mc"
     build:
-      context:    ./mc
+      context:      ./mc
     image:
       "mc"
     ports:
       - "3003:3003"
     depends_on:
       - data
-    restart:      unless-stopped
+    restart:        unless-stopped
   client:
     container_name:
       "client"
@@ -46,15 +48,4 @@ services:
     command:        ng serve --host 0.0.0.0 --public 127.0.0.1:80
     ports:
       - "80:80"
-    restart: unless-stopped
-  cc_data:
-    image:        mongo
-    command: mongod --port 20000
-    ports:
-      - "20000:20000"
-    restart:      unless-stopped
-  data:
-    image:        mongo
-    ports:
-      - "27017:27017"
-    restart:      unless-stopped
+    restart:        unless-stopped
