@@ -1,7 +1,16 @@
 version:            '2'
 services:
   data:
-    
+    image:          aashreys/mongo-auth:latest
+    environment:
+      - AUTH=yes
+      - MONGODB_ADMIN_USER=admin
+      - MONGODB_ADMIN_PASS=pollito
+      - MONGODB_APPLICATION_DATABASE=comees
+      - MONGODB_APPLICATION_USER=usr
+      - MONGODB_APPLICATION_PASS=Kwijib00
+    ports:
+      - "27017:27017"
   cc:
     container_name:
       "cc"
