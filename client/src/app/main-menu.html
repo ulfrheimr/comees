@@ -1,0 +1,45 @@
+<mdl-layout mdl-layout-fixed-header mdl-layout-header-seamed>
+  <mdl-layout-header>
+    <mdl-layout-header-row>
+      <div class="logo_container">
+        <img src="./assets/images/logo.png" />
+      </div>
+
+      <mdl-layout-spacer></mdl-layout-spacer>
+      <div class="nav_container">
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link name">Hola <span>
+            {{getName()}}
+          </span></a>
+          <a (click)="salesCutDialog.show()">
+            <mdl-icon>exit_to_app</mdl-icon>
+          </a>
+        </nav>
+      </div>
+    </mdl-layout-header-row>
+  </mdl-layout-header>
+  <mdl-layout-drawer>
+    <side-menu></side-menu>
+  </mdl-layout-drawer>
+  <mdl-layout-content>
+    <div class="app-container">
+      <router-outlet></router-outlet>
+    </div>
+  </mdl-layout-content>
+</mdl-layout>
+<dialog-outlet></dialog-outlet>
+
+
+<!-- <mdl-dialog #salesCutDialog [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Confirmación de salida</h4>
+  <div class="mdl-dialog__content">
+    Usted finalizará su sesión y no podrá volver a inicializarla hasta el día siguiente.
+    <br /> Si se retirará oprima "CONFIRMAR", de lo contrario "CANCELAR".
+  </div>
+  <div class="mdl-dialog__actions">
+    <button mdl-button (click)="closeSession()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>CONFIRMAR</button>
+    <button mdl-button (click)="salesCutDialog.close()" mdl-ripple>CANCELAR</button>
+  </div>
+</mdl-dialog> -->

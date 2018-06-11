@@ -32,7 +32,6 @@ import { ClientComponent } from './component/admin/client.component';
 
 
 import { PrintComponent } from './print.component';
-//
 // import { UsrActivate } from './guard/usr-activate';
 
 

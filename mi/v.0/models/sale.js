@@ -5,9 +5,13 @@ var SaleSchema = mongoose.Schema({
     type: Date,
     required: true
   },
-  usr: {
+  client: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: false
+  },
+  client_name: {
     type: String,
-    required: true
+    required: false
   },
   paymentMethod: {
     type: String,
@@ -23,9 +27,9 @@ var SaleSchema = mongoose.Schema({
   auth: {
     type: String
   },
-  from_partial:{
-    type: Boolean
-  },
+  status: {
+    type: Number
+  }
   mis: [{
     qty: {
       type: Number
@@ -44,6 +48,28 @@ var SaleSchema = mongoose.Schema({
     },
     type_discount: {
       type: String
+    },
+    timestamp: {
+      type: Date,
+      required: true
+    },
+    usr: {
+      type: String,
+      required: true
+    },
+  }],
+  payments: [{
+    payment: {
+      type: Number,
+      required: true
+    },
+    usr: {
+      type: String,
+      required: true
+    },
+    timestamp: {
+      type: Date,
+      required: true
     }
   }]
 });

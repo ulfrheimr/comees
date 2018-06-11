@@ -143,7 +143,6 @@ export class McSales implements OnInit {
     this.pageModel.partial = false;
   }
 
-
   addToSale(): void {
     if (this.mcHash[this.selectedMc._id + "" + this.pageModel.selectedPhys]) {
       this.mcHash[this.selectedMc._id + "" + this.pageModel.selectedPhys]["qty"] += 1;

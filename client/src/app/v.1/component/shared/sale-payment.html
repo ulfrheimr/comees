@@ -1,0 +1,98 @@
+<h4 class="mdl-dialog__title">Confirmación de venta</h4>
+<div class="mdl-dialog__content">
+  <div>
+    Por favor confirme el método de pago para la venta.
+    <div class="total sale-enhace" *ngIf="getAmount()">
+      Total a pagar: <span class="coMeEs_enhaced">$
+        {{getAmount() | number : '1.2-2'}}
+      </span>
+    </div>
+    <br />
+
+    <div>
+      <!-- <div>
+        Seleccione el tipo de pago de la venta
+      </div> -->
+      <div class="payment-info">
+        <!-- <div>
+          <div>
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="m-payment-cash">
+              <input type="radio" id="m-payment-cash" [(ngModel)]="pageModel.paymentType" class="mdl-radio__button" name="options" value="cash" checked>
+              <span class="mdl-radio__label">Efectivo</span>
+            </label>
+          </div>
+          <div>
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="m-payment-debit">
+              <input type="radio" id="m-payment-debit" [(ngModel)]="pageModel.paymentType" class="mdl-radio__button" name="options" value="debit" checked>
+              <span class="mdl-radio__label">Tarjeta de débito</span>
+            </label>
+          </div>
+          <div>
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="m-payment-credit">
+              <input type="radio" id="m-payment-credit" [(ngModel)]="pageModel.paymentType" class="mdl-radio__button" name="options" value="credit" checked>
+              <span class="mdl-radio__label">Tarjeta de crédito</span>
+            </label>
+          </div>
+        </div> -->
+
+        <div *ngIf="pageModel.paymentType == 'cash'">
+          <table>
+            <tr>
+              <td>
+                Importe recibido:
+              </td>
+              <td>
+                Cambio:
+              </td>
+            </tr>
+            <tr>
+              <td>
+                $
+                <mdl-textfield placeholder="Importe" pattern="[0-9.,]{1,}" [(ngModel)]="pageModel.amountReceived" maxlength="5" autofocus></mdl-textfield>
+              </td>
+              <td *ngIf="pageModel.amountReceived">
+                $ {{change() | number : '1.2-2'}}
+              </td>
+            </tr>
+          </table>
+          <div>
+          </div>
+
+        </div>
+        <div *ngIf="pageModel.paymentType != 'cash'">
+          <div>
+            Capture la siguiente información de venta
+          </div>
+          <table>
+            <tr>
+              <td>
+                Ultimos 4 dígitos
+              </td>
+              <td>
+                <mdl-textfield pattern="[0-9.,]{1,}" [(ngModel)]="pageModel.cardDigits" maxlength="4" autofocus></mdl-textfield>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Autorización
+              </td>
+              <td>
+                <mdl-textfield pattern="[0-9.,]{1,}" [(ngModel)]="pageModel.cardAuth"></mdl-textfield>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="error-container right" *ngIf="!isSaleAllowed()">
+      <div class="error">
+        {{pageModel.amountError}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="mdl-dialog__actions">
+  <button mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="!isSaleAllowed()" (click)="confirmPayment()">Vender</button>
+  <button mdl-button mdl-ripple (click)="cancelPayment()">Cancelar</button>
+</div>
