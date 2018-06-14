@@ -1,0 +1,58 @@
+<div class="top-container">
+  <div class="search-container">
+    <table>
+      <tr>
+        <td>
+          Seleccione un laboratorio:
+        </td>
+        <td>
+          <select *ngIf="pageModel.facts" class="mdl-selectfield__select" [(ngModel)]="pageModel.provider">
+            <option *ngFor="let f of pageModel.facts" [value]="f._id">{{f.name}}</option>
+          </select>
+        </td>
+        <td>
+          <button mdl-button mdl-button-type="raised" (click)="fetchMIs()" mdl-colored="primary" mdl-ripple>Obtener estudios</button>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+
+  <table class="w100 mis" *ngIf="mis?.length > 0">
+    <thead>
+      <tr class="info enhaced">
+        <td>
+          Estudio
+        </td>
+        <td>
+          Precio
+        </td>
+        <td>
+          Precio maquila
+        </td>
+        <td>
+
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let m of mis" [ngClass]="{'modified': m.modified }">
+        <td>
+          <span class="enhaced">{{m.name}}</span>
+        </td>
+        <td>
+          <span class="info">$ {{m.price | number : '1.2-2'}}</span>
+        </td>
+        <td>
+          $
+          <mdl-textfield [(ngModel)]="m.fact_price" class="hint" label="Precio de maquila" floating-label autofocus></mdl-textfield>
+        </td>
+        <td>
+          <mdl-checkbox  [mdl-ripple]="true" [(ngModel)]="m.modified" *ngIf="m.modified">Activar</mdl-checkbox>
+          <br />
+          <button mdl-button mdl-button-type="raised" [disabled]="m.modified" mdl-colored="primary" mdl-ripple (click)="setPrice(m)">Establecer precio</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

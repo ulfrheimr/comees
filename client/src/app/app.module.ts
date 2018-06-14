@@ -31,6 +31,7 @@ import { McSales } from './v.1/component/mc/sales';
 import { PrintMcTicket } from './v.1/component/mc/print-ticket'
 
 import { MiSales } from './v.1/component/mi/sales'
+import { FactMI } from './v.1/component/mi/fact-mi'
 import { PrintMiTicket } from './v.1/component/mi/print-ticket'
 
 import { Print } from './v.1/component/shared/print'
@@ -75,28 +76,14 @@ import { UsrService } from './v.1/services/usr.service'
     ClientSelection,
     SalePaymentComponent,
     PartialConfirmation,
-    // Mi,
-    // PrintMiTicketComponent,
-    // MiSalesReportComponent,
-    // MiPartialFollowingComponent,
-    //
     McSales,
     PrintMcTicket,
 
     MiSales,
+    FactMI,
     PrintMiTicket,
 
     Print
-    // PartialFollowingComponent,
-    //
-    // SalesCut,
-    // SalesReport,
-    //
-    // ClientComponent,
-
-
-    // ModifyMIComponent,
-    // CellButton
   ],
   imports: [
     BrowserModule,
@@ -108,14 +95,6 @@ import { UsrService } from './v.1/services/usr.service'
 
     MdlModule,
     MomentModule
-    // MdlSelectModule,
-    // NgDatepickerModule,
-    //
-    // ChartsModule,
-    //
-    // AgGridModule.withComponents([
-    //   CellButton
-    // ])
   ],
   providers: [
     PassPrint,

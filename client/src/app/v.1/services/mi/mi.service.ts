@@ -16,7 +16,9 @@ export class MiService {
   getMis(name: string): Promise<Mi[]> {
     return this.http.get(this.uri + "?name=" + name)
       .toPromise()
-      .then(r => r.json().data as Mi[])
+      .then(r => {
+        return r.json().data as Mi[]
+      })
       .catch(this.handleError);
   }
 

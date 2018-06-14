@@ -33,6 +33,7 @@ export class UsrService {
   }
 
   init(usr: string, pass: string): any {
+    console.log("HRE")
     var headers = new Headers();
     headers.append("Authorization", "Basic " + btoa(usr + ":" + pass));
     headers.append("Content-Type", "application/x-www-form-urlencoded");

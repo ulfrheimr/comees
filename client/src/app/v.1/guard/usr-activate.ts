@@ -5,9 +5,6 @@ import { UsrService } from '../services/usr.service';
 
 @Injectable()
 export class UsrActivate implements CanActivate {
-  private allowedMiSales = {
-
-  }
   constructor(
     private router: Router,
     private usrService: UsrService
@@ -19,8 +16,9 @@ export class UsrActivate implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ) {
+    console.log("asdasd")
     let role: string = this.usrService.get()["role"];
-    
+
 
     // console.log(route.url[0].path)
     // console.log(this.usrService.get())

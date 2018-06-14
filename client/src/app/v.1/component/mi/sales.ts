@@ -38,6 +38,7 @@ export class MiSales implements OnInit {
     private passPrint: PassPrint
   ) { }
   ngOnInit(): void {
+    console.log("HELL")
     this.pageModel = {
       option: "create",
       hint: "",

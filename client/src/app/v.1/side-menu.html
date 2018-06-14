@@ -2,9 +2,10 @@
   <mdl-layout-title class="title">Estudios de gabinete</mdl-layout-title>
   <nav class="mdl-navigation">
     <a class="mdl-navigation__link" routerLink="/mi/sales">Ventas</a>
+    <a class="mdl-navigation__link" routerLink="/mi/fact-mi" *ngIf="roles.mi == 'adm'">Modificación de estudios</a>
     <!-- <a class="mdl-navigation__link" routerLink="/mi/partial-following">Seguimiento parciales</a>
     <a class="mdl-navigation__link" routerLink="/mi/sales-report">Reporte de ventas</a>
-    <a class="mdl-navigation__link" routerLink="/mi/modify-mi" *ngIf="roles.mi == 'adm'">Modificación de estudios</a> -->
+     -->
   </nav>
 </div>
 <div *ngIf="roles.mc">
