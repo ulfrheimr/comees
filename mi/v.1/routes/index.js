@@ -6,6 +6,10 @@ const AuthToken = require('../auth/token')
 
 var CatController = require('../controllers/cat');
 var MIController = require('../controllers/mi');
+var MIProviderController = require('../controllers/mi-provider');
+var FactMIController = require('../controllers/fact-mi');
+
+
 var SaleController = require('../controllers/sale');
 var PhysComissionController = require('../controllers/phys-comission')
 var PhysMiController = require('../controllers/phys-mi')
@@ -39,6 +43,20 @@ router.route('/sales')
 
 router.route('/sales/:id')
   .get(SaleController.getSale)
+
+router.route('/mi_providers')
+  // {name}
+  .put(MIProviderController.putMIProvider)
+  .get(MIProviderController.getMIProviders);
+
+router.route('/fact_mis')
+  // {price, id_provider, id_mi}
+  .put(FactMIController.putFactMI)
+
+router.route('/fact_mis/:p')
+  .get(FactMIController.getFactMIs);
+
+
 
 // router.route('/mis/:mi')
 //   // {sample, price, delivery_time, desc, name, catId, usr}

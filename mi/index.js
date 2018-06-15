@@ -8,6 +8,8 @@ var app = express();
 var port = process.env.PORT || 3001;
 
 mongoose.connect('mongodb://' + config.usr + ':' + config.pass + '@' + config.data + ':' + config.data_port + '/' + config.db_name);
+
+// Here we have connection used locally without any security for dev purpsoses
 // mongoose.connect('mongodb://' + config.data + ':' + config.data_port + '/' + config.db_name);
 
 var allowCrossDomain = function(req, res, next) {

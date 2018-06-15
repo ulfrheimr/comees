@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, EventEmitter, ViewChild } from '@angular/core';
+
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 
@@ -104,8 +105,12 @@ export class FactMI implements OnInit {
         let r = Object.keys(values.mis).map((k) => {
           return values.mis[k]
         })
-
-        console.log(r)
+        r = r.sort((x, y) => {
+          if (x.modified) return 1;
+          if (y.modified) return -1;
+          if (x.name < y.name) return -1;
+          if (x.name > y.name) return 1;
+        })
 
         this.mis = r
       }
@@ -117,6 +122,7 @@ export class FactMI implements OnInit {
     return new Promise((resolve, reject) => {
       this.miService.getMis("")
         .then((x) => {
+          console.log(x)
           let res = x.sort((x, y) => {
             if (x.name > y.name)
               return 1

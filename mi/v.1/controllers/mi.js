@@ -148,6 +148,20 @@ var s = {
         err: err.message
       });
     }
+  },
+  getMI: (mi) => {
+    try {
+      var query = {
+        _id: mi._id
+      };
+
+      return findMIs(query)
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
   }
 };
 

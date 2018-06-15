@@ -18,41 +18,45 @@
 
   </div>
 
-  <table class="w100 mis" *ngIf="mis?.length > 0">
-    <thead>
-      <tr class="info enhaced">
-        <td>
-          Estudio
-        </td>
-        <td>
-          Precio
-        </td>
-        <td>
-          Precio maquila
-        </td>
-        <td>
+  <div *ngIf="mis?.length > 0">
+    <table class="w100 mis" >
+      <thead>
+        <tr class="info enhaced">
+          <td>
+            Estudio
+          </td>
+          <td>
+            Precio
+          </td>
+          <td>
+            Precio maquila
+          </td>
+          <td>
 
-        </td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let m of mis" [ngClass]="{'modified': m.modified }">
-        <td>
-          <span class="enhaced">{{m.name}}</span>
-        </td>
-        <td>
-          <span class="info">$ {{m.price | number : '1.2-2'}}</span>
-        </td>
-        <td>
-          $
-          <mdl-textfield [(ngModel)]="m.fact_price" class="hint" label="Precio de maquila" floating-label autofocus></mdl-textfield>
-        </td>
-        <td>
-          <mdl-checkbox  [mdl-ripple]="true" [(ngModel)]="m.modified" *ngIf="m.modified">Activar</mdl-checkbox>
-          <br />
-          <button mdl-button mdl-button-type="raised" [disabled]="m.modified" mdl-colored="primary" mdl-ripple (click)="setPrice(m)">Establecer precio</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of mis | paginate: { itemsPerPage: 20, currentPage: p }" [ngClass]="{'modified': m.modified }">
+          <td>
+            <span class="enhaced">{{m.name}}</span>
+          </td>
+          <td>
+            <span class="info">$ {{m.price | number : '1.2-2'}}</span>
+          </td>
+          <td>
+            $
+            <mdl-textfield [(ngModel)]="m.fact_price" class="hint" label="Precio de maquila" floating-label autofocus></mdl-textfield>
+          </td>
+          <td>
+            <mdl-checkbox [mdl-ripple]="true" [(ngModel)]="m.modified" *ngIf="m.modified">Activar</mdl-checkbox>
+            <br />
+            <button mdl-button mdl-button-type="raised" [disabled]="m.modified" mdl-colored="primary" mdl-ripple (click)="setPrice(m)">Establecer precio</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+
 </div>

@@ -303,12 +303,13 @@ function getCats(cats) {
 
 function readMis(path) {
   var fileContents = fs.readFileSync(path);
-  var lines = fileContents.toString().split('\r');
+
+  var lines = fileContents.toString().split('\n');
+
 
   var items = lines.splice(1)
     .filter(x => {
-      var value = x.split(",");
-
+      var value = x.split(";");
 
       if (value.length < 6)
         return false;
@@ -327,7 +328,7 @@ function readMis(path) {
       return true;
     })
     .map((item) => {
-      var i = item.split(",");
+      var i = item.split(";");
 
       return {
         name: i[0].toLowerCase(),
@@ -346,7 +347,6 @@ function importMis(path) {
   var ix = 0;
   var items = readMis(path);
 
-  console.log(items);
 
   getCats([...new Set(items.map(i => capitalize.words(i['cat'])))])
     .then((catsDB) => {
@@ -368,15 +368,18 @@ function importMis(path) {
         });
 
 
+      var current = 0
       async.map(items,
         (item, callback) => {
           setTimeout(function() {
             ix += 1
 
-            console.log(ix);
 
             mi.putMi(item)
               .then((res) => {
+                current += 1
+                console.log("added " + current);
+
                 callback(null, res);
               })
               .catch((err) => {
@@ -409,4 +412,4 @@ function importMis(path) {
     .catch((err) => console.log(err));
 }
 
-importMis('/Users/rrivera/Desktop/svc.csv')
+importMis('./svc.csv')

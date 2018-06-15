@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import {NgxPaginationModule} from 'ngx-pagination'
 
 import { AppComponent } from './app.component';
 
@@ -94,7 +95,8 @@ import { UsrService } from './v.1/services/usr.service'
     ReactiveFormsModule,
 
     MdlModule,
-    MomentModule
+    MomentModule,
+    NgxPaginationModule
   ],
   providers: [
     PassPrint,

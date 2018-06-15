@@ -51,7 +51,7 @@ services:
     container_name:
       "client"
     build:
-      context:      ./client/v.0
+      context:      ./client
     image:
       "client"
     command:        ng serve --host 0.0.0.0 --public 127.0.0.1:80
