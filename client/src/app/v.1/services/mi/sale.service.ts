@@ -9,6 +9,7 @@ import { UsrService } from '../../services/usr.service';
 import { MiSale } from '../../prots/mi/sale';
 
 import { config } from '../../config';
+import * as moment from 'moment/moment'
 
 @Injectable()
 export class SaleService {
@@ -65,7 +66,6 @@ export class SaleService {
       mis: sale.mis
     };
 
-    console.log("GETTING SALE")
     return this.http.put(this.uri, data, { headers: headers })
       .toPromise()
       .then(r => r.json().data)
@@ -80,6 +80,24 @@ export class SaleService {
         let sale: MiSale = r.json().data as MiSale;
 
         return sale
+      })
+      .catch(this.handleError);
+  }
+
+  getSales(init: string, end: string = null, usr: string = null): Promise<any[]> {
+    let postUri: string;
+    let query = "?init=" + moment(init).format("YYYY-MM-DD")
+      + (end ? "&end=" + moment(end).format("YYYY-MM-DD") : "")
+      + (usr ? "&usr=" + usr : "")
+
+    console.log(query)
+    return this.http.get(this.uri
+      + query)
+      .toPromise()
+      .then((r) => {
+        let sales: MiSale[] = r.json().data as MiSale[];
+
+        return sales;
       })
       .catch(this.handleError);
   }

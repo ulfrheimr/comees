@@ -122,7 +122,6 @@ export class FactMI implements OnInit {
     return new Promise((resolve, reject) => {
       this.miService.getMis("")
         .then((x) => {
-          console.log(x)
           let res = x.sort((x, y) => {
             if (x.name > y.name)
               return 1

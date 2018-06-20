@@ -13,6 +13,7 @@
   "private": true,
   "dependencies": {
     "@angular-mdl/core": "^4.0.8",
+    "@angular-mdl/datepicker": "^5.0.0",
     "@angular/animations": "^4.2.4",
     "@angular/cli": "^1.4.7",
     "@angular/common": "^4.2.4",
@@ -25,6 +26,7 @@
     "@angular/router": "^4.2.4",
     "ag-grid": "^17.1.1",
     "ag-grid-angular": "^17.1.0",
+    "angular2-datetimepicker": "^1.1.1",
     "angular2-moment": "^1.9.0",
     "core-js": "^2.4.1",
     "moment": "^2.22.1",

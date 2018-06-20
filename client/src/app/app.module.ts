@@ -2,7 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import {NgxPaginationModule} from 'ngx-pagination'
+import { NgxPaginationModule } from 'ngx-pagination'
+import { AngularDateTimePickerModule } from 'angular2-datetimepicker'
 
 import { AppComponent } from './app.component';
 
@@ -12,6 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpModule } from '@angular/http';
 
 import { MdlModule } from '@angular-mdl/core';
+
 // import { MdlSelectModule } from '@angular-mdl/select';
 
 import { Login } from './login.component'
@@ -34,6 +36,8 @@ import { PrintMcTicket } from './v.1/component/mc/print-ticket'
 import { MiSales } from './v.1/component/mi/sales'
 import { FactMI } from './v.1/component/mi/fact-mi'
 import { PrintMiTicket } from './v.1/component/mi/print-ticket'
+
+import { SalesReport } from './v.1/component/admin/sales-report'
 
 import { Print } from './v.1/component/shared/print'
 
@@ -77,12 +81,17 @@ import { UsrService } from './v.1/services/usr.service'
     ClientSelection,
     SalePaymentComponent,
     PartialConfirmation,
+
+    //Components for module
     McSales,
     PrintMcTicket,
 
     MiSales,
     FactMI,
     PrintMiTicket,
+
+    //Admin
+    SalesReport,
 
     Print
   ],
@@ -93,6 +102,7 @@ import { UsrService } from './v.1/services/usr.service'
     HttpModule,
     FormsModule,
     ReactiveFormsModule,
+    AngularDateTimePickerModule,
 
     MdlModule,
     MomentModule,

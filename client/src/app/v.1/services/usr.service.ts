@@ -5,7 +5,7 @@ import { config } from '../config'
 import 'rxjs/add/operator/toPromise';
 
 import { Usr } from '../prots/usr'
-import * as moment from 'moment/moment';;
+import * as moment from 'moment/moment'
 
 
 @Injectable()

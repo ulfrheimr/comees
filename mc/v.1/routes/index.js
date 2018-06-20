@@ -30,9 +30,10 @@ router.route('/mcs/:id')
 router.route('/sales')
   // usr, paymentType, paymentAccount, auth
   .put(SaleController.putSale)
+  .get(SaleController.getSales);
 //   // id_sale, qty, mc, sale_price, phys
 //   .post(SaleController.addMcs)
-//   .get(SaleController.getSales);
+
 
 router.route('/partials')
   // client

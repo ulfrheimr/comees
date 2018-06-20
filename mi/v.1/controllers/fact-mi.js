@@ -2,7 +2,6 @@ var FactMI = require('../models/fact-mi');
 
 var MIController = require('./mi');
 var MIProviderController = require('./mi-provider');
-// var LogChange = require('./log-change');
 const winston = require('winston');
 
 var saveFactMI = (mi) => {
@@ -13,8 +12,6 @@ var saveFactMI = (mi) => {
       price: mi.price
     }
 
-
-
     FactMI.findOneAndUpdate({
       ID_MI: fm.ID_MI,
       ID_MIProvider: fm.ID_MIProvider
@@ -24,12 +21,6 @@ var saveFactMI = (mi) => {
       if (err) reject(err);
       return resolve(m);
     });
-
-    // fm.save((err, fms) => {
-    //   if (err) reject(err);
-    //
-    //   resolve(fms);
-    // });
   });
 }
 
@@ -88,29 +79,12 @@ var i = {
               .catch((err) => {
                 throw err
               });
-
-
-
           })
-
-
         })
         .catch((err) => {
           throw err
         });
 
-
-
-      // saveFactMI(fm)
-      //   .then((r) => {
-      //     res.json({
-      //       ok: 1,
-      //       data: r
-      //     });
-      //   })
-      //   .catch((err) => {
-      //     throw err
-      //   });
     } catch (err) {
       winston.log('error', err);
       res.status(500).json({
@@ -125,6 +99,32 @@ var i = {
         ID_MIProvider: provider
       }
 
+      findFactMIs(query)
+        .then((r) => {
+          res.json({
+            ok: 1,
+            data: r
+          });
+        })
+        .catch((err) => {
+          winston.log('error', err);
+          res.status(500).json({
+            err: err.message
+          });
+        });
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
+  },
+  getFactMI: (req, res) => {
+    try {
+      var id = req.params.id;
+      var query = {
+        ID_MI: id
+      }
 
       findFactMIs(query)
         .then((r) => {

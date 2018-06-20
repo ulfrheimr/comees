@@ -56,12 +56,9 @@ router.route('/fact_mis')
 router.route('/fact_mis/:p')
   .get(FactMIController.getFactMIs);
 
+  router.route('/fact_mi/:id')
+    .get(FactMIController.getFactMI)
 
-
-// router.route('/mis/:mi')
-//   // {sample, price, delivery_time, desc, name, catId, usr}
-//   .post(MIController.modifyMI)
-//
 // router.route('/phys_comissions')
 //   // physId,bottom,perc
 //   .put(PhysComissionController.putPhysComission);
@@ -83,23 +80,6 @@ router.route('/fact_mis/:p')
 //   .put(Invoices.putInvoice)
 //   .post(Invoices.setAsInvoiced)
 //   .get(Invoices.getInvoices)
-//
-// router.route('/partials')
-//   // client
-//   .put(SaleController.putPartial)
-//   // id_sale, qty, mc, phys, sale_price, observations
-//   .post(SaleController.addPartialMi)
-//   .get(SaleController.getPartial);
-//
-// router.route('/partial_payments')
-//   // id_sale, payment, usr
-//   .put(SaleController.addPayment)
-//
-// router.route('/partials/:saleId/:partialId')
-//   .delete(SaleController.closePartial)
-//
-// router.route('/partials_cut')
-//   .get(SaleController.partialsCut)
 
 
 module.exports = router;

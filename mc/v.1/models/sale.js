@@ -77,4 +77,4 @@ var SaleSchema = mongoose.Schema({
   }]
 });
 
-module.exports = mongoose.model('Sale', SaleSchema);
+module.exports = mongoose.model('MCSale', SaleSchema);

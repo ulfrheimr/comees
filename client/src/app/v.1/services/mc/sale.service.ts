@@ -10,7 +10,8 @@ import { McSale } from '../../prots/mc/sale'
 import { SoldMc } from '../../prots/mc/sold-mc'
 // import { Partial } from '../../prots/partial';
 
-import { config } from '../../config';
+import { config } from '../../config'
+import * as moment from 'moment/moment'
 
 @Injectable()
 export class SaleService {
@@ -71,13 +72,23 @@ export class SaleService {
       .toPromise()
       .then(r => r.json().data)
       .catch(this.handleError);
-    // return new Promise((resolve, reject) => {
-    //   this.createSale(sale)
-    //     .then((id) => {
-    //       resolve(id)
-    //     })
-    //     .catch(this.handleError)
-    // })
+  }
+
+  getSales(init: string, end: string = null, usr: string = null): Promise<any[]> {
+    let postUri: string;
+    let query = "?init=" + moment(init).format("YYYY-MM-DD")
+      + (end ? "&end=" + moment(end).format("YYYY-MM-DD") : "")
+      + (usr ? "&usr=" + usr : "")
+
+    return this.http.get(this.uri
+      + query)
+      .toPromise()
+      .then((r) => {
+        let sales: McSale[] = r.json().data as McSale[];
+
+        return sales;
+      })
+      .catch(this.handleError);
   }
 
   // private createSale(s: any): Promise<string> {

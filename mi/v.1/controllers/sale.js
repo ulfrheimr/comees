@@ -91,7 +91,6 @@ var createSale = (sale) => {
 }
 
 var findSales = (query) => {
-  console.log("HHHH");
   return new Promise((resolve, reject) => {
     Sale.find(query)
       .exec((err, sales) => {
@@ -351,13 +350,13 @@ var i = {
 
       var query = {
         $and: [{
-            timestamp: {
+            "payments.timestamp": {
               // min sec millis
               $gte: init
             }
           },
           {
-            timestamp: {
+            "payments.timestamp": {
               $lte: end
             }
           }

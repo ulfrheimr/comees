@@ -33,7 +33,6 @@ var saleStatus = {
 }
 // Sale
 var createSale = (sale) => {
-  console.log(sale);
   return new Promise((resolve, reject) => {
 
     var payments = sale.payments.map((x) => {
@@ -386,7 +385,7 @@ var i = {
           client_name: clientName
         })
         .then((sale) => {
-          console.log(sale);
+
           res.json({
             ok: 1,
             data: sale._id
@@ -457,7 +456,50 @@ var i = {
         err: err.message
       });
     }
-  }
+  },
+  getSales: (req, res) => {
+    try {
+      var init = moment(req.query.init)
+      var end = req.query.end || moment()
+      var usrId = req.query.usr;
+      var from_partial = req.query.from_partial || false;
+
+      var query = {
+        $and: [{
+            "payments.timestamp": {
+              // min sec millis
+              $gte: init
+            }
+          },
+          {
+            "payments.timestamp": {
+              $lte: end
+            }
+          }
+        ]
+      }
+
+      if (usrId)
+        query["usr"] = usrId;
+
+
+      findSales(query)
+        .then((sales) => {
+          res.json({
+            ok: 1,
+            data: sales
+          })
+        })
+        .catch((err) => {
+          throw err
+        });
+    } catch (err) {
+      winston.log('error', err);
+      res.status(500).json({
+        err: err.message
+      });
+    }
+  },
 
   // closePartial: (req, res) => {
   //   try {
@@ -615,53 +657,6 @@ var i = {
   //     }
   //   })
   // },
-  // getSales: (req, res) => {
-  //   try {
-  //     var init = moment(req.query.init)
-  //     var end = req.query.end || moment()
-  //     var usrId = req.query.usr;
-  //     var from_partial = req.query.from_partial || false;
-  //
-  //     var query = {
-  //       from_partial: from_partial,
-  //       $and: [{
-  //           timestamp: {
-  //             // min sec millis
-  //             $gte: init
-  //           }
-  //         },
-  //         {
-  //           timestamp: {
-  //             $lte: end
-  //           }
-  //         }
-  //       ]
-  //     }
-  //
-  //
-  //     if (usrId)
-  //       query["usr"] = usrId;
-  //
-  //
-  //
-  //     findSales(query)
-  //       .then((sales) => {
-  //         res.json({
-  //           ok: 1,
-  //           data: sales
-  //         })
-  //       })
-  //       .catch((err) => {
-  //         throw err
-  //       });
-  //   } catch (err) {
-  //     winston.log('error', err);
-  //     res.status(500).json({
-  //       err: err.message
-  //     });
-  //   }
-  // },
-
   // partialsCut: (req, res) => {
   //   try {
   //

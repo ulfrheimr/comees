@@ -1,4 +1,8 @@
 <div class="top-container">
+  <div class="title-page">
+    Venta de estudios de gabinete
+    <hr />
+  </div>
   <div class="search-container">
     <table>
       <tr>
@@ -26,6 +30,9 @@
             Estudio
           </td>
           <td>
+            Descripción
+          </td>
+          <td>
             Precio
           </td>
           <td>
@@ -40,6 +47,9 @@
         <tr *ngFor="let m of mis | paginate: { itemsPerPage: 20, currentPage: p }" [ngClass]="{'modified': m.modified }">
           <td>
             <span class="enhaced">{{m.name}}</span>
+          </td>
+          <td>
+            <span class="enhaced">{{m.description}}</span>
           </td>
           <td>
             <span class="info">$ {{m.price | number : '1.2-2'}}</span>
