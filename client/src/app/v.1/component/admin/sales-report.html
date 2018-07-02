@@ -46,7 +46,7 @@
 
       <table class="w70">
         <thead>
-          <td>
+          <td colspan="3">
             <span class="coMeEs_enhaced">
               Estudio
             </span>
@@ -59,12 +59,21 @@
         </thead>
         <tbody>
           <tr *ngFor="let misale of sales.mi">
-            <td>
-              <p *ngFor="let mi of misale.mis">
-                <span class="info">
-                  {{mi.qty}}-{{mi.mi.name}}
-                </span>
-              </p>
+            <td colspan="3">
+
+              <table style="width:100%">
+                <tr class="info" *ngFor="let mi of misale.mis">
+                  <td>
+                    {{mi.qty}}-{{mi.mi.name}}
+                  </td>
+                  <td>
+                    ${{mi.sale_price| number : '1.2-2'}}
+                  </td>
+                  <td>
+                    ${{mi.fact| number : '1.2-2'}}
+                  </td>
+                </tr>
+              </table>
             </td>
             <td>
               <span class="info enhaced" *ngFor="let p of misale.payments">
@@ -73,8 +82,13 @@
             </td>
           </tr>
           <tr>
+            <td colspan="2">
+              &nbsp;
+            </td>
             <td>
-
+              <span class="coMeEs_enhaced">
+                ${{getTotalFactMIs() | number : '1.2-2'}}
+              </span>
             </td>
             <td>
               <span class="coMeEs_enhaced">
@@ -114,7 +128,7 @@
           <tr *ngFor="let mcsale of sales.mc">
             <td>
               <p *ngFor="let mc of mcsale.mcs">
-                {{mc.qty}}  {{mc.mc.name}} - {{physs[mc.phys].name}}&nbsp;{{physs[mc.phys].first}}
+                {{mc.qty}} {{mc.mc.name}} - {{physs[mc.phys].name}}&nbsp;{{physs[mc.phys].first}}
               </p>
             </td>
             <td>

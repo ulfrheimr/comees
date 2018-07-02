@@ -4,6 +4,7 @@ const passport = require('passport');
 var MCController = require('../controllers/mc');
 var CatController = require('../controllers/cat');
 var SaleController = require('../controllers/sale');
+var PatientController = require('../controllers/patient');
 
 // const Auth = require('../auth/auth');
 // const AuthToken = require('../auth/token')
@@ -34,7 +35,6 @@ router.route('/sales')
 //   // id_sale, qty, mc, sale_price, phys
 //   .post(SaleController.addMcs)
 
-
 router.route('/partials')
   // client
   .put(SaleController.putPartial)
@@ -44,6 +44,13 @@ router.route('/partials')
 
 router.route('/sales/:id')
   .get(SaleController.getSale);
+
+router.route('/patients')
+  // id, name, gender, age, address:{address, co, loc, state}
+  // phone, mobile, activity, mail, marital_status
+  // additional_info:{info, object}
+  .post(PatientController.modifyPatient)
+  .get(PatientController.getPatients);
 
 //
 // router.route('/partials/:saleId/:partialId')

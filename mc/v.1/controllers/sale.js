@@ -57,7 +57,6 @@ var createSale = (sale) => {
     if (sale.client_name)
       s.client_name = sale.client_name
 
-    // console.log(s);
 
     s.save((err, sale) => {
       if (err) reject(err)

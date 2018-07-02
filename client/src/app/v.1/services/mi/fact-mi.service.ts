@@ -10,6 +10,7 @@ import { config } from '../../config';
 @Injectable()
 export class FactMIService {
   private uri = config.mi + '/fact_mis';
+  private factMIuri = config.mi + '/fact_mi';
 
   constructor(private http: Http) { }
 
@@ -27,7 +28,16 @@ export class FactMIService {
       .catch(this.handleError);
   }
 
-  putFactMIPrice(factMI):Promise<FactMI[]> {
+  getFactMI(IDMI: string): Promise<FactMI[]> {
+    return this.http.get(this.factMIuri + "/" + IDMI)
+      .toPromise()
+      .then(r => {
+        return r.json().data as FactMI
+      })
+      .catch(this.handleError);
+  }
+
+  putFactMIPrice(factMI): Promise<FactMI[]> {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
@@ -37,7 +47,6 @@ export class FactMIService {
       id_mi: factMI.id_mi
     };
 
-    console.log(data)
     return this.http.put(this.uri, data, { headers: headers })
       .toPromise()
       .then(r => r.json().data)

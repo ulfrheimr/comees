@@ -13,6 +13,7 @@ import { FactMI } from './v.1/component/mi/fact-mi'
 import { PrintMiTicket } from './v.1/component/mi/print-ticket';
 
 import { SalesReport } from './v.1/component/admin/sales-report'
+import { Patient } from './v.1/component/mc/patient';
 
 import { Print } from './v.1/component/shared/print';
 import { UsrActivate } from './v.1/guard/usr-activate';
@@ -25,6 +26,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'sales', pathMatch: 'full' },
       { path: 'sales', component: McSales },
+      { path: 'patients', component: Patient },
       { path: 'print-ticket/:id', component: PrintMcTicket },
       { path: 'print', component: Print },
     ]

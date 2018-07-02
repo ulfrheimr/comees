@@ -79,8 +79,6 @@ var c = {
           var curr = moment().format('YYYYMMDD') + "-" + pad(2, seq + "", '0')
           p["_id"] = curr
 
-          console.log(p);
-
           saveClient(p)
             .then((r) => {
               res.json({

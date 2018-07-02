@@ -14,10 +14,7 @@ import { HttpModule } from '@angular/http';
 
 import { MdlModule } from '@angular-mdl/core';
 
-// import { MdlSelectModule } from '@angular-mdl/select';
-
 import { Login } from './login.component'
-
 
 // Menus
 import { MainMenuComponent } from './main-menu'
@@ -28,6 +25,7 @@ import { ClientSelection } from './v.1/client-selection';
 import { SalePaymentComponent } from './v.1/component/shared/sale-payment';
 import { PartialConfirmation } from './v.1/component/shared/partial-confirmation';
 import { PassPrint } from './v.1/component/pass-print'
+import { Patient } from './v.1/component/mc/patient';
 
 //Pages
 import { McSales } from './v.1/component/mc/sales';
@@ -62,7 +60,7 @@ import { UsrService } from './v.1/services/usr.service'
 // import { SalesReport } from './component/admin/report.component';
 // import { SalesCut } from './component/sales-cut.component';
 //
-// import { ClientComponent } from './component/admin/client.component';
+
 
 //
 // import { CellButton } from './cell.button.component';
@@ -81,6 +79,7 @@ import { UsrService } from './v.1/services/usr.service'
     ClientSelection,
     SalePaymentComponent,
     PartialConfirmation,
+    Patient,
 
     //Components for module
     McSales,
@@ -105,13 +104,13 @@ import { UsrService } from './v.1/services/usr.service'
     AngularDateTimePickerModule,
 
     MdlModule,
+
     MomentModule,
     NgxPaginationModule
   ],
   providers: [
     PassPrint,
     UsrService,
-    // UsrActivate,
   ],
   bootstrap: [AppComponent]
 })
