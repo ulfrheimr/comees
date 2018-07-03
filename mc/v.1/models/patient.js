@@ -53,7 +53,7 @@ var PatientSchema = mongoose.Schema({
   marital_status: {
     type: String,
   },
-  additional_info: {
+  additional_info: [{
     type_info: {
       type: Number,
       required: false
@@ -62,7 +62,7 @@ var PatientSchema = mongoose.Schema({
       type: Object,
       required: false
     }
-  },
+  }],
   timestamp: {
     type: Date,
     required: true

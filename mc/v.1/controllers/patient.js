@@ -89,12 +89,7 @@ var i = {
           "message": "Additional address info needed"
         }
 
-      if (Object.keys(additional_info).length > 0) {
-        if (!additional_info.type_info)
-          throw {
-            "message": "Additional info needed"
-          }
-      }
+      console.log(additional_info);
 
       var data = {
         id: id,
@@ -115,16 +110,19 @@ var i = {
         var curr = moment().format('YYYYMMDD')
         var seq = 1
         var prevClient = await patientSequential()
-        var prevID = prevClient._id
-
-        if (prevID)
+        var prevID = "-00"
+        if (prevClient != null) {
+          prevID = prevClient._id
           seq = parseInt(prevID.split("-")[1]) + 1
+        }
 
         var curr = moment().format('YYYYMMDD') + "-" +
           pad(2, seq + "", '0')
 
         data["id"] = curr
       }
+
+      console.log(data);
 
       updatePatient(data)
         .then((r) => {

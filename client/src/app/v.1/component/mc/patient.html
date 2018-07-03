@@ -144,23 +144,28 @@
         <table class="w70">
           <tr *ngFor="let aft of additionalInfoType">
             <td>
-              <mdl-radio [disabled]="pageModel.action=='show'" name="stuff" [value]="1" [(ngModel)]="selectedPatient.additional_info.type_info" [disabled]="pageModel.action=='show'" mdl-ripple>{{aft.desc}}</mdl-radio>
-              <table *ngIf="selectedPatient.additional_info.type_info == 1">
+              <mdl-switch [(ngModel)]="additionalInfo[aft.type]['store']" mdl-ripple><span class="info">{{aft.desc}}</span></mdl-switch>
+              <table *ngIf="additionalInfo[aft.type]['store']">
                 <tr>
                   <td>
-                    <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.additional_info.i.resp" label="Responsable en caso de urgencia" floating-label autofocus></mdl-textfield>
+                    <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="additionalInfo[aft.type]['i']['resp']" label="Responsable en caso de urgencia" floating-label autofocus></mdl-textfield>
                   </td>
                   <td>
-                    <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.additional_info.i.confPhys" label="Médico de cabecera" floating-label autofocus></mdl-textfield>
+                    <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="additionalInfo[aft.type]['i']['confPhys']" label="Médico de cabecera" floating-label autofocus></mdl-textfield>
                   </td>
                   <td>
-                    <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.additional_info.i.confPhysContact" label="Contacto médico de cabecera" floating-label autofocus></mdl-textfield>
+                    <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="additionalInfo[aft.type]['i']['physContact']" label="Contacto médico de cabecera" floating-label autofocus></mdl-textfield>
                   </td>
                 </tr>
               </table>
+              <table *ngIf="aft.type == 2">
+                <span *ngIf="additionalInfo[aft.type]">Ginecología</span>
+              </table>
+              <!-- <mdl-radio [disabled]="pageModel.action=='show'" name="stuff" [value]="1" [(ngModel)]="selectedPatient.additional_info.type_info" [disabled]="pageModel.action=='show'" mdl-ripple>{{aft.desc}}</mdl-radio>
+
               <table *ngIf="aft.type == 2 && additionalInfo[aft.type]">
                 Ginecología
-              </table>
+              </table> -->
             </td>
           </tr>
         </table>
@@ -188,3 +193,17 @@
 
   </div>
 </div>
+<!-- Dialog print confirm -->
+<mdl-dialog #confirmAdd [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Registro de paciente</h4>
+  <div class="mdl-dialog__content">
+    Paciente correctamente registrado con ID: <br />
+    {{pageModel.addedPatient}}
+  </div>
+  <div class="mdl-dialog__actions">
+    <!-- <button *ngIf="noPrints == 1" mdl-button (click)="print()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Continuar</button> -->
+    <button mdl-button (click)="initialize()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Aceptar</button>
+  </div>
+</mdl-dialog>
