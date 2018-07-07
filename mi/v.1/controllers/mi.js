@@ -22,15 +22,14 @@ var saveMI = (mi) => {
 }
 
 var modifyMI = (mi) => {
+  console.log(mi);
   return new Promise((resolve, reject) => {
-
     MI.findOneAndUpdate({
       _id: mi._id
     }, {
       name: mi.name,
       price: mi.price,
       description: mi.description,
-      category: mi.category,
       delivery_time: mi.delivery_time,
       sample: mi.sample
     }, {
@@ -72,7 +71,6 @@ var s = {
         sample: req.body.sample
       })
       .then((r) => {
-        console.log(r);
         res.json({
           ok: 1,
           message: "MI added"
@@ -82,26 +80,25 @@ var s = {
   },
   modifyMI: (req, res) => {
     try {
+      console.log(req.body);
       var usr = req.body.usr
 
-      if (!usr)
-        throw {
-          message: "Usr must be specified"
-        };
+      // if (!usr)
+      //   throw {
+      //     message: "Usr must be specified"
+      //   };
 
       var mi = {
         _id: req.params.mi,
         name: req.body.name,
         price: req.body.price,
-        description: req.body.desc,
-        category: req.body.catId,
-        delivery_time: req.body.delivery,
+        description: req.body.description,
+        delivery_time: req.body.delivery_time,
         sample: req.body.sample
       }
+
       modifyMI(mi, usr)
         .then((r) => {
-          LogChange.log(1, usr, mi._id)
-
           res.json({
             ok: 1,
             data: r
@@ -129,8 +126,6 @@ var s = {
             $options: 'i'
           }
         }
-
-      console.log(query);
 
       findMIs(query)
         .then((r) => {

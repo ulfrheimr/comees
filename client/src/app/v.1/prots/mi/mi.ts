@@ -5,5 +5,5 @@ export class Mi {
   category?: Object
   description?: string
   sample?: string
-  deliveryTime?: string
+  delivery_time?: string
 }

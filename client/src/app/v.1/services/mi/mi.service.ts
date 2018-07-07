@@ -17,7 +17,32 @@ export class MiService {
     return this.http.get(this.uri + "?name=" + name)
       .toPromise()
       .then(r => {
+        console.log(r.json().data)
         return r.json().data as Mi[]
+      })
+      .catch(this.handleError);
+  }
+
+  changeMI(mi: Mi): Promise<boolean> {
+    console.log(mi)
+    var headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    var m = {
+      _id: mi._id,
+      name: mi.name,
+      price: mi.price,
+      description: mi.description,
+      delivery_time: mi.delivery_time,
+      sample: mi.sample,
+      usr: ""
+    }
+
+    return this.http.post(this.uri + "/" + mi._id, m, { headers: headers })
+      .toPromise()
+      .then(r => {
+        var ret_m = r.json().data_id;
+        return mi._id == mi._id;
       })
       .catch(this.handleError);
   }
@@ -29,32 +54,7 @@ export class MiService {
   //     .catch(this.handleError);
   // }
 
-  // changeMi(mi: any): Promise<boolean> {
-  //   console.log("Sending")
-  //   console.log(mi)
-  //   var headers = new Headers();
-  //   headers.append('Content-Type', 'application/json');
-  //
-  //   var m = {
-  //     _id: mi._id,
-  //     name: mi.name,
-  //     price: mi.price,
-  //     desc: mi.description,
-  //     catId: mi.category._id,
-  //     delivery: mi.delivery_time,
-  //     sample: mi.sample
-  //   }
-  //
-  //   console.log(m)
-  //
-  //   return this.http.post(this.miUrl + "/" + mi._id, m, { headers: headers })
-  //     .toPromise()
-  //     .then(r => {
-  //       var ret_m = r.json().data_id;
-  //       return mi._id == mi._id;
-  //     })
-  //     .catch(this.handleError);
-  // }
+
   //
   // addMi(mi: any): Promise<boolean> {
   //   var headers = new Headers();

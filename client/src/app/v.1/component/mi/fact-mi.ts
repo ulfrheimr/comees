@@ -2,6 +2,7 @@ import { Component, Input, OnInit, EventEmitter, ViewChild } from '@angular/core
 
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
+import { MdlDialogComponent } from '@angular-mdl/core';
 
 import { Mi } from '../../prots/mi/mi';
 import { FactMI as FM } from '../../prots/mi/fact-mi';
@@ -26,6 +27,8 @@ export class FactMI implements OnInit {
   pageModel: any = {}
   mis: any[] = []
   miProviders: MiProvider[] = []
+  selectedMI
+  @ViewChild('modifyMIDialog') private modifyMIDialog: MdlDialogComponent
 
   constructor(
     private miService: MiService,
@@ -166,5 +169,32 @@ export class FactMI implements OnInit {
       .then((x) => {
         mi["modified"] = true
       });
+  }
+
+  modifyMI(mi): void {
+    this.selectedMI = mi
+    this.modifyMIDialog.show()
+  }
+
+  // Dialog changeMI
+  isModificationAllowed(): boolean {
+    return true
+  }
+
+  confirmModification(): void {
+    this.miService.changeMI(this.selectedMI)
+      .then((res) => {
+        this.modifyMIDialog.close()
+      })
+      .catch(this.handleError)
+  }
+
+  cancelModification(): void {
+    this.selectedMI = null
+    this.modifyMIDialog.close()
+  }
+
+  isAllowedChangePrice(): boolean {
+    return false
   }
 }
