@@ -17,14 +17,12 @@ export class MiService {
     return this.http.get(this.uri + "?name=" + name)
       .toPromise()
       .then(r => {
-        console.log(r.json().data)
         return r.json().data as Mi[]
       })
       .catch(this.handleError);
   }
 
   changeMI(mi: Mi): Promise<boolean> {
-    console.log(mi)
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
 

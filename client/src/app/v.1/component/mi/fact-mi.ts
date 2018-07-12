@@ -11,6 +11,7 @@ import { MiProvider } from '../../prots/mi/mi-provider';
 import { MiService } from '../../services/mi/mi.service';
 import { MiProviderService } from '../../services/mi/mi-provider.service';
 import { FactMIService } from '../../services/mi/fact-mi.service';
+import { UsrService } from '../../services/usr.service';
 
 @Component({
   selector: 'fact-mi',
@@ -19,7 +20,8 @@ import { FactMIService } from '../../services/mi/fact-mi.service';
   providers: [
     MiService,
     MiProviderService,
-    FactMIService
+    FactMIService,
+    UsrService
   ]
 })
 
@@ -28,12 +30,14 @@ export class FactMI implements OnInit {
   mis: any[] = []
   miProviders: MiProvider[] = []
   selectedMI
+  permissions
   @ViewChild('modifyMIDialog') private modifyMIDialog: MdlDialogComponent
 
   constructor(
     private miService: MiService,
     private miProviderService: MiProviderService,
-    private factMIService: FactMIService
+    private factMIService: FactMIService,
+    private usrService: UsrService
   ) {
     this.pageModel = {
       facts: null,
@@ -43,6 +47,11 @@ export class FactMI implements OnInit {
 
   ngOnInit(): void {
     this.findMiProviders()
+    this.usrPermissions()
+  }
+
+  private usrPermissions(): void {
+    this.permissions = this.usrService.get()["role"]
   }
 
   private handleError(error): Promise<any> {
@@ -195,6 +204,11 @@ export class FactMI implements OnInit {
   }
 
   isAllowedChangePrice(): boolean {
-    return false
+    let allowed = Object.keys(this.permissions)
+      .map((x) => {
+        return this.permissions[x] == "adm"
+      })
+      .reduce((x, y) => x && y, true)
+    return allowed
   }
 }

@@ -224,7 +224,7 @@ export class McSales implements OnInit {
 
         this.openMCs = omcs.map((x) => {
           let total = x.mcs
-            .map(mc => mc.sale_price * mc.qty)
+            .map(mc => mc.sale_price)
             .reduce((x, y) => x + y, 0)
 
           let payments = x.payments
