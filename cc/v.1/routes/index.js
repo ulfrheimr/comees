@@ -30,7 +30,11 @@ router.route('/verify')
 router.route('/usrs')
   // usrname, usr, pass, type (1:salesman)
   .put(Usr.linkUsr)
-  // .get(Usr.getUsrs)
+// .get(Usr.getUsrs)
+
+router.route('/usrlogins/:id')
+  // init, end
+  .get(Usr.getUsrLogins)
 
 router.route('/salesmans')
   .get(SalesMan.getSalesMan)
@@ -61,6 +65,7 @@ router.route('/physs/:id')
   // by=code|mail|id=default
   .get(PhysController.getPhys)
   .post(PhysController.modifyPhys)
+
 
 
 

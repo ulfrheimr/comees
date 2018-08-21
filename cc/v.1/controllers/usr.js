@@ -62,8 +62,11 @@ var find = (username) => {
       if (err)
         return reject(err);
 
-      if (!usr)
-        return reject(null, false);
+      if (!usr) {
+        return reject({
+          "msg": 'Usr not found'
+        }, false);
+      }
       return resolve({
         usr: usr.usr,
         id: usr.linkedUsr
@@ -300,6 +303,48 @@ var delLogin = (usr) => {
   })
 }
 
+var getLogins = (usr, initDate, endDate) => {
+  return new Promise((resolve, reject) => {
+    try {
+
+      find(usr)
+        .then((u) => {
+          var query = {
+            usr: u.id,
+            $and: [{
+                "init_login": {
+                  // min sec millis
+                  $gte: initDate
+                }
+              },
+              {
+                "init_login": {
+                  $lte: endDate
+                }
+              }
+            ]
+          }
+
+          Login.find(query)
+            .sort({
+              init_login: -1
+            })
+            .exec((err, p) => {
+              if (err) reject(err);
+
+              resolve(p);
+            });
+        })
+        .catch((err) => {
+          winston.log('error', err)
+          reject(err);
+        });
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
 Promise.all([verify, find, register, linkUsr]).catch((error) => {
   winston.log('error', error);
   return Promise.reject(error.message || error);
@@ -470,6 +515,24 @@ var u = {
         winston.log('error', err);
         res.status(500).send(err);
       })
+  },
+  getUsrLogins: (req, res) => {
+    var usr = req.params.id;
+    var init = moment(req.query.init)
+    var end = req.query.end || moment()
+
+    getLogins(usr, init, end)
+      .then((ls) => {
+        res.json({
+          ok: 1,
+          data: ls
+        });
+      })
+      .catch((err) => {
+        winston.log('error', err);
+        res.status(500).send(err);
+      })
+
   }
 }
 
