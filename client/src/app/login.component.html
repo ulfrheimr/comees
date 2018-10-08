@@ -1,0 +1,20 @@
+<div class="login">
+  <div class="login-info">
+    <div>
+      <div>
+        <mdl-textfield [(ngModel)]="usr" label="Usuario" floating-label autofocus></mdl-textfield>
+        <br />
+        <mdl-textfield [(ngModel)]="pass" label="Password" type="password" floating-label autofocus></mdl-textfield>
+      </div>
+
+      <button (click)="login()" mdl-button mdl-button-type="raised" mdl-colored="primary">LOGIN</button>
+    </div>
+    <div class="error-container right">
+      <div *ngIf="error" class="error">
+        {{error}}
+      </div>
+    </div>
+
+  </div>
+
+</div>

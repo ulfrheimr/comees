@@ -1,0 +1,164 @@
+<div class="top-container">
+  <div class="title-page">
+    Venta de estudios de gabinete
+    <hr />
+  </div>
+  <div>
+    <div *ngIf="pageModel.option == 'create'">
+      <div *ngIf="pageModel.confirmSale">
+        <div class="coMeEs_sentence">
+          Por favor confirme los productos. <br /> Si la venta es correcta seleccione el método de pago y oprima "CONFIRMAR",
+          <br /> si desea modificarla oprima "REGRESAR".
+        </div>
+        <table class="w100">
+          <thead>
+            <tr class="info enhaced">
+              <td>
+                Cantidad
+              </td>
+              <td>
+                Estudio
+              </td>
+              <td>
+                Importe total
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of sale">
+              <td>
+                <span class="enhaced">{{p.qty}}</span>
+              </td>
+              <td>
+                <span class="info">{{p.mi.name}}</span>
+              </td>
+              <td>
+                <span class="info enhaced">$ {{p.mi.price * p.qty}}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="w100">
+          <div class="enhaced right">
+            Importe : <span class="coMeEs_enhaced">$ {{getTotal() | number : '1.2-2'}}</span>
+          </div>
+        </div>
+        <hr />
+        <div class="w100 centered">
+          <span>
+            <button (click)="paymentConfirmDialog.show()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>VENDER</button>
+          </span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>
+            <button (click)="pageModel.confirmSale  = false" mdl-button mdl-button-type="raised" mdl-ripple>CANCELAR</button>
+          </span>
+        </div>
+      </div>
+      <div *ngIf="pageModel.confirmSale == false">
+        <div *ngIf="sale?.length >0 " class="container sale-container">
+          <table class="w100">
+            <thead>
+              <tr class="coMeEs_sentence">
+                <td>
+                  Cantidad
+                </td>
+                <td>
+                  Estudio
+                </td>
+                <td>
+                  Total
+                </td>
+                <td>
+
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of sale">
+                <td>
+                  <span class="info enhaced">{{p.qty}}</span>
+                </td>
+                <td>
+                  <span class="info">{{p.mi.name}}</span>
+                </td>
+                <td>
+                  <span class="info enhaced">$ {{p.mi.price * p.qty}}</span>
+                </td>
+                <td>
+                  <i class="material-icons" (click)="addToSale(p.mi)">plus_one</i>
+                  <i class="material-icons" (click)="addToSale(p.mi, false)">exposure_neg_1</i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="right">
+            <span class="enhaced">TOTAL: </span><span class="coMeEs_enhaced">$ {{getTotal() | number : '1.2-2'}} </span>
+          </div>
+          <hr />
+          <div class="centered">
+            <button (click)="pageModel.confirmSale = true" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Cobrar estudios</button>
+            <button (click)="sendToEstimation()" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Realizar presupuesto</button>
+          </div>
+        </div>
+        <div class="p20">
+          <span class="enhaced">Ingrese criterio para buscar un servicio</span>
+          <div>
+            <mdl-textfield [(ngModel)]="pageModel.hint" class="hint" (keyup.enter)="findMis()" label="Nombre del tratamiento" floating-label autofocus></mdl-textfield>
+          </div>
+          <div class="container">
+            <table *ngIf="pageModel.isSearching" class="search_table">
+              <thead class="enhaced">
+                <tr>
+                  <td style="width:40%">
+                    Estudio
+                  </td>
+                  <td style="width:10%">
+                    Tiempo de entrega
+                  </td>
+                  <td style="width:20%">
+                    Muestra
+                  </td>
+                  <td style="width:10%">
+                    Precio
+                  </td>
+                  <td style="width:20%">
+
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let mi of mis">
+                  <td>
+                    <span>{{mi.name}}</span>
+                  </td>
+                  <td>
+                    <span>{{mi.delivery_time}}</span>
+                  </td>
+                  <td>
+                    <span>{{mi.sample}}</span>
+                  </td>
+                  <td class="enhaced">
+                    $<span>{{mi.price}}</span>
+                  </td>
+                  <td>
+                    <button (click)="addToSale(mi)" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Agregar a la venta</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="pageModel.option == 'follow'">
+      follow
+    </div>
+  </div>
+
+  <mdl-dialog #paymentConfirmDialog [mdl-dialog-config]="{
+                  styles:{'width': '50%'},
+                  isModal:true}">
+    <sale-payment [amount]="getTotal()" (onPaymentConfirmed)="onPaymentConfirmed($event)" (onPaymentCancelled)="onPaymentCancelled()"></sale-payment>
+  </mdl-dialog>
+
+</div>

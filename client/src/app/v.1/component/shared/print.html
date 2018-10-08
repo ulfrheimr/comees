@@ -1,0 +1,166 @@
+<div class="top-container">
+  <div>
+    Impresión
+  </div>
+
+  <div class="container" *ngIf="pageModel.ready">
+    <div id="ticket">
+      <div class="ticket-container">
+        <div class="main-span-ticket">
+          <div class="logo-container">
+            <img class="logo" src="/assets/images/logo.png" />
+            <br />
+            <p class="enhaced-ticket bold" *ngIf="asset">
+              {{asset.name}}
+              <br /> <br />
+            </p>
+          </div>
+
+          <div class="top-container" *ngIf="asset">
+            {{asset.invoice.address}}<br /> CP: {{asset.invoice.cp}} RFC: {{asset.invoice.rfc}}
+            <br />
+          </div>
+          <hr />
+
+          <div class="right">
+            <span class="enhaced-ticket">{{timestamp | date: 'dd/MM/yyyy hh:mm' }}</span>
+          </div>
+
+          <div>
+            <table class="client-opts">
+              <tr>
+                <td class="bold">
+                  Pago:
+                </td>
+                <td>
+                  Efectivo
+                </td>
+              </tr>
+              <tr>
+                <td class="bold">
+                  Cajero:
+                </td>
+                <td>
+                  {{getUsr()}}
+                </td>
+              </tr>
+            </table>
+          </div>
+          <br />
+          <hr />
+          <table class="sale">
+            <thead>
+              <td class="col1">
+                {{getFields().f1}}
+              </td>
+              <td class="col2">
+                {{getFields().f2}}<br />{{getFields().f4}}
+              </td>
+              <td class="col3 bold">
+                {{getFields().f3}}<br />{{getFields().f5}}
+              </td>
+            </thead>
+            <tbody>
+              <tr *ngFor="let m of poolToPrint">
+                <td class="qty-container">
+                  {{m.f1}}
+                </td>
+                <td class="mi-container">
+                  {{m.f2}}<br /> <br />
+                  <div *ngFor="let d of m.f4">
+                    {{d}}
+                  </div>
+                </td>
+                <td class="price-container">
+                  $ {{m.f3| number : '1.2-2'}}<br /> <br /> $ {{m.f5| number : '1.2-2'}}
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+
+          <div class="totals right">
+            <div>
+              <hr />
+              <table>
+                <tr>
+                  <td>
+                    TOTAL:
+                  </td>
+                  <td>
+                    <span class="enhaced bold">$ {{getTotal1()| number : '1.2-2'}}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    PAGO EFECTUADO:
+                  </td>
+                  <td>
+                    <span class="enhaced bold">$ {{passPrint.additionalInfo.payment| number : '1.2-2'}}</span>
+                  </td>
+                </tr>
+                <tr *ngIf="passPrint.additionalInfo.is_partial">
+                  <td>
+                    TOTAL PAGADO:
+                  </td>
+                  <td>
+                    <span class="enhaced bold">$ {{passPrint.additionalInfo.payed| number : '1.2-2'}}</span>
+                  </td>
+                </tr>
+                <tr *ngIf="typePrint != 'estimation'">
+                  <td>
+                    RESTANTE:
+                  </td>
+                  <td>
+                    <span class="enhaced bold">$ {{passPrint.additionalInfo.remain| number : '1.2-2'}}</span>
+                  </td>
+                </tr>
+              </table>
+              <hr />
+            </div>
+          </div>
+
+          <hr />
+          <div class="top-container" *ngIf="asset">
+            {{asset.local.address}}<br /> CP: {{asset.local.cp}}<br /> tels: {{asset.local.tel}}
+          </div>
+          <hr />
+          <div class="slogan enhaced-ticket">
+            "Queremos darte el servicio que mereces a un precio justo."
+          </div>
+          <br />
+          <div class="slogan enhaced-ticket">
+            Gracias por su compra
+          </div>
+
+          <div class="slogan enhaced-ticket">
+            ESTE TICKET NO ES UN COMPROBANTE FISCAL
+          </div>
+          <br /><br />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <button (click)="print()" mdl-button mdl-button-type="raised" mdl-colored="primary">Imprimir</button>
+  </div>
+  <br />
+  <br />
+
+</div>
+
+<!-- Dialog print confirm -->
+<mdl-dialog #printConfirm [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Confirmación de venta</h4>
+  <div class="mdl-dialog__content">
+    Si el ticket se imprimió correctamente oprima "CONTINUAR" para imprimir una segunda copia o, en su caso, "TERMINAR PROCESO". Si el ticket no se imprimió correctamente oprima "REINTENTAR".
+  </div>
+  <div class="mdl-dialog__actions">
+    <button *ngIf="noPrints == 1" mdl-button (click)="print()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Continuar</button>
+    <button *ngIf="noPrints == 2" mdl-button (click)="goBack()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Terminar proceso</button>
+    <button mdl-button (click)="tryPrint()" mdl-ripple>Reintentar</button>
+  </div>
+</mdl-dialog>

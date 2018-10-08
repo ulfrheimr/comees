@@ -1,0 +1,15 @@
+.not-set {
+  background-color: rgba(245, 18, 117, 0.4);
+}
+
+.bad {
+  background-color: rgba(245, 152, 173, 0.2);
+}
+
+.good {
+  background-color: rgba(170, 237, 147, 0.2);
+}
+
+.unk {
+  background-color: white;
+}

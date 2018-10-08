@@ -1,0 +1,200 @@
+<div class="top-container">
+  <div class="title-page">
+    Comparación de estudios de gabinete
+    <hr />
+  </div>
+  <div class="search-container">
+    <table style="width:100%">
+      <tr>
+        <td>
+          Laboratotio:<br />
+          <select *ngIf="pageModel.facts" class="mdl-selectfield__select" [(ngModel)]="pageModel.provider">
+            <option *ngFor="let f of pageModel.facts" [value]="f._id">{{f.name}}</option>
+          </select>
+        </td>
+        <td>
+          <span>Ordenar por:</span><br />
+          <mdl-radio value="profit" [mdl-ripple]="true" [(ngModel)]="pageModel.sort" mdl-ripple checked>Diferencia</mdl-radio>
+          <mdl-radio value="name" [mdl-ripple]="true" [(ngModel)]="pageModel.sort" mdl-ripple>Nombre</mdl-radio>
+        </td>
+        <td>
+          <mdl-switch [(ngModel)]="pageModel.stats" mdl-ripple>Mostrar estadísticas</mdl-switch>
+        </td>
+        <td>
+          <button mdl-button mdl-button-type="raised" (click)="fetchMIs()" mdl-colored="primary" mdl-ripple>Comparar</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div *ngIf="mis?.length > 0">
+    <div *ngIf="pageModel.stats">
+      <table class="w100 mis">
+        <tr>
+          <td class="w75">
+            HERE THE GRAPH
+          </td>
+          <td>
+            <table>
+              <tr>
+                <td>
+                  Totales:
+                </td>
+                <td class="enhaced">
+                  {{pageModel.statsValues.total}}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Media:
+                </td>
+                <td class="coMeEs_enhaced">
+                  {{pageModel.statsValues.avg | number : '1.2-2'}} %
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Mínimo:
+                </td>
+                <td class="coMeEs_enhaced">
+                  {{pageModel.statsValues.min | number : '1.2-2'}} %
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Máximo:
+                </td>
+                <td class="coMeEs_enhaced">
+                  {{pageModel.statsValues.max | number : '1.2-2'}} %
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Agregados:
+                </td>
+                <td class="enhaced">
+                  {{(pageModel.statsValues.added) }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Faltantes:
+                </td>
+                <td class="enhaced">
+                  {{pageModel.statsValues.missing}}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <hr />
+    </div>
+    <br /><br />
+    <div>
+      <table class="w100 mis">
+        <thead>
+          <tr class="info enhaced">
+            <td>
+              Estudio
+            </td>
+            <td>
+              Precio de maquila
+            </td>
+            <td>
+              Diferencia
+            </td>
+            <td class="coMeEs_sentence">
+              Precio de venta
+            </td>
+
+            <td>
+
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of mis | paginate: { itemsPerPage: 20, currentPage: p }" [ngClass]="{'not-set':m.status == 0, 'bad':m.status == 1, 'good':m.status == 2, 'unk':m.status == -1}">
+            <td>
+              <span class="enhaced">{{m.name}}</span>
+            </td>
+            <td>
+              <span class="info">$ {{m.fact_price | number : '1.2-2'}}</span>
+            </td>
+            <td>
+              <span class="info"> {{((m.price/ m.fact_price)-1)* 100 | number : '1.2-2'}}%</span>
+            </td>
+            <td>
+              $
+              <mdl-textfield [(ngModel)]="m.price" class="hint" label="Precio de venta" floating-label autofocus></mdl-textfield>
+            </td>
+            <td>
+              <button mdl-button mdl-button-type="raised" [disabled]="m.modified" mdl-colored="primary" mdl-ripple (click)="setPrice(m)">Establecer precio</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+  </div>
+</div>
+
+<!-- <mdl-dialog #modifyMIDialog [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Modificación de estudios</h4>
+  <div class="mdl-dialog__content">
+    <table *ngIf="selectedMI">
+      <tr>
+        <td>
+          Nombre
+        </td>
+        <td>
+          <mdl-textfield [(ngModel)]="selectedMI.name" class="hint" label="Nombre" floating-label autofocus></mdl-textfield>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Descripción
+        </td>
+        <td>
+          <mdl-textfield [(ngModel)]="selectedMI.description" class="hint" label="Descripción" floating-label autofocus></mdl-textfield>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Muestra
+        </td>
+        <td>
+          <mdl-textfield [(ngModel)]="selectedMI.sample" class="hint" label="Muestra" floating-label autofocus></mdl-textfield>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Tiempo de entrega
+        </td>
+        <td>
+          <mdl-textfield [(ngModel)]="selectedMI.delivery_time" class="hint" label="Tiempo de entrega" floating-label autofocus></mdl-textfield>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Precio de venta
+        </td>
+        <td>
+          <mdl-textfield [(ngModel)]="selectedMI.price" class="hint" label="Precio de venta" [disabled]="!isAllowedChangePrice()" floating-label autofocus></mdl-textfield>
+        </td>
+      </tr>
+    </table>
+
+    <div class="error-container right" *ngIf="pageModel.amountError">
+      <div class="error">
+
+      </div>
+    </div>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="!isModificationAllowed()" (click)="confirmModification()">Modificar estudio</button>
+    <button mdl-button mdl-ripple (click)="cancelModification()">Cancelar</button>
+  </div>
+</mdl-dialog> -->

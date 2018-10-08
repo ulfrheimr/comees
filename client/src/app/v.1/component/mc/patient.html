@@ -1,0 +1,209 @@
+<div class="top-container">
+  <div class="title-page">
+    Modificación y consulta de clientes
+    <hr />
+  </div>
+  <div>
+    <div *ngIf="pageModel.action == 'search'">
+      <div class="search">
+        <table>
+          <tr>
+            <td>
+              <span class="enhaced">Ingresa el criterio de búsqueda del paciente</span>
+              <br />
+              <mdl-textfield [(ngModel)]="pageModel.hint" (keyup.enter)="findPatients()" label="Paciente" floating-label autofocus></mdl-textfield>
+            </td>
+            <td class="right">
+              <span class="enhaced">Si no encuentras al PACIENTE, da click aquí en </span><span class="coMeEs_sentence">"Registrar paciente"</span>
+              <br />
+              <div class="centered">
+                <button mdl-button mdl-button-type="raised" mdl-colored="primary" (click)="pageModel.action = 'create'">Registrar paciente</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div *ngIf="patients?.length > 0">
+        <table class="search_table w100">
+          <thead>
+            <tr>
+              <td class="enhaced" style="width:7%">
+                Identificador
+              </td>
+              <td class="enhaced">
+                Nombre
+              </td>
+              <td class="enhaced" style="width:7%">
+                Teléfono
+              </td>
+              <td class="enhaced" style="width:15%">
+
+              </td>
+              <td class="enhaced" style="width:15%">
+
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of patients| paginate: { itemsPerPage: 20, currentPage: pag }">
+              <td>
+                <span>{{p._id}}</span>
+              </td>
+              <td>
+                <span>{{p.name}}</span>
+              </td>
+              <td>
+                <span>{{p.phone}}</span>
+              </td>
+              <td>
+                <button mdl-button mdl-button-type="raised" mdl-colored="primary" (click)="showPatient(p)" mdl-ripple>Seleccionar</button>
+              </td>
+              <td>
+                <button mdl-button mdl-button-type="raised" mdl-colored="primary" (click)="modifyPatient(p)" mdl-ripple>Modificar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <pagination-controls (pageChange)="pag = $event"></pagination-controls>
+      </div>
+    </div>
+    <div *ngIf="pageModel.action != 'search'">
+      <div>
+        Agrega la información del paciente
+        <div *ngIf="pageModel.action != 'create'">
+          IDENTIFICADOR: {{selectedPatient._id}}
+        </div>
+        Datos personales
+        <table>
+          <tr>
+            <td>
+              <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.name" label="Nombre" floating-label autofocus></mdl-textfield>
+            </td>
+            <td>
+              Sexo:
+              <select [disabled]="pageModel.action=='show'" floating-label [(ngModel)]="selectedPatient.gender">
+                <option [value]=1>Masculino</option>
+                <option [value]=2>Femenino</option>
+              </select>
+            </td>
+            <td>
+              <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.age" label="Edad" floating-label autofocus></mdl-textfield>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.phone" label="Teléfono" floating-label autofocus></mdl-textfield>
+            </td>
+            <td>
+              <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.mobile" label="Celular" floating-label autofocus></mdl-textfield>
+            </td>
+            <td>
+              <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.mail" label="Correo electrónico" floating-label autofocus></mdl-textfield>
+            </td>
+          </tr>
+        </table>
+
+        Dirección
+        <table>
+          <tr>
+            <td colspan="3">
+              <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.address.i" label="Direccion" floating-label autofocus></mdl-textfield>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.address.state" label="Estado" floating-label autofocus></mdl-textfield>
+            </td>
+            <td>
+              <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.address.loc" label="Municipio" floating-label autofocus></mdl-textfield>
+            </td>
+            <td>
+              <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.address.cp" label="CP" floating-label autofocus></mdl-textfield>
+            </td>
+
+          </tr>
+          <tr>
+            <td>
+              <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="selectedPatient.activity" label="Ocupación" floating-label autofocus></mdl-textfield>
+            </td>
+            <td>
+              Estado civil
+              <select [disabled]="pageModel.action=='show'" floating-label [(ngModel)]="selectedPatient.marital_status">
+                <option [value]=1>Soltero(a)</option>
+                <option [value]=2>Casadao(a)</option>
+                <option [value]=4>Divorciado(a)</option>
+                <option [value]=3>Separado(a)</option>
+                <option [value]=5>Viudo(a)</option>
+                <option [value]=6>Union libre</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+
+        Datos adicionales
+        <table class="w70">
+          <tr *ngFor="let aft of additionalInfoType">
+            <td>
+              <mdl-switch [(ngModel)]="additionalInfo[aft.type]['store']" mdl-ripple><span class="info">{{aft.desc}}</span></mdl-switch>
+              <table *ngIf="additionalInfo[aft.type]['store']">
+                <tr>
+                  <td>
+                    <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="additionalInfo[aft.type]['i']['resp']" label="Responsable en caso de urgencia" floating-label autofocus></mdl-textfield>
+                  </td>
+                  <td>
+                    <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="additionalInfo[aft.type]['i']['confPhys']" label="Médico de cabecera" floating-label autofocus></mdl-textfield>
+                  </td>
+                  <td>
+                    <mdl-textfield [disabled]="pageModel.action=='show'" [(ngModel)]="additionalInfo[aft.type]['i']['physContact']" label="Contacto médico de cabecera" floating-label autofocus></mdl-textfield>
+                  </td>
+                </tr>
+              </table>
+              <table *ngIf="aft.type == 2">
+                <span *ngIf="additionalInfo[aft.type]">Ginecología</span>
+              </table>
+              <!-- <mdl-radio [disabled]="pageModel.action=='show'" name="stuff" [value]="1" [(ngModel)]="selectedPatient.additional_info.type_info" [disabled]="pageModel.action=='show'" mdl-ripple>{{aft.desc}}</mdl-radio>
+
+              <table *ngIf="aft.type == 2 && additionalInfo[aft.type]">
+                Ginecología
+              </table> -->
+            </td>
+          </tr>
+        </table>
+
+
+        <table *ngIf="pageModel.action != 'show'">
+          <tr>
+            <td>
+              <button mdl-button mdl-button-type="raised" (click)="cancelEditPatient()" mdl-ripple>Cancelar</button>
+            </td>
+            <td>
+              <button mdl-button mdl-button-type="raised" mdl-colored="primary" (click)="registerPatient()" mdl-ripple>Registrar</button>
+            </td>
+          </tr>
+        </table>
+        <table *ngIf="pageModel.action == 'show'">
+          <tr>
+            <td>
+              <button mdl-button mdl-button-type="raised" (click)="cancelEditPatient()" mdl-ripple>Regresar</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- Dialog print confirm -->
+<mdl-dialog #confirmAdd [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Registro de paciente</h4>
+  <div class="mdl-dialog__content">
+    Paciente correctamente registrado con ID: <br />
+    {{pageModel.addedPatient}}
+  </div>
+  <div class="mdl-dialog__actions">
+    <!-- <button *ngIf="noPrints == 1" mdl-button (click)="print()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Continuar</button> -->
+    <button mdl-button (click)="initialize()" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Aceptar</button>
+  </div>
+</mdl-dialog>

@@ -24,11 +24,18 @@ export class MainMenuComponent {
     this.role = this.getRole();
     this.usrService.getFirstLoginTime()
       .then((l) => {
-        if (l.is_closed) {
+        if (this.role == "adm")
+          return
+
+        if (l.is_closed)
           this.router.navigate(['./sales-cut'])
-        }
       })
-      .catch(this.handleError);
+      .catch((err) => {
+        if (err.status == 401)
+          this.router.navigate(['./'])
+
+        this.handleError(err)
+      });
   }
 
   private handleError(error: any): Promise<any> {

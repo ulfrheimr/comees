@@ -1,0 +1,135 @@
+<div class="top-container">
+  <div class="title-page">
+    Venta de estudios de gabinete
+    <hr />
+  </div>
+  <div class="search-container">
+    <table>
+      <tr>
+        <td>
+          Seleccione un laboratorio:
+        </td>
+        <td>
+          <select *ngIf="pageModel.facts" class="mdl-selectfield__select" [(ngModel)]="pageModel.provider">
+            <option *ngFor="let f of pageModel.facts" [value]="f._id">{{f.name}}</option>
+          </select>
+        </td>
+        <td>
+          <button mdl-button mdl-button-type="raised" (click)="fetchMIs()" mdl-colored="primary" mdl-ripple>Obtener estudios</button>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+
+  <div *ngIf="mis?.length > 0">
+    <table class="w100 mis">
+      <thead>
+        <tr class="info enhaced">
+          <td>
+            Estudio
+          </td>
+          <td>
+            Descripción
+          </td>
+          <td>
+            Precio
+          </td>
+          <td>
+            Precio maquila
+          </td>
+          <td>
+
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of mis | paginate: { itemsPerPage: 20, currentPage: p }" [ngClass]="{'modified': m.modified }">
+          <td>
+            <span class="enhaced">{{m.name}}</span>
+          </td>
+          <td>
+            <span class="enhaced">{{m.description}}</span>
+          </td>
+          <td>
+            <span class="info">$ {{m.price | number : '1.2-2'}}</span>
+          </td>
+          <td>
+            $
+            <mdl-textfield [(ngModel)]="m.fact_price" class="hint" label="Precio de maquila" floating-label autofocus></mdl-textfield>
+          </td>
+          <td>
+            <br />
+            <button mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple (click)="modifyMI(m)">Modificar estudio</button>
+          </td>
+          <td>
+            <mdl-checkbox [mdl-ripple]="true" [(ngModel)]="m.modified" *ngIf="m.modified">Activar</mdl-checkbox>
+            <br />
+            <button mdl-button mdl-button-type="raised" [disabled]="m.modified" mdl-colored="primary" mdl-ripple (click)="setPrice(m)">Establecer precio</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+</div>
+
+<mdl-dialog #modifyMIDialog [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Modificación de estudios</h4>
+  <div class="mdl-dialog__content">
+    <table *ngIf="selectedMI">
+      <tr>
+        <td>
+          Nombre
+        </td>
+        <td>
+          <mdl-textfield [(ngModel)]="selectedMI.name" class="hint" label="Nombre" floating-label autofocus></mdl-textfield>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Descripción
+        </td>
+        <td>
+          <mdl-textfield [(ngModel)]="selectedMI.description" class="hint" label="Descripción" floating-label autofocus></mdl-textfield>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Muestra
+        </td>
+        <td>
+          <mdl-textfield [(ngModel)]="selectedMI.sample" class="hint" label="Muestra" floating-label autofocus></mdl-textfield>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Tiempo de entrega
+        </td>
+        <td>
+          <mdl-textfield [(ngModel)]="selectedMI.delivery_time" class="hint" label="Tiempo de entrega" floating-label autofocus></mdl-textfield>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Precio de venta
+        </td>
+        <td>
+          <mdl-textfield [(ngModel)]="selectedMI.price" class="hint" label="Precio de venta" [disabled]="!isAllowedChangePrice()" floating-label autofocus></mdl-textfield>
+        </td>
+      </tr>
+    </table>
+
+    <div class="error-container right" *ngIf="pageModel.amountError">
+      <div class="error">
+
+      </div>
+    </div>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="!isModificationAllowed()" (click)="confirmModification()">Modificar estudio</button>
+    <button mdl-button mdl-ripple (click)="cancelModification()">Cancelar</button>
+  </div>
+</mdl-dialog>

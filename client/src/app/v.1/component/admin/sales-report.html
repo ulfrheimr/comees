@@ -1,0 +1,162 @@
+<div class="top-container">
+  <div class="title-page">
+    Reportes de venta
+    <hr />
+  </div>
+  <div>
+    <div>
+      <span class="enhaced">Seleccione los servicios</span>
+      <table class="w70">
+        <tr>
+          <td *ngFor="let e of allowedEndpoints">
+            <mdl-switch [(ngModel)]="pageModel.endpoints[e.endpoint]" mdl-ripple><span class="info">{{e.name}}</span></mdl-switch>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <br />
+
+    <div>
+      <span class="enhaced">Seleccione el rango de fechas</span>
+      <table class="w70">
+        <tr>
+          <td>
+            <span class="info enhaced">Fecha inicial</span>
+            <br />
+            <angular2-date-picker [(ngModel)]="pageModel.initDate" [settings]="settings"></angular2-date-picker>
+          </td>
+          <td>
+            <span class="info enhaced">Fecha final</span>
+            <br />
+            <angular2-date-picker [(ngModel)]="pageModel.endDate" [settings]="settings"></angular2-date-picker>
+          </td>
+          <td style="width:20%">
+            <br />
+            <button (click)="searchSales($event)" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Buscar ventas</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div *ngIf="sales.mi?.length > 0">
+      <span class="coMeEs_enhaced">
+        Ventas estudios de gabinete
+      </span>
+      <hr />
+
+      <table class="w70">
+        <thead>
+          <td colspan="3">
+            <span class="coMeEs_enhaced">
+              Estudio
+            </span>
+          </td>
+          <td>
+            <span class="coMeEs_enhaced">
+              Pago
+            </span>
+          </td>
+        </thead>
+        <tbody>
+          <tr *ngFor="let misale of sales.mi">
+            <td colspan="3" class="misale">
+              <table style="width:100%">
+                <tr class="info" *ngFor="let mi of misale.mis">
+                  <td class="w70">
+                    {{mi.qty}}-{{mi.mi.name}}
+                  </td>
+                  <td>
+                    ${{mi.sale_price| number : '1.2-2'}}
+                  </td>
+                  <td>
+                    ${{mi.fact| number : '1.2-2'}}
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td class="misale">
+              <span class="info enhaced" *ngFor="let p of misale.payments">
+              ${{p.payment | number : '1.2-2'}}<br />
+            </span>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              &nbsp;
+            </td>
+            <td>
+              <span class="coMeEs_enhaced">
+                ${{getTotalFactMIs() | number : '1.2-2'}}
+              </span>
+            </td>
+            <td>
+              <span class="coMeEs_enhaced">
+                ${{getTotalMiSales() | number : '1.2-2'}}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+    <div *ngIf="sales.mc?.length > 0">
+      <span class="coMeEs_enhaced">
+        Ventas de servicios médicos
+      </span>
+      <hr />
+      <table class="w70">
+        <thead>
+          <td>
+            <span class="coMeEs_enhaced">
+              Servicio
+            </span>
+          </td>
+          <td>
+            <span class="coMeEs_enhaced">
+              Status
+            </span>
+          </td>
+          <td>
+            <span class="coMeEs_enhaced">
+              Pago
+            </span>
+          </td>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mcsale of sales.mc">
+            <td>
+              <p *ngFor="let mc of mcsale.mcs">
+                {{mc.qty}} {{mc.mc.name}} - {{physs[mc.phys].name}}&nbsp;{{physs[mc.phys].first}}
+              </p>
+            </td>
+            <td>
+              <p>
+                {{statusDesc[mcsale.status]}}
+              </p>
+            </td>
+            <td>
+              <span class="info enhaced" *ngFor="let p of mcsale.payments">
+                ${{p.payment | number : '1.2-2'}}<br />
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+              <span class="coMeEs_enhaced">
+                ${{getTotalMcSales() | number : '1.2-2'}}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+</div>

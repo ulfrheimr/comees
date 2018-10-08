@@ -1,0 +1,45 @@
+<h4 class="mdl-dialog__title">Pago parcial</h4>
+<div class="mdl-dialog__content">
+  <div class="enhaced">
+    El pago parcial solo está disponible en efectivo
+  </div>
+  <br />
+  <div class="enhaced">
+    Total a pagar:
+    <br />
+    <br />
+    <div class="coMeEs_enhaced">$ {{getAmount() | number : '1.2-2'}}</div>
+  </div>
+  <br />
+  <div>
+    <table>
+      <tr>
+        <td>
+          Importe recibido:
+        </td>
+        <td>
+          Restante:
+        </td>
+      </tr>
+      <tr>
+        <td>
+          $
+          <mdl-textfield placeholder="Importe" pattern="[0-9.,]{1,}" [(ngModel)]="pageModel.partialPayment" maxlength="5" autofocus></mdl-textfield>
+        </td>
+        <td *ngIf="pageModel.partialPayment">
+          $ {{remaining() | number : '1.2-2'}}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="error-container right" *ngIf="pageModel.amountError">
+    <div class="error">
+      {{pageModel.amountError}}
+    </div>
+  </div>
+</div>
+<div class="mdl-dialog__actions">
+  <button mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="!isPaymentAllowed()" (click)="confirmPayment()">Realizar pago</button>
+  <button mdl-button mdl-ripple (click)="cancelPayment()">Cancelar</button>
+</div>

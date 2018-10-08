@@ -94,7 +94,7 @@ export class ModifyMIComponent implements OnInit {
     if (this.pageModel.hint != "")
       this.miService.getMis(this.pageModel.hint)
         .then((x) => {
-          console.log(x)
+
           this.mis = x;
           this.gridOptions.api.setRowData(this.mis);
         });
@@ -103,7 +103,6 @@ export class ModifyMIComponent implements OnInit {
   getCats(): void {
     this.catService.getCats()
       .then((x) => {
-        console.log(x)
         this.cats = x;
       });
   }
@@ -164,12 +163,14 @@ export class ModifyMIComponent implements OnInit {
 
   export(): void {
     var data = [{
-      "1": "ESTUDIO",
-      "2": "DESCRIPCIÓN",
-      "3": "TIEMPO DE ENTREGA",
-      "4": "TIPO DE MUESTRA",
-      "5": "CATEGORIA",
-      "6": "PRECIO DE VENTA"
+      "1": "ID",
+      "2": "ESTUDIO",
+      "3": "DESCRIPCIÓN",
+      "4": "TIEMPO DE ENTREGA",
+      "5": "TIPO DE MUESTRA",
+      "6": "CATEGORIA",
+      "7": "PRECIO DE VENTA",
+      "8": "DISPONIBLE"
     }]
 
     this.miService.getMis("")
@@ -179,14 +180,15 @@ export class ModifyMIComponent implements OnInit {
             x.category != undefined
           )
           .map((x) => {
-            console.log(x)
             return {
-              "1": x.name,
-              "2": x.description,
-              "3": x.delivery_time,
-              "4": x.sample,
-              "5": x.category.name,
-              "6": x.price
+              "1": x._id,
+              "2": x.name,
+              "3": x.description,
+              "4": x.delivery_time,
+              "5": x.sample,
+              "6": x.category.name,
+              "7": x.price,
+              "8": "1"
             }
           })
         )

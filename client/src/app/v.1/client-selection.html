@@ -1,0 +1,167 @@
+<div class="top-container">
+  <hr />
+  <div *ngIf="selectedClient" class="p20">
+    <div class="coMeEs_enhaced">CLIENTE SELECCIONADO</div>
+    <div class="container p20">
+      <table class="centered">
+        <tr>
+          <td>
+            <span class="enhaced">Nombre:</span>
+          </td>
+          <td>
+            <span class="coMeEs_sentence">{{selectedClient.name}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="enhaced">Teléfono:</span>
+          </td>
+          <td>
+            <span class="coMeEs_sentence">{{selectedClient.phone}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="enhaced">Dirección:</span>
+          </td>
+          <td>
+            <span class="coMeEs_sentence">{{selectedClient.address}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="enhaced">Correo electrónico:</span>
+          </td>
+          <td>
+            <span class="coMeEs_sentence">{{selectedClient.mail}}</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="p20">
+      <span class="enhaced">Si este cliente es correcto oprime </span><span class="coMeEs_sentence">"Seleccionar cliente"</span>
+      <br />
+      <button (click)="emmitClient()" mdl-button mdl-button-type="raised" mdl-colored="primary">Seleccionar cliente</button>
+    </div>
+    <div class="p20">
+      <span class="enhaced">Si este no es el cliente que buscas, oprime </span><span class="coMeEs_sentence">"Buscar otro cliente"</span>
+      <br />
+      <button (click)="searchAgain()" mdl-button mdl-button-type="raised" mdl-colored="primary">Buscar otro cliente</button>
+    </div>
+  </div>
+  <div *ngIf="!selectedClient">
+    <table>
+      <tr>
+        <td>
+          <span class="enhaced">Ingresa el criterio de búsqueda del cliente</span>
+          <br />
+          <mdl-textfield [(ngModel)]="pageModel.hint" (keyup.enter)="findClients()" label="Cliente" floating-label autofocus></mdl-textfield>
+        </td>
+        <td class="right">
+          <span class="enhaced">Si no lo encuentras, da click aquí en </span><span class="coMeEs_sentence">"Dar de alta cliente"</span>
+          <br />
+          <div class="centered">
+            <button (click)="addNewClient.show()" mdl-button mdl-button-type="raised" mdl-colored="primary">Dar de alta cliente</button>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <div>
+      <table class="search_table w100" *ngIf="clients?.length > 0">
+        <thead>
+          <tr>
+            <td class="enhaced" style="width:7%">
+              Identificador
+            </td>
+            <td class="enhaced" style="width:37%">
+              Nombre
+            </td>
+            <td class="enhaced" style="width:7%">
+              Teléfono
+            </td>
+            <td class="enhaced" style="width:37%">
+              Dirección
+            </td>
+            <td class="enhaced" style="width:15%">
+              Correo
+            </td>
+            <td class="enhaced" style="width:7%">
+              Seleccionar
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of clients">
+            <td>
+              <span>{{c._id}}</span>
+            </td>
+            <td>
+              <span>{{c.name}}</span>
+            </td>
+            <td>
+              <span>{{c.phone}}</span>
+            </td>
+            <td>
+              <span>{{c.address}}</span>
+            </td>
+            <td>
+              <span>{{c.mail}}</span>
+            </td>
+            <td>
+              <button (click)="selectClient(c)" mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Seleccionar</button>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<mdl-dialog #addNewClient [mdl-dialog-config]="{
+                styles:{'width': '50%'},
+                isModal:true}">
+  <h4 class="mdl-dialog__title">Alta de cliente</h4>
+  <div class="mdl-dialog__content">
+    <div *ngIf="client">
+      Agrega la información del cliente
+      <table>
+        <tr>
+          <td>
+            <mdl-textfield [(ngModel)]="client.name" label="Nombre" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mdl-textfield [(ngModel)]="client.phone" label="Teléfono" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mdl-textfield [(ngModel)]="client.rfc" label="RFC" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mdl-textfield [(ngModel)]="client.mail" label="Correo electrónico" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mdl-textfield [(ngModel)]="client.address" label="Dirección" floating-label autofocus></mdl-textfield>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="error-container right" *ngIf="pageModel.errorMsgs.length > 0">
+      <div class="error" *ngFor="let err of pageModel.errorMsgs">
+        <span>{{err}}</span><br />
+      </div>
+    </div>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple [disabled]="!isClientAdditionAllowed()" (click)="confirmClientAddition()">Dar de alta cliente</button>
+    <button mdl-button mdl-ripple (click)="addNewClient.close()">Cancelar</button>
+  </div>
+</mdl-dialog>
