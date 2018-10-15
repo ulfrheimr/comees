@@ -5,7 +5,7 @@ var config = {
       'port': 3002
     },
     'mi': {
-      'address': '212.237.23.239',
+      'address': 'localhost',
       'port': 3001
     }
   },

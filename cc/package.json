@@ -12,6 +12,7 @@
     "jsonwebtoken": "^8.0.1",
     "moment": "^2.19.3",
     "mongoose": "^4.11.14",
+    "pad": "^2.1.0",
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",
     "passport-token": "^0.2.0",

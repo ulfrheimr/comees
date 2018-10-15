@@ -1,11 +1,13 @@
 const config = {
   id_log: "mi",
-  data: "localhost",
-  // data: "data",
+  // data: "localhost",
+  data: "data",
   data_port: 27017,
-  db_name: "mi",
+  db_name: "comees",
   s: ".Kirkimax.",
-  cc: "localhost"
+  cc: "localhost",
+  usr:"usr",
+  pass:"Kwijib00"
 }
 
 module.exports = config;

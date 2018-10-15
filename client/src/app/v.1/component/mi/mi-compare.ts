@@ -3,6 +3,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { Mi } from '../../prots/mi/mi'
 import { FactMI as FM } from '../../prots/mi/fact-mi'
+import { Angular2Csv } from 'angular2-csv/Angular2-csv'
 
 import { MiService } from '../../services/mi/mi.service';
 import { MiProviderService } from '../../services/mi/mi-provider.service';
@@ -40,7 +41,7 @@ export class MICompare implements OnInit {
   constructor(
     private miService: MiService,
     private miProviderService: MiProviderService,
-    private factMIService: FactMIService,
+    private factMIService: FactMIService
     // private usrService: UsrService
   ) {
     this.pageModel = {
@@ -173,24 +174,23 @@ export class MICompare implements OnInit {
 
 
 
-        let results = r.filter(x => x["fact_price"] != null)
-          .map(x => {
-            return {
-              "name": x["name"],
-              "description": x["description"],
-              "price": x["price"],
-              "fact_price": x["fact_price"],
-              "diff": parseFloat(x["price"]) - parseFloat(x["fact_price"])
-            }
-          }).sort((x, y) => {
-            if (x.diff > y.diff) return -1
-            else return 1
-          })
-
-        let msg = results.map(x => x["name"] + ";" + x["description"] + ";" + x["price"] + ";" + x["fact_price"] + ";" + x["diff"] + "\n")
+        // let results = r.filter(x => x["fact_price"] != null)
+        //   .map(x => {
+        //     return {
+        //       "name": x["name"],
+        //       "description": x["description"],
+        //       "price": x["price"],
+        //       "fact_price": x["fact_price"],
+        //       "diff": parseFloat(x["price"]) - parseFloat(x["fact_price"])
+        //     }
+        //   }).sort((x, y) => {
+        //     if (x.diff > y.diff) return -1
+        //     else return 1
+        //   })
 
 
-        console.log(msg)
+        // new Angular2Csv(results, 'sopa');
+
 
         this.mis = r
         this.createStats()

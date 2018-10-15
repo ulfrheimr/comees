@@ -31,7 +31,7 @@ router.route('/mis')
   .get(MIController.getMIs);
 
 router.route('/mis/:mi')
-  // {sample, price, delivery_time, desc, name, catId}
+  // {sample, price, delivery_time, desc, name, catId, usr}
   .post(MIController.modifyMI)
 
 router.route('/sales')
